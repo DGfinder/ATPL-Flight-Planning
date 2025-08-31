@@ -3,8 +3,8 @@ export type QuestionCategory =
   | 'navigation' 
   | 'fuel_planning'
   | 'weight_balance'
-  | 'meteorology'
-  | 'flight_planning';
+  | 'weather'
+  | 'emergency_procedures';
 
 export type QuestionType = 'multiple_choice' | 'short_answer';
 
@@ -51,6 +51,7 @@ export interface SessionProgress {
   startTime: Date;
   categoryFilter?: QuestionCategory;
   studyMode: StudyMode;
+  examEndTime?: Date;
 }
 
 export interface QuestionValidationResult {
@@ -68,6 +69,7 @@ export interface FlightPlanSegment {
   id: string;
   segment: string;
   flightLevel: number;
+  altitudeTrend?: 'climb' | 'descent' | 'level';
   tempDeviation: number;
   machNo: number;
   tas: number;

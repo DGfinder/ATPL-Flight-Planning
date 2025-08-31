@@ -12,6 +12,7 @@ const createEmptySegment = (id: string): FlightPlanSegment => ({
   id,
   segment: '',
   flightLevel: 0,
+  altitudeTrend: undefined,
   tempDeviation: 0,
   machNo: 0,
   tas: 0,
@@ -37,10 +38,20 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
   onFlightPlanUpdate,
   initialSegments
 }) => {
-  const [segments, setSegments] = useState<FlightPlanSegment[]>(
-    initialSegments || [createEmptySegment('seg-1')]
-  );
+  const defaultSegments = (): FlightPlanSegment[] => {
+    if (initialSegments && initialSegments.length > 0) return initialSegments;
+    return Array.from({ length: 7 }, (_, i) => createEmptySegment(`seg-${i + 1}`));
+  };
+
+  const [segments, setSegments] = useState<FlightPlanSegment[]>(defaultSegments());
   const [altitudeWarnings, setAltitudeWarnings] = useState<Record<string, string>>({});
+  const [showFlHint, setShowFlHint] = useState<boolean>(() => {
+    try {
+      return window.localStorage.getItem('fp_hint_fl_trend_seen') !== '1';
+    } catch {
+      return true;
+    }
+  });
 
   const validateAltitudeCapability = useCallback(async (segment: FlightPlanSegment) => {
     try {
@@ -80,19 +91,7 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
         const updatedSegment = { ...segment, [field]: value };
         
         // E6B Flight Computer Logic with proper sin/cos calculations
-        if (field === 'wind' && typeof value === 'string') {
-          const windData = AviationCalculations.parseWindString(value);
-          if (windData) {
-            const windResult = AviationCalculations.windTriangle(
-              updatedSegment.tas,
-              updatedSegment.track,
-              windData.direction,
-              windData.speed
-            );
-            updatedSegment.windComponent = Math.round(windResult.headwindComponent);
-            updatedSegment.groundSpeed = Math.round(windResult.groundSpeed);
-          }
-        }
+        // Wind component is now entered manually by the user. We no longer auto-calc from WIND string.
         
         // Auto-calculate TAS from Mach number and altitude conditions
         if (field === 'machNo' || field === 'flightLevel' || field === 'tempDeviation') {
@@ -256,105 +255,126 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
       </div>
       
       <div className="overflow-x-auto">
-        <table className="w-full text-xs border-collapse border-2 border-gray-800">
+        <table className="w-full text-sm border-collapse border-2 border-gray-800">
           <thead>
             <tr className="bg-aviation-primary text-white text-center font-bold">
-              <th className="border border-gray-800 px-1 py-2 w-12">SEG</th>
-              <th className="border border-gray-800 px-1 py-2 w-10">FL</th>
-              <th className="border border-gray-800 px-1 py-2 w-12">TEMP T/DEV</th>
-              <th className="border border-gray-800 px-1 py-2 w-12">MACH NO</th>
-              <th className="border border-gray-800 px-1 py-2 w-10">TAS</th>
-              <th className="border border-gray-800 px-1 py-2 w-10">TR</th>
-              <th className="border border-gray-800 px-1 py-2 w-14">WIND</th>
-              <th className="border border-gray-800 px-1 py-2 w-10">HDG</th>
-              <th className="border border-gray-800 px-1 py-2 w-10">GS</th>
-              <th className="border border-gray-800 px-1 py-2 w-10">DIST</th>
-              <th className="border border-gray-800 px-1 py-2 w-10">ETI</th>
-              <th className="border border-gray-800 px-1 py-2 w-12">AIR DIST</th>
-              <th className="border border-gray-800 px-1 py-2 w-12">FUEL FLOW</th>
-              <th className="border border-gray-800 px-1 py-2 w-12">ZONE FUEL</th>
-              <th className="border border-gray-800 px-1 py-2 w-14">START ZONE WT</th>
-              <th className="border border-gray-800 px-1 py-2 w-10">EMZW</th>
-              <th className="border border-gray-800 px-1 py-2 w-14">END ZONE WT</th>
-              <th className="border border-gray-800 px-1 py-2 w-14">PLAN FUEL REM</th>
-              <th className="border border-gray-800 px-1 py-2 w-14">ACT FUEL REM</th>
-              <th className="border border-gray-800 px-1 py-2 w-12">PLAN EST</th>
-              <th className="border border-gray-800 px-1 py-2 w-10">ATA</th>
-              <th className="border border-gray-800 px-1 py-2 w-8">✕</th>
+              <th className="border border-gray-800 px-2 py-3 w-12">SEG</th>
+              <th className="border border-gray-800 px-2 py-3 w-10">FL</th>
+              <th className="border border-gray-800 px-2 py-3 w-12">TEMP T/DEV</th>
+              <th className="border border-gray-800 px-2 py-3 w-12">MACH NO</th>
+              <th className="border border-gray-800 px-2 py-3 w-10">TAS</th>
+              <th className="border border-gray-800 px-2 py-3 w-10">TR</th>
+              <th className="border border-gray-800 px-2 py-3 w-14">WIND</th>
+              <th className="border border-gray-800 px-2 py-3 w-10">WC</th>
+              <th className="border border-gray-800 px-2 py-3 w-10">GS</th>
+              <th className="border border-gray-800 px-2 py-3 w-10">DIST</th>
+              <th className="border border-gray-800 px-2 py-3 w-10">ETI</th>
+              <th className="border border-gray-800 px-2 py-3 w-12">AIR DIST</th>
+              <th className="border border-gray-800 px-2 py-3 w-12">FUEL FLOW</th>
+              <th className="border border-gray-800 px-2 py-3 w-12">ZONE FUEL</th>
+              <th className="border border-gray-800 px-2 py-3 w-14">START ZONE WT</th>
+              <th className="border border-gray-800 px-2 py-3 w-10">EMZW</th>
+              <th className="border border-gray-800 px-2 py-3 w-14">END ZONE WT</th>
+              <th className="border border-gray-800 px-2 py-3 w-14">PLAN FUEL REM</th>
+              <th className="border border-gray-800 px-2 py-3 w-14">ACT FUEL REM</th>
+              <th className="border border-gray-800 px-2 py-3 w-12">PLAN EST</th>
+              <th className="border border-gray-800 px-2 py-3 w-10">ATA</th>
+              <th className="border border-gray-800 px-2 py-3 w-8">✕</th>
             </tr>
           </thead>
           <tbody>
             {segments.map((segment) => (
               <tr key={segment.id} className="hover:bg-gray-50">
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'segment', segment.segment, 'text')}
                 </td>
-                <td className={`border border-gray-800 p-1 ${altitudeWarnings[segment.id] ? 'bg-red-100' : ''}`}>
-                  {renderEditableCell(segment.id, 'flightLevel', segment.flightLevel)}
+                <td className={`border border-gray-800 p-2 ${altitudeWarnings[segment.id] ? 'bg-red-100' : ''}`}>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1" onDoubleClick={() => {
+                      // Double click toggles through trend options: undefined -> climb -> level -> descent -> undefined
+                      setSegments(prev => prev.map(s => s.id === segment.id ? {
+                        ...s,
+                        altitudeTrend: s.altitudeTrend === undefined ? 'climb' : s.altitudeTrend === 'climb' ? 'level' : s.altitudeTrend === 'level' ? 'descent' : undefined
+                      } : s));
+                      try { window.localStorage.setItem('fp_hint_fl_trend_seen', '1'); } catch {}
+                      setShowFlHint(false);
+                    }}>
+                      {renderEditableCell(segment.id, 'flightLevel', segment.flightLevel)}
+                    </div>
+                    <span
+                      className={
+                        segment.altitudeTrend === 'climb' ? 'text-green-600' :
+                        segment.altitudeTrend === 'descent' ? 'text-amber-600' : 'text-gray-400'
+                      }
+                      title={segment.altitudeTrend ? (segment.altitudeTrend.charAt(0).toUpperCase() + segment.altitudeTrend.slice(1)) : 'No trend'}
+                    >
+                      {segment.altitudeTrend === 'climb' ? '↗' : segment.altitudeTrend === 'descent' ? '↘' : '→'}
+                    </span>
                   {altitudeWarnings[segment.id] && (
                     <div className="text-xs text-red-600 mt-1" title={altitudeWarnings[segment.id]}>
                       ⚠️
                     </div>
                   )}
+                  </div>
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'tempDeviation', segment.tempDeviation)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'machNo', segment.machNo)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'tas', segment.tas)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'track', segment.track)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'wind', segment.wind, 'text')}
                 </td>
-                <td className="border border-gray-800 p-1">
-                  {renderEditableCell(segment.id, 'windComponent', segment.windComponent, 'number', true)}
+                <td className="border border-gray-800 p-2">
+                  {renderEditableCell(segment.id, 'windComponent', segment.windComponent)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'groundSpeed', segment.groundSpeed, 'number', true)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'distance', segment.distance)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'estimatedTimeInterval', Math.round(segment.estimatedTimeInterval), 'number', true)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'airDistance', segment.airDistance)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'fuelFlow', segment.fuelFlow)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'zoneFuel', segment.zoneFuel)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'startZoneWeight', segment.startZoneWeight)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'emzw', segment.emzw, 'number', true)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'endZoneWeight', segment.endZoneWeight, 'number', true)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'planFuelRemaining', segment.planFuelRemaining)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'actualFuelRemaining', segment.actualFuelRemaining)}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'planEstimate', segment.planEstimate, 'text')}
                 </td>
-                <td className="border border-gray-800 p-1">
+                <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'actualTimeArrival', segment.actualTimeArrival, 'text')}
                 </td>
-                <td className="border border-gray-800 p-1 text-center">
+                <td className="border border-gray-800 p-2 text-center">
                   {segments.length > 1 && (
                     <button
                       onClick={() => removeSegment(segment.id)}
@@ -370,17 +390,17 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
             
             {/* Totals Row */}
             <tr className="bg-gray-200 font-bold border-2 border-gray-800">
-              <td className="border border-gray-800 px-2 py-2 text-center font-bold" colSpan={10}>
+              <td className="border border-gray-800 px-2 py-3 text-center font-bold" colSpan={10}>
                 TOTALS
               </td>
-              <td className="border border-gray-800 px-2 py-2 text-center font-bold">
+              <td className="border border-gray-800 px-2 py-3 text-center font-bold">
                 {totals.distance.toFixed(0)}
               </td>
-              <td className="border border-gray-800 px-2 py-2 text-center font-bold">
+              <td className="border border-gray-800 px-2 py-3 text-center font-bold">
                 {Math.round(totals.time)}
               </td>
               <td className="border border-gray-800 px-2 py-2" colSpan={2}></td>
-              <td className="border border-gray-800 px-2 py-2 text-center font-bold">
+              <td className="border border-gray-800 px-2 py-3 text-center font-bold">
                 {totals.fuel.toFixed(0)}
               </td>
               <td className="border border-gray-800 px-2 py-2" colSpan={7}></td>
@@ -388,32 +408,12 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
           </tbody>
         </table>
       </div>
-      
-      <div className="mt-4 text-sm text-gray-600">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <div>
-            <strong>Basic:</strong><br/>
-            SEG=Segment, FL=Flight Level, TEMP T/DEV=Temperature Deviation, MACH NO=Mach Number
-          </div>
-          <div>
-            <strong>Speed/Track:</strong><br/>
-            TAS=True Airspeed (kt), TR=Track (°), WIND=Wind Vector, HDG=Wind Component (kt)
-          </div>
-          <div>
-            <strong>Navigation:</strong><br/>
-            GS=Ground Speed (kt), DIST=Distance (nm), ETI=Est Time Interval (min), AIR DIST=Air Distance
-          </div>
-          <div>
-            <strong>Fuel/Weight:</strong><br/>
-            EMZW=Est Mid Zone Weight, PLAN EST=Planned Estimate, ATA=Actual Time Arrival
-          </div>
+
+      {showFlHint && (
+        <div className="mt-3 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded p-2">
+          Double‑click FL to set climb/descent arrow. <button className="underline" onClick={() => { try { window.localStorage.setItem('fp_hint_fl_trend_seen', '1'); } catch {}; setShowFlHint(false); }}>Got it</button>
         </div>
-        
-        <div className="mt-2 text-xs text-gray-500">
-          * Auto-calculated: HDG (Wind Component), GS, ETI, EMZW, END ZONE WT, PLAN FUEL REM
-          <br/>* E6B calculations use proper trigonometry (sin/cos) for wind triangles
-        </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -12,6 +12,8 @@ import CourseNotes from './notes/CourseNotes';
 import AuthModal from './auth/AuthModal';
 import { useTheme } from '../contexts/ThemeContext';
 import Calculator from './ui/Calculator';
+import LegendPopover from './ui/LegendPopover';
+import ExamTimer from './ui/ExamTimer';
 
 const EnhancedFlightPlanningApp: React.FC = () => {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -33,6 +35,7 @@ const EnhancedFlightPlanningApp: React.FC = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
+  const [showLegend, setShowLegend] = useState(false);
   const [currentView, setCurrentView] = useState<'questions' | 'flightplan' | 'notes'>('questions');
   const [loading, setLoading] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
@@ -107,7 +110,8 @@ const EnhancedFlightPlanningApp: React.FC = () => {
       userAnswers,
       startTime: sessionStartTime,
       categoryFilter: categoryFilter === 'all' ? undefined : categoryFilter,
-      studyMode
+      studyMode,
+      examEndTime: sessionProgress.examEndTime
     };
     
     setSessionProgress(progress);
@@ -115,6 +119,20 @@ const EnhancedFlightPlanningApp: React.FC = () => {
     // Save to localStorage as backup
     storageService.saveSessionProgress(progress);
   }, [currentQuestionIndex, userAnswers, categoryFilter, studyMode, sessionStartTime]);
+
+  // Start/stop 3-hour exam timer when mode changes
+  useEffect(() => {
+    if (studyMode === 'exam') {
+      // If we already have an end time from storage, keep it; else set default 3 hours from now.
+      if (!sessionProgress.examEndTime || sessionProgress.examEndTime.getTime() <= Date.now()) {
+        const end = new Date(Date.now() + 3 * 60 * 60 * 1000);
+        setSessionProgress(prev => ({ ...prev, examEndTime: end }));
+      }
+    } else if (studyMode === 'practice' && sessionProgress.examEndTime) {
+      setSessionProgress(prev => ({ ...prev, examEndTime: undefined }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [studyMode]);
 
   const handleAnswerSubmit = async (answer: UserAnswer) => {
     const updatedAnswers = [
@@ -327,7 +345,13 @@ const EnhancedFlightPlanningApp: React.FC = () => {
                 <span className="text-blue-100 ml-1">correct</span>
               </div>
               
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 relative">
+                {studyMode === 'exam' && sessionProgress.examEndTime && (
+                  <ExamTimer
+                    endTime={sessionProgress.examEndTime}
+                    onExpire={() => alert('Time is up! Please submit your answers.')}
+                  />
+                )}
                 <button
                   onClick={() => setShowDashboard(true)}
                   className="text-blue-100 hover:text-white text-sm"
@@ -351,6 +375,18 @@ const EnhancedFlightPlanningApp: React.FC = () => {
                 >
                   🧮
                 </button>
+
+                <button
+                  onClick={() => setShowLegend(prev => !prev)}
+                  className="text-blue-100 hover:text-white text-sm"
+                  title="Flight plan legend"
+                >
+                  ℹ️
+                </button>
+
+                {showLegend && (
+                  <LegendPopover onClose={() => setShowLegend(false)} />
+                )}
 
                 <div className="relative">
                   <select

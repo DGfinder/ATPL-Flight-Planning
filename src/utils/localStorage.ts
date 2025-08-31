@@ -20,7 +20,8 @@ class LocalStorageService {
         ...progress,
         answeredQuestions: Array.from(progress.answeredQuestions),
         correctAnswers: Array.from(progress.correctAnswers),
-        startTime: progress.startTime.toISOString()
+        startTime: progress.startTime.toISOString(),
+        examEndTime: progress.examEndTime ? progress.examEndTime.toISOString() : undefined
       };
       window.localStorage.setItem(STORAGE_KEYS.SESSION_PROGRESS, JSON.stringify(serializable));
     } catch (error) {
@@ -38,7 +39,8 @@ class LocalStorageService {
         ...parsed,
         answeredQuestions: new Set(parsed.answeredQuestions),
         correctAnswers: new Set(parsed.correctAnswers),
-        startTime: new Date(parsed.startTime)
+        startTime: new Date(parsed.startTime),
+        examEndTime: parsed.examEndTime ? new Date(parsed.examEndTime) : undefined
       };
     } catch (error) {
       console.error('Failed to load session progress:', error);
