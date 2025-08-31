@@ -219,7 +219,7 @@ class DatabaseService {
       console.warn('Altitude capability query failed:', error);
       return null;
     }
-    return data as AltitudeCapability;
+    return data as unknown as AltitudeCapability;
   }
 
   async getMaxAltitudeForWeight(weight: number, cruiseSchedule: string, isaDeviation: number = 0): Promise<number> {

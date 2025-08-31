@@ -133,7 +133,7 @@ async function importAltitudeCapability() {
       return;
     }
     
-    console.log(`✅ Verified: ${verifyData?.[0]?.count || 0} rows imported`);
+    console.log(`✅ Verified: ${(verifyData as any)?.[0]?.count || 0} rows imported`);
     
   } catch (error) {
     console.error('Import failed:', error);
