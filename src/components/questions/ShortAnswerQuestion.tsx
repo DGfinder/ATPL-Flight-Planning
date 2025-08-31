@@ -140,7 +140,7 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
                 value={answers[expected.field] || ''}
                 onChange={(e) => handleInputChange(expected.field, e.target.value)}
                 className={getInputClassName(expected.field)}
-                placeholder={`Enter value (±${expected.tolerance} ${expected.unit})`}
+                placeholder={`Enter value`}
                 disabled={isSubmitted}
               />
               
@@ -151,23 +151,23 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
           </label>
           
           {showFeedback && isSubmitted && validationResults[expected.field] && (
-            <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
-              <div className="flex items-center justify-between">
-                <span>
+            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-800">
                   Expected: {AviationCalculations.formatNumber(expected.value)} {expected.unit} 
-                  (±{expected.tolerance})
+                  <span className="text-gray-500 font-normal"> (±{expected.tolerance})</span>
                 </span>
-                <span className={
+                <span className={`px-2 py-1 rounded text-xs font-medium ${
                   validationResults[expected.field].isCorrect 
-                    ? 'text-green-700 font-medium' 
-                    : 'text-red-700 font-medium'
-                }>
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-red-100 text-red-800'
+                }`}>
                   {validationResults[expected.field].isCorrect ? '✓ Correct' : '✗ Incorrect'}
                 </span>
               </div>
               
               {!validationResults[expected.field].isCorrect && (
-                <div className="mt-1 text-red-600">
+                <div className="text-sm text-red-700 bg-red-50 p-2 rounded border border-red-200">
                   Your answer: {AviationCalculations.formatNumber(validationResults[expected.field].actual)} {expected.unit}
                 </div>
               )}
@@ -196,19 +196,19 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
       </div>
       
       {showFeedback && isSubmitted && (
-        <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-          <div className="flex items-center mb-2">
-            <span className="font-medium">Overall Result:</span>
-            <span className={`ml-2 ${
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="flex items-center justify-between mb-3">
+            <span className="font-medium text-gray-800">Overall Result</span>
+            <span className={`px-3 py-1 rounded text-sm font-medium ${
               Object.values(validationResults).every(v => v.isCorrect) 
-                ? 'text-green-700' 
-                : 'text-red-700'
+                ? 'bg-green-100 text-green-800' 
+                : 'bg-red-100 text-red-800'
             }`}>
-              {Object.values(validationResults).every(v => v.isCorrect) ? 'Correct' : 'Incorrect'}
+              {Object.values(validationResults).every(v => v.isCorrect) ? '✓ Correct' : '✗ Incorrect'}
             </span>
           </div>
           
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-600 bg-white p-3 rounded border border-gray-200">
             Fields correct: {Object.values(validationResults).filter(v => v.isCorrect).length} / {Object.values(validationResults).length}
           </div>
         </div>

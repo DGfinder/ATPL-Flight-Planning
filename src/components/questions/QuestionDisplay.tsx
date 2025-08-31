@@ -33,13 +33,13 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
     }
 
     return (
-      <div className="aviation-card p-4 mb-4">
-        <h4 className="font-semibold text-aviation-primary mb-3">Given Data:</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+      <div className="aviation-card p-6 mb-6">
+        <h4 className="font-semibold text-aviation-primary mb-4 text-lg">Given Data</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           {Object.entries(question.givenData).map(([key, value]) => (
-            <div key={key} className="flex justify-between">
-              <span className="font-medium">{key}:</span>
-              <span className="text-gray-700">{value}</span>
+            <div key={key} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <span className="font-medium text-gray-800">{key}</span>
+              <span className="text-gray-700 font-mono bg-white px-3 py-1 rounded border">{value}</span>
             </div>
           ))}
         </div>
@@ -51,11 +51,11 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
     if (!showWorkingSteps && !showSteps) return null;
     
     return (
-      <div className="aviation-card p-4 mt-4">
-        <div className="flex items-center justify-between mb-3">
-          <h4 className="font-semibold text-aviation-primary">Working Steps:</h4>
+      <div className="aviation-card p-6 mt-6">
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="font-semibold text-aviation-primary text-lg">Working Steps</h4>
           <button 
-            className="text-sm text-aviation-accent hover:underline"
+            className="text-sm text-aviation-accent hover:underline px-3 py-1 rounded hover:bg-gray-50"
             onClick={() => setShowSteps(!showSteps)}
           >
             {showSteps ? 'Hide Steps' : 'Show Steps'}
@@ -63,11 +63,16 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
         </div>
         
         {showSteps && (
-          <ol className="list-decimal list-inside space-y-2 text-sm">
+          <div className="space-y-3">
             {question.workingSteps.map((step, index) => (
-              <li key={index} className="text-gray-700">{step}</li>
+              <div key={index} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <span className="flex-shrink-0 w-6 h-6 bg-aviation-primary text-white text-xs rounded-full flex items-center justify-center font-medium">
+                  {index + 1}
+                </span>
+                <span className="text-gray-700 text-sm leading-relaxed">{step}</span>
+              </div>
             ))}
-          </ol>
+          </div>
         )}
       </div>
     );
