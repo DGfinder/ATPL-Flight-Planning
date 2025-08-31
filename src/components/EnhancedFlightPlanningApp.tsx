@@ -276,12 +276,12 @@ const EnhancedFlightPlanningApp: React.FC = () => {
   return (
     <div className="min-h-screen fade-in" style={{ backgroundColor: theme === 'dark' ? '#0b1220' : '#f8fafc' }}>
       {/* Header */}
-      <header className="text-white shadow-lg" style={{ background: 'linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%)' }}>
+      <header className="text-white shadow-lg" style={{ background: 'linear-gradient(135deg, #0A2A66 0%, #0056D6 100%)' }}>
         <div className="max-w-6xl mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="h-9 w-9 rounded-lg bg-white/10 flex items-center justify-center">✈️</div>
-              <h1 className="text-2xl font-semibold tracking-tight">ATPL Flight Planning</h1>
+              <h1 className="text-2xl font-semibold tracking-tight" style={{ fontFamily: 'Poppins, Inter, sans-serif' }}>ATPL Flight Planning</h1>
             </div>
             
             <div className="flex items-center space-x-5">

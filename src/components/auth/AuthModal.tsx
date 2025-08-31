@@ -66,10 +66,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="aviation-card p-6 w-full max-w-md">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in">
+      <div className="aviation-card p-6 w-full max-w-md scale-in">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-800">
+          <h2 className="text-xl font-bold text-gray-800" style={{ fontFamily: 'Poppins, Inter, sans-serif' }}>
             {mode === 'login' ? 'Sign In' : 'Create Account'}
           </h2>
           <button

@@ -9,11 +9,12 @@ export default {
     extend: {
       colors: {
         aviation: {
-          primary: '#1E3A8A',
-          secondary: '#1E40AF', 
-          accent: '#3B82F6',
-          light: '#DBEAFE',
-          dark: '#1E293B'
+          // Approximate ATS brand tones: deep navy to electric blue gradient, with coral accent
+          primary: '#0A2A66',
+          secondary: '#0056D6',
+          accent: '#FF6B6B',
+          light: '#E6F0FF',
+          dark: '#0B1B3A'
         },
         gray: {
           50: '#f9fafb',
