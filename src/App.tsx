@@ -1,11 +1,14 @@
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import EnhancedFlightPlanningApp from './components/EnhancedFlightPlanningApp';
 
 function App() {
   return (
-    <AuthProvider>
-      <EnhancedFlightPlanningApp />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <EnhancedFlightPlanningApp />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

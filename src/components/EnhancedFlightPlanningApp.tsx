@@ -10,6 +10,8 @@ import SettingsPanel from './ui/SettingsPanel';
 import FlightPlanTable from './flight-plan/FlightPlanTable';
 import CourseNotes from './notes/CourseNotes';
 import AuthModal from './auth/AuthModal';
+import { useTheme } from '../contexts/ThemeContext';
+import Calculator from './ui/Calculator';
 
 const EnhancedFlightPlanningApp: React.FC = () => {
   const { user, loading: authLoading, signOut } = useAuth();
@@ -30,9 +32,11 @@ const EnhancedFlightPlanningApp: React.FC = () => {
   const [showDashboard, setShowDashboard] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(false);
   const [currentView, setCurrentView] = useState<'questions' | 'flightplan' | 'notes'>('questions');
   const [loading, setLoading] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme();
 
   const filteredQuestions = useMemo(() => {
     if (categoryFilter === 'all') return questions;
@@ -252,41 +256,44 @@ const EnhancedFlightPlanningApp: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f9fafb' }}>
+    <div className="min-h-screen fade-in" style={{ backgroundColor: theme === 'dark' ? '#0b1220' : '#f8fafc' }}>
       {/* Header */}
-      <header className="text-white shadow-lg" style={{ backgroundColor: '#1E3A8A' }}>
-        <div className="max-w-6xl mx-auto px-6 py-4">
+      <header className="text-white shadow-lg" style={{ background: 'linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%)' }}>
+        <div className="max-w-6xl mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">ATPL Flight Planning Study Tool</h1>
+            <div className="flex items-center space-x-3">
+              <div className="h-9 w-9 rounded-lg bg-white/10 flex items-center justify-center">✈️</div>
+              <h1 className="text-2xl font-semibold tracking-tight">ATPL Flight Planning</h1>
+            </div>
             
-            <div className="flex items-center space-x-4">
-              <div className="flex space-x-2">
+            <div className="flex items-center space-x-5">
+              <div className="flex space-x-2 bg-white/10 rounded-lg p-1">
                 <button
                   onClick={() => setCurrentView('questions')}
-                  className={`px-3 py-1 rounded text-sm font-medium ${
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
                     currentView === 'questions' 
-                      ? 'bg-white text-aviation-primary' 
-                      : 'text-blue-200 hover:text-white'
+                      ? 'bg-white text-aviation-primary shadow-sm' 
+                      : 'text-blue-100 hover:text-white'
                   }`}
                 >
                   Questions
                 </button>
                 <button
                   onClick={() => setCurrentView('flightplan')}
-                  className={`px-3 py-1 rounded text-sm font-medium ${
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
                     currentView === 'flightplan' 
-                      ? 'bg-white text-aviation-primary' 
-                      : 'text-blue-200 hover:text-white'
+                      ? 'bg-white text-aviation-primary shadow-sm' 
+                      : 'text-blue-100 hover:text-white'
                   }`}
                 >
                   Flight Plan
                 </button>
                 <button
                   onClick={() => setCurrentView('notes')}
-                  className={`px-3 py-1 rounded text-sm font-medium ${
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
                     currentView === 'notes' 
-                      ? 'bg-white text-aviation-primary' 
-                      : 'text-blue-200 hover:text-white'
+                      ? 'bg-white text-aviation-primary shadow-sm' 
+                      : 'text-blue-100 hover:text-white'
                   }`}
                 >
                   Notes
@@ -295,11 +302,11 @@ const EnhancedFlightPlanningApp: React.FC = () => {
 
               {/* User Info */}
               {user ? (
-                <div className="flex items-center space-x-2 text-sm">
-                  <span className="text-blue-200">Welcome, {user.email}</span>
+                <div className="hidden md:flex items-center space-x-2 text-sm">
+                  <span className="text-blue-100">{user.email}</span>
                   <button
                     onClick={signOut}
-                    className="text-blue-200 hover:text-white underline"
+                    className="underline decoration-white/40 hover:decoration-white"
                   >
                     Sign Out
                   </button>
@@ -307,23 +314,23 @@ const EnhancedFlightPlanningApp: React.FC = () => {
               ) : (
                 <button
                   onClick={() => setShowAuthModal(true)}
-                  className="text-blue-200 hover:text-white text-sm underline"
+                  className="text-blue-100 hover:text-white text-sm underline"
                 >
                   Sign In
                 </button>
               )}
               
-              <div className="text-sm">
+              <div className="hidden sm:flex items-center text-sm bg-white/10 rounded-md px-2 py-1">
                 <span className="font-medium">{metrics.correctAnswers}</span>
-                <span className="text-blue-200 mx-1">/</span>
+                <span className="text-blue-100 mx-1">/</span>
                 <span>{metrics.answeredQuestions}</span>
-                <span className="text-blue-200 ml-1">correct</span>
+                <span className="text-blue-100 ml-1">correct</span>
               </div>
               
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setShowDashboard(true)}
-                  className="text-blue-200 hover:text-white text-sm"
+                  className="text-blue-100 hover:text-white text-sm"
                   title="Performance Analytics"
                 >
                   📊
@@ -331,16 +338,38 @@ const EnhancedFlightPlanningApp: React.FC = () => {
                 
                 <button
                   onClick={() => setShowSettings(true)}
-                  className="text-blue-200 hover:text-white text-sm"
+                  className="text-blue-100 hover:text-white text-sm"
                   title="Settings"
                 >
                   ⚙️
                 </button>
                 
+                <button
+                  onClick={() => setShowCalculator(true)}
+                  className="text-blue-100 hover:text-white text-sm"
+                  title="Open calculator"
+                >
+                  🧮
+                </button>
+
+                <div className="relative">
+                  <select
+                    aria-label="Theme"
+                    value={theme}
+                    onChange={(e) => setTheme(e.target.value as any)}
+                    className="text-black px-2 py-1.5 rounded-md text-sm"
+                    title={`Theme (${resolvedTheme})`}
+                  >
+                    <option value="system">System</option>
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                  </select>
+                </div>
+                
                 <select
                   value={studyMode}
                   onChange={(e) => setStudyMode(e.target.value as StudyMode)}
-                  className="text-black px-2 py-1 rounded text-sm"
+                  className="text-black px-2 py-1.5 rounded-md text-sm"
                 >
                   <option value="practice">Practice Mode</option>
                   <option value="exam">Exam Mode</option>
@@ -411,17 +440,17 @@ const EnhancedFlightPlanningApp: React.FC = () => {
       {/* Progress Bar - Only show for questions view */}
       {currentView === 'questions' && (
         <div className="bg-white border-b">
-          <div className="max-w-6xl mx-auto px-6 py-2">
-            <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="max-w-6xl mx-auto px-6 py-3">
+            <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
               <div 
-                className="h-2 rounded-full transition-all duration-300"
+                className="bg-aviation-primary h-2.5 rounded-full"
                 style={{ 
-                  backgroundColor: '#1E3A8A',
-                  width: `${(sessionProgress.answeredQuestions.size / filteredQuestions.length) * 100}%` 
+                  width: `${(sessionProgress.answeredQuestions.size / filteredQuestions.length) * 100}%`,
+                  transition: 'width 400ms cubic-bezier(0.22, 1, 0.36, 1)'
                 }}
               />
             </div>
-            <div className="flex justify-between text-xs text-gray-600 mt-1">
+            <div className="flex justify-between text-xs text-gray-600 mt-2">
               <span>Progress: {sessionProgress.answeredQuestions.size}/{filteredQuestions.length} questions</span>
               <span>Accuracy: {metrics.accuracy.toFixed(1)}%</span>
             </div>
@@ -451,17 +480,17 @@ const EnhancedFlightPlanningApp: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t mt-8" style={{ backgroundColor: '#f3f4f6' }}>
-        <div className="max-w-6xl mx-auto px-6 py-4">
+      <footer className="border-t mt-10" style={{ backgroundColor: '#f1f5f9' }}>
+        <div className="max-w-6xl mx-auto px-6 py-5">
           <div className="flex items-center justify-between text-sm text-gray-600">
-            <div>
-              Session time: {Math.floor((Date.now() - sessionStartTime.getTime()) / 60000)} minutes
-              {user && <span className="ml-2 text-xs text-green-600">● Cloud Sync Enabled</span>}
+            <div className="flex items-center gap-3">
+              <span className="px-2 py-1 rounded bg-white border text-gray-700">Session {Math.floor((Date.now() - sessionStartTime.getTime()) / 60000)}m</span>
+              {user && <span className="px-2 py-1 rounded bg-green-50 border border-green-200 text-green-700">● Cloud Sync</span>}
             </div>
             <div className="flex items-center space-x-4">
-              <span>Average time per question: {metrics.averageTimePerQuestion.toFixed(1)}s</span>
+              <span>Avg time/question: {metrics.averageTimePerQuestion.toFixed(1)}s</span>
               <button 
-                className="text-aviation-primary hover:underline"
+                className="aviation-button-secondary"
                 onClick={() => {
                   const data = storageService.exportData();
                   const blob = new Blob([data], { type: 'application/json' });
@@ -500,6 +529,10 @@ const EnhancedFlightPlanningApp: React.FC = () => {
         onClose={() => setShowAuthModal(false)}
         onSuccess={handleAuthSuccess}
       />
+
+      {showCalculator && (
+        <Calculator onClose={() => setShowCalculator(false)} />)
+      }
     </div>
   );
 };

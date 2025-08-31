@@ -58,8 +58,8 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="aviation-card max-w-2xl p-6 m-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in">
+      <div className="aviation-card max-w-2xl p-6 m-4 scale-in">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-aviation-primary">Study Settings</h2>
           <button 

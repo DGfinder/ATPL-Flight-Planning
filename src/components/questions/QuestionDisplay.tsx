@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { Question, UserAnswer, StudyMode } from '../../types';
 import MultipleChoiceQuestion from './MultipleChoiceQuestion';
 import ShortAnswerQuestion from './ShortAnswerQuestion';
+import FlightPlanTable from '../flight-plan/FlightPlanTable';
 
 interface QuestionDisplayProps {
   question: Question;
@@ -76,8 +77,8 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
   const isAnswered = submittedAnswer !== undefined;
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="aviation-card p-6 mb-4">
+    <div className="max-w-6xl mx-auto p-6">
+      <div className="aviation-card p-6 mb-6">
         <div className="flex items-start justify-between mb-4">
           <div>
             <h2 className="text-xl font-bold text-gray-900 mb-2">
@@ -107,8 +108,13 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
         </p>
         
         {renderGivenData()}
-        
+
         <div className="mt-6">
+          <FlightPlanTable />
+        </div>
+
+        <div className="mt-8 pt-6 border-t">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Answer</h3>
           {question.type === 'multiple_choice' ? (
             <MultipleChoiceQuestion
               question={question}
