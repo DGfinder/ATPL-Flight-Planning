@@ -36,7 +36,7 @@ const EnhancedFlightPlanningApp: React.FC = () => {
   const [currentView, setCurrentView] = useState<'questions' | 'flightplan' | 'notes'>('questions');
   const [loading, setLoading] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
-  const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
 
   const filteredQuestions = useMemo(() => {
     if (categoryFilter === 'all') return questions;
