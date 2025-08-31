@@ -254,6 +254,13 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
         </div>
       </div>
       
+      <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="text-sm text-blue-800">
+          <strong>Learning Mode:</strong> GS (Ground Speed), ETI (Time), EMZW (Mid-Zone Weight), and END ZONE WT are manually editable. 
+          Practice your calculations and learn from mistakes!
+        </div>
+      </div>
+
       <div className="overflow-x-auto">
         <table className="w-full text-sm border-collapse border-2 border-gray-800">
           <thead>
@@ -336,13 +343,13 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                   {renderEditableCell(segment.id, 'windComponent', segment.windComponent)}
                 </td>
                 <td className="border border-gray-800 p-2">
-                  {renderEditableCell(segment.id, 'groundSpeed', segment.groundSpeed, 'number', true)}
+                  {renderEditableCell(segment.id, 'groundSpeed', segment.groundSpeed)}
                 </td>
                 <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'distance', segment.distance)}
                 </td>
                 <td className="border border-gray-800 p-2">
-                  {renderEditableCell(segment.id, 'estimatedTimeInterval', Math.round(segment.estimatedTimeInterval), 'number', true)}
+                  {renderEditableCell(segment.id, 'estimatedTimeInterval', Math.round(segment.estimatedTimeInterval))}
                 </td>
                 <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'airDistance', segment.airDistance)}
@@ -357,10 +364,10 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                   {renderEditableCell(segment.id, 'startZoneWeight', segment.startZoneWeight)}
                 </td>
                 <td className="border border-gray-800 p-2">
-                  {renderEditableCell(segment.id, 'emzw', segment.emzw, 'number', true)}
+                  {renderEditableCell(segment.id, 'emzw', segment.emzw)}
                 </td>
                 <td className="border border-gray-800 p-2">
-                  {renderEditableCell(segment.id, 'endZoneWeight', segment.endZoneWeight, 'number', true)}
+                  {renderEditableCell(segment.id, 'endZoneWeight', segment.endZoneWeight)}
                 </td>
                 <td className="border border-gray-800 p-2">
                   {renderEditableCell(segment.id, 'planFuelRemaining', segment.planFuelRemaining)}

@@ -36,7 +36,7 @@ const EnhancedFlightPlanningApp: React.FC = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
-  const [currentView, setCurrentView] = useState<'questions' | 'flightplan' | 'notes'>('questions');
+  const [currentView, setCurrentView] = useState<'menu' | 'questions' | 'flightplan' | 'notes'>('menu');
   const [loading, setLoading] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const { theme, resolvedTheme, setTheme } = useTheme();
@@ -276,139 +276,185 @@ const EnhancedFlightPlanningApp: React.FC = () => {
   return (
     <div className="min-h-screen fade-in" style={{ backgroundColor: theme === 'dark' ? '#0b1220' : '#f8fafc' }}>
       {/* Header */}
-      <header className="text-white shadow-lg" style={{ background: 'linear-gradient(135deg, #0A2A66 0%, #0056D6 100%)' }}>
-        <div className="max-w-6xl mx-auto px-6 py-5">
+      <header className="relative overflow-hidden">
+        {/* Background with gradient and pattern */}
+        <div className="absolute inset-0 bg-gradient-to-br from-aviation-primary via-aviation-secondary to-blue-800"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="h-9 w-9 rounded-lg bg-white/10 flex items-center justify-center">✈️</div>
-              <h1 className="text-2xl font-semibold tracking-tight" style={{ fontFamily: 'Poppins, Inter, sans-serif' }}>ATPL Flight Planning</h1>
+            {/* Logo and Title */}
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <div className="h-12 w-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center shadow-lg border border-white/20">
+                  <span className="text-2xl">✈️</span>
+                </div>
+                <div className="absolute -top-1 -right-1 h-4 w-4 bg-aviation-accent rounded-full flex items-center justify-center">
+                  <span className="text-xs text-white font-bold">A</span>
+                </div>
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight text-white" style={{ fontFamily: 'Poppins, Inter, sans-serif' }}>
+                  ATPL Flight Planning
+                </h1>
+                <p className="text-blue-100 text-sm font-medium">Professional Study Tool</p>
+              </div>
             </div>
             
-            <div className="flex items-center space-x-5">
-              <div className="flex space-x-2 bg-white/10 rounded-lg p-1">
+            {/* Navigation and Controls */}
+            <div className="flex items-center space-x-6">
+              {/* Main Navigation */}
+              <nav className="hidden lg:flex items-center space-x-1 bg-white/10 backdrop-blur-sm rounded-xl p-1 border border-white/20">
                 <button
-                  onClick={() => setCurrentView('questions')}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
-                    currentView === 'questions' 
-                      ? 'bg-white text-aviation-primary shadow-sm' 
-                      : 'text-blue-100 hover:text-white'
+                  onClick={() => setCurrentView('menu')}
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                    currentView === 'menu' 
+                      ? 'bg-white text-aviation-primary shadow-lg transform scale-105' 
+                      : 'text-blue-100 hover:text-white hover:bg-white/10'
                   }`}
                 >
-                  Questions
+                  🏠 Home
+                </button>
+                <button
+                  onClick={() => setCurrentView('questions')}
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                    currentView === 'questions' 
+                      ? 'bg-white text-aviation-primary shadow-lg transform scale-105' 
+                      : 'text-blue-100 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  📚 Questions
                 </button>
                 <button
                   onClick={() => setCurrentView('flightplan')}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
                     currentView === 'flightplan' 
-                      ? 'bg-white text-aviation-primary shadow-sm' 
-                      : 'text-blue-100 hover:text-white'
+                      ? 'bg-white text-aviation-primary shadow-lg transform scale-105' 
+                      : 'text-blue-100 hover:text-white hover:bg-white/10'
                   }`}
                 >
-                  Flight Plan
+                  🛩️ Flight Plan
                 </button>
                 <button
                   onClick={() => setCurrentView('notes')}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
                     currentView === 'notes' 
-                      ? 'bg-white text-aviation-primary shadow-sm' 
-                      : 'text-blue-100 hover:text-white'
+                      ? 'bg-white text-aviation-primary shadow-lg transform scale-105' 
+                      : 'text-blue-100 hover:text-white hover:bg-white/10'
                   }`}
                 >
-                  Notes
+                  📝 Notes
                 </button>
-              </div>
+              </nav>
 
-              {/* User Info */}
+              {/* User Status */}
               {user ? (
-                <div className="hidden md:flex items-center space-x-2 text-sm">
-                  <span className="text-blue-100">{user.email}</span>
-                  <button
-                    onClick={signOut}
-                    className="underline decoration-white/40 hover:decoration-white"
-                  >
-                    Sign Out
-                  </button>
+                <div className="hidden md:flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 border border-white/20">
+                  <div className="h-6 w-6 bg-aviation-accent rounded-full flex items-center justify-center">
+                    <span className="text-xs text-white font-bold">{user.email?.charAt(0).toUpperCase()}</span>
+                  </div>
+                  <div className="text-sm">
+                    <div className="text-white font-medium">{user.email}</div>
+                    <button
+                      onClick={signOut}
+                      className="text-blue-200 hover:text-white text-xs underline decoration-white/40 hover:decoration-white"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <button
                   onClick={() => setShowAuthModal(true)}
-                  className="text-blue-100 hover:text-white text-sm underline"
+                  className="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium border border-white/20 transition-all duration-200 hover:scale-105"
                 >
-                  Sign In
+                  🔐 Sign In
                 </button>
               )}
               
-              <div className="hidden sm:flex items-center text-sm bg-white/10 rounded-md px-2 py-1">
-                <span className="font-medium">{metrics.correctAnswers}</span>
-                <span className="text-blue-100 mx-1">/</span>
-                <span>{metrics.answeredQuestions}</span>
-                <span className="text-blue-100 ml-1">correct</span>
+              {/* Progress Indicator */}
+              <div className="hidden sm:flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2 border border-white/20">
+                <div className="text-center">
+                  <div className="text-white font-bold text-lg">{metrics.correctAnswers}</div>
+                  <div className="text-blue-200 text-xs">Correct</div>
+                </div>
+                <div className="text-blue-200 text-2xl">/</div>
+                <div className="text-center">
+                  <div className="text-white font-bold text-lg">{metrics.answeredQuestions}</div>
+                  <div className="text-blue-200 text-xs">Answered</div>
+                </div>
               </div>
               
-              <div className="flex items-center space-x-2 relative">
+              {/* Toolbar */}
+              <div className="flex items-center space-x-2">
                 {studyMode === 'exam' && sessionProgress.examEndTime && (
                   <ExamTimer
                     endTime={sessionProgress.examEndTime}
                     onExpire={() => alert('Time is up! Please submit your answers.')}
                   />
                 )}
-                <button
-                  onClick={() => setShowDashboard(true)}
-                  className="text-blue-100 hover:text-white text-sm"
-                  title="Performance Analytics"
-                >
-                  📊
-                </button>
                 
-                <button
-                  onClick={() => setShowSettings(true)}
-                  className="text-blue-100 hover:text-white text-sm"
-                  title="Settings"
-                >
-                  ⚙️
-                </button>
-                
-                <button
-                  onClick={() => setShowCalculator(true)}
-                  className="text-blue-100 hover:text-white text-sm"
-                  title="Open calculator"
-                >
-                  🧮
-                </button>
+                <div className="flex items-center space-x-1 bg-white/10 backdrop-blur-sm rounded-lg p-1 border border-white/20">
+                  <button
+                    onClick={() => setShowDashboard(true)}
+                    className="p-2 rounded-md text-blue-100 hover:text-white hover:bg-white/10 transition-all duration-200"
+                    title="Performance Analytics"
+                  >
+                    📊
+                  </button>
+                  
+                  <button
+                    onClick={() => setShowSettings(true)}
+                    className="p-2 rounded-md text-blue-100 hover:text-white hover:bg-white/10 transition-all duration-200"
+                    title="Settings"
+                  >
+                    ⚙️
+                  </button>
+                  
+                  <button
+                    onClick={() => setShowCalculator(true)}
+                    className="p-2 rounded-md text-blue-100 hover:text-white hover:bg-white/10 transition-all duration-200"
+                    title="Open calculator"
+                  >
+                    🧮
+                  </button>
 
-                <button
-                  onClick={() => setShowLegend(prev => !prev)}
-                  className="text-blue-100 hover:text-white text-sm"
-                  title="Flight plan legend"
-                >
-                  ℹ️
-                </button>
+                  <button
+                    onClick={() => setShowLegend(prev => !prev)}
+                    className="p-2 rounded-md text-blue-100 hover:text-white hover:bg-white/10 transition-all duration-200"
+                    title="Flight plan legend"
+                  >
+                    ℹ️
+                  </button>
+                </div>
 
                 {showLegend && (
                   <LegendPopover onClose={() => setShowLegend(false)} />
                 )}
 
+                {/* Theme Selector */}
                 <div className="relative">
                   <select
                     aria-label="Theme"
                     value={theme}
                     onChange={(e) => setTheme(e.target.value as any)}
-                    className="text-black px-2 py-1.5 rounded-md text-sm"
+                    className="bg-white/10 backdrop-blur-sm text-white border border-white/20 px-3 py-2 rounded-lg text-sm appearance-none cursor-pointer hover:bg-white/20 transition-all duration-200"
                     title={`Theme (${resolvedTheme})`}
                   >
-                    <option value="system">System</option>
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
+                    <option value="system" className="text-gray-800">🌓 System</option>
+                    <option value="light" className="text-gray-800">☀️ Light</option>
+                    <option value="dark" className="text-gray-800">🌙 Dark</option>
                   </select>
                 </div>
                 
+                {/* Study Mode Selector */}
                 <select
                   value={studyMode}
                   onChange={(e) => setStudyMode(e.target.value as StudyMode)}
-                  className="text-black px-2 py-1.5 rounded-md text-sm"
+                  className="bg-white/10 backdrop-blur-sm text-white border border-white/20 px-3 py-2 rounded-lg text-sm appearance-none cursor-pointer hover:bg-white/20 transition-all duration-200"
                 >
-                  <option value="practice">Practice Mode</option>
-                  <option value="exam">Exam Mode</option>
+                  <option value="practice" className="text-gray-800">🎯 Practice</option>
+                  <option value="exam" className="text-gray-800">📝 Exam</option>
                 </select>
               </div>
             </div>
@@ -418,54 +464,64 @@ const EnhancedFlightPlanningApp: React.FC = () => {
 
       {/* Navigation Bar - Only show for questions view */}
       {currentView === 'questions' && (
-        <nav className="bg-white border-b shadow-sm">
-          <div className="max-w-6xl mx-auto px-6 py-3">
+        <nav className="bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+          <div className="max-w-7xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <select
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value as QuestionCategory | 'all')}
-                  className="aviation-input text-sm"
-                >
-                  <option value="all">All Categories</option>
-                  {Object.entries(questionCategories).map(([key, label]) => (
-                    <option key={key} value={key}>{label}</option>
-                  ))}
-                </select>
-                
-                <div className="text-sm text-gray-600">
-                  Question <strong>{currentQuestionIndex + 1}</strong> of <strong>{filteredQuestions.length}</strong>
+              <div className="flex items-center space-x-6">
+                <div className="flex items-center space-x-3">
+                  <select
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value as QuestionCategory | 'all')}
+                    className="aviation-input text-sm bg-white border-gray-300 focus:border-aviation-primary focus:ring-aviation-primary/20"
+                  >
+                    <option value="all">📚 All Categories</option>
+                    {Object.entries(questionCategories).map(([key, label]) => (
+                      <option key={key} value={key}>{label}</option>
+                    ))}
+                  </select>
+                  
+                  <div className="flex items-center space-x-2 text-sm text-gray-700">
+                    <span className="font-medium">Question</span>
+                    <span className="bg-aviation-primary text-white px-3 py-1 rounded-lg font-bold">
+                      {currentQuestionIndex + 1}
+                    </span>
+                    <span className="text-gray-500">of</span>
+                    <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-lg font-bold">
+                      {filteredQuestions.length}
+                    </span>
+                  </div>
                 </div>
 
                 {user && (
-                  <div className="text-xs text-gray-500">
-                    Synced to cloud ☁️
+                  <div className="flex items-center space-x-2 text-xs text-gray-500 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+                    <span>☁️</span>
+                    <span>Synced to cloud</span>
                   </div>
                 )}
               </div>
               
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <button
-                  className="aviation-button-secondary"
+                  className="aviation-button-secondary disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => goToQuestion(currentQuestionIndex - 1)}
                   disabled={currentQuestionIndex === 0}
                 >
-                  Previous
+                  ← Previous
                 </button>
                 
                 <button
-                  className="aviation-button-secondary"
+                  className="aviation-button-secondary disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={() => goToQuestion(currentQuestionIndex + 1)}
                   disabled={currentQuestionIndex === filteredQuestions.length - 1}
                 >
-                  Next
+                  Next →
                 </button>
                 
                 <button
-                  className="text-sm text-red-600 hover:text-red-800 ml-4"
+                  className="bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
                   onClick={resetSession}
                 >
-                  Reset Session
+                  🔄 Reset Session
                 </button>
               </div>
             </div>
@@ -496,7 +552,165 @@ const EnhancedFlightPlanningApp: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-grow">
-        {currentView === 'questions' ? (
+        {currentView === 'menu' ? (
+          <div className="max-w-6xl mx-auto p-6">
+            <div className="aviation-card p-8">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to ATPL Flight Planning</h2>
+                <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                  Your comprehensive study tool for ATPL flight planning exams. Choose your starting point below.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                {/* Questions Section */}
+                <div className="aviation-card p-6 border-2 border-aviation-primary/20 hover:border-aviation-primary/40 transition-all duration-300 hover:shadow-lg">
+                  <div className="text-center mb-4">
+                    <div className="text-4xl mb-3">📚</div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Practice Questions</h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      Test your knowledge with multiple choice and short answer questions
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Total Questions:</span>
+                      <span className="font-semibold text-gray-900">{questions.length}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Categories:</span>
+                      <span className="font-semibold text-gray-900">{Object.keys(questionCategories).length}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Your Progress:</span>
+                      <span className="font-semibold text-aviation-primary">{userAnswers.length} answered</span>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => setCurrentView('questions')}
+                    className="w-full aviation-button"
+                  >
+                    Start Practicing
+                  </button>
+                </div>
+
+                {/* Flight Plan Section */}
+                <div className="aviation-card p-6 border-2 border-aviation-primary/20 hover:border-aviation-primary/40 transition-all duration-300 hover:shadow-lg">
+                  <div className="text-center mb-4">
+                    <div className="text-4xl mb-3">🛩️</div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Flight Planning Sheet</h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      Interactive flight planning with manual calculations for learning
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                      Manual GS & ETI entry
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                      Weight calculations
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                      Export to CSV
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => setCurrentView('flightplan')}
+                    className="w-full aviation-button"
+                  >
+                    Open Flight Plan
+                  </button>
+                </div>
+
+                {/* Notes Section */}
+                <div className="aviation-card p-6 border-2 border-aviation-primary/20 hover:border-aviation-primary/40 transition-all duration-300 hover:shadow-lg">
+                  <div className="text-center mb-4">
+                    <div className="text-4xl mb-3">📝</div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Course Notes</h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      Access course materials and import your own notes via OCR
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                      PDF course materials
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                      OCR text extraction
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                      Personal notes
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => setCurrentView('notes')}
+                    className="w-full aviation-button"
+                  >
+                    View Notes
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
+                  <div className="text-2xl font-bold text-green-700">{metrics.correctAnswers}</div>
+                  <div className="text-sm text-green-600">Correct Answers</div>
+                </div>
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
+                  <div className="text-2xl font-bold text-blue-700">{metrics.answeredQuestions}</div>
+                  <div className="text-sm text-blue-600">Questions Answered</div>
+                </div>
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
+                  <div className="text-2xl font-bold text-purple-700">{metrics.accuracy.toFixed(1)}%</div>
+                  <div className="text-sm text-purple-600">Accuracy</div>
+                </div>
+                <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg border border-orange-200">
+                  <div className="text-2xl font-bold text-orange-700">{Math.floor((Date.now() - sessionStartTime.getTime()) / 60000)}m</div>
+                  <div className="text-sm text-orange-600">Session Time</div>
+                </div>
+              </div>
+
+              {/* Recent Activity */}
+              {userAnswers.length > 0 && (
+                <div className="aviation-card p-6 bg-gray-50">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+                  <div className="space-y-2">
+                    {userAnswers.slice(-3).reverse().map((answer, index) => {
+                      const question = questions.find(q => q.id === answer.questionId);
+                      return (
+                        <div key={index} className="flex items-center justify-between p-3 bg-white rounded-lg border">
+                          <div className="flex items-center space-x-3">
+                            <div className={`w-3 h-3 rounded-full ${answer.isCorrect ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                            <div>
+                              <div className="font-medium text-gray-900">{question?.title || 'Unknown Question'}</div>
+                              <div className="text-sm text-gray-500">{Math.round(answer.timeSpent)}s</div>
+                            </div>
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {new Date(answer.timestamp).toLocaleTimeString()}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : currentView === 'questions' ? (
           <QuestionDisplay
             question={currentQuestion}
             studyMode={studyMode}

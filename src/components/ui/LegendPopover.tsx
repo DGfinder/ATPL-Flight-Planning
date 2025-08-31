@@ -31,7 +31,8 @@ const LegendPopover: React.FC<LegendPopoverProps> = ({ onClose }) => {
           </div>
         </div>
         <div className="mt-3 text-xs text-gray-500">
-          * Auto-calculated: GS, ETI, EMZW, END ZONE WT, PLAN FUEL REM<br/>
+          * Manual entry for learning: GS, ETI, EMZW, END ZONE WT<br/>
+          * Students can practice calculations and learn from mistakes<br/>
           * E6B calculations use proper trigonometry (sin/cos) for wind triangles
         </div>
       </div>
