@@ -9,14 +9,16 @@ export default {
     extend: {
       colors: {
         aviation: {
-          // Aviation Theory Services brand colors
-          primary: '#6EC1E4',    // ATS Primary Blue
-          secondary: '#54595F',   // ATS Secondary Gray  
-          accent: '#61CE70',      // ATS Accent Green
-          navy: '#262E5B',        // ATS Navy Theme
-          text: '#7A7A7A',        // ATS Text Gray
-          light: '#E8F4FD',       // Light blue tint
-          dark: '#1A1F2E'         // Dark navy
+          // Sophisticated palette matching favicon.png
+          primary: '#1e3a8a',     // Deep navy blue (from logo background)
+          secondary: '#dc2626',   // Professional red (from logo accent)
+          accent: '#f8fafc',      // Clean white/light gray
+          navy: '#0f172a',        // Darker navy for depth
+          text: '#334155',        // Professional text gray
+          light: '#f1f5f9',       // Subtle light backgrounds
+          dark: '#0f172a',        // Deep navy for dark elements
+          muted: '#64748b',       // Muted gray for secondary text
+          border: '#e2e8f0'       // Subtle borders
         },
         gray: {
           50: '#f9fafb',

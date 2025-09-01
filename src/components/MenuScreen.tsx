@@ -54,7 +54,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
             <div className="flex-shrink-0">
               {!sidebarCollapsed ? (
                 <img 
-                  src="/logo.webp" 
+                  src="/favicon.png" 
                   alt="Aviation Theory Services"
                   className="h-8 w-auto object-contain"
                   onError={(e) => {

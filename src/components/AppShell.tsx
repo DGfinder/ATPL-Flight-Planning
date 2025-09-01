@@ -233,14 +233,14 @@ const AppShell: React.FC = () => {
         <div className="flex items-center justify-between p-4 border-b border-slate-100">
           <div className="flex items-center space-x-3">
             <img 
-              src="/logo.webp" 
+              src="/favicon.png" 
               alt="Aviation Theory Services"
               className={`${sidebarCollapsed ? 'h-8' : 'h-10'} w-auto object-contain transition-all duration-300`}
             />
             {!sidebarCollapsed && (
               <div>
-                <div className="font-bold text-slate-900 text-sm">Aviation Theory Services</div>
-                <div className="text-xs text-slate-500">ATPL Training Platform</div>
+                <div className="font-bold text-aviation-text text-sm">Aviation Theory Services</div>
+                <div className="text-xs text-aviation-muted">ATPL Training Platform</div>
               </div>
             )}
           </div>
@@ -443,7 +443,7 @@ const AppShell: React.FC = () => {
           ) : (
             <button
               onClick={() => setShowAuthModal(true)}
-              className="w-full bg-gradient-to-r from-aviation-primary to-aviation-navy hover:from-blue-500 hover:to-aviation-navy text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+              className="w-full bg-gradient-to-r from-aviation-primary to-aviation-secondary hover:from-aviation-navy hover:to-aviation-secondary text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
             >
               {sidebarCollapsed ? (
                 <svg className="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -556,8 +556,8 @@ const AppShell: React.FC = () => {
                     style={{ animationDelay: '100ms' }}
                   >
                     <div className="relative mb-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-aviation-primary/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-primary/20 group-hover:to-aviation-primary/10 transition-all duration-300">
-                        <svg className="w-7 h-7 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-16 h-16 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
+                        <svg className="w-7 h-7 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                       </div>
@@ -583,8 +583,8 @@ const AppShell: React.FC = () => {
                     style={{ animationDelay: '200ms' }}
                   >
                     <div className="relative mb-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-aviation-primary/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-primary/20 group-hover:to-aviation-primary/10 transition-all duration-300">
-                        <svg className="w-7 h-7 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-16 h-16 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
+                        <svg className="w-7 h-7 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
@@ -626,8 +626,8 @@ const AppShell: React.FC = () => {
                     style={{ animationDelay: '300ms' }}
                   >
                     <div className="relative mb-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-aviation-accent/10 to-aviation-accent/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-accent/20 group-hover:to-aviation-accent/10 transition-all duration-300">
-                        <svg className="w-7 h-7 text-aviation-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-16 h-16 bg-gradient-to-br from-aviation-secondary/10 to-aviation-secondary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-secondary/20 group-hover:to-aviation-secondary/10 transition-all duration-300">
+                        <svg className="w-7 h-7 text-aviation-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
@@ -663,8 +663,8 @@ const AppShell: React.FC = () => {
                     style={{ animationDelay: '400ms' }}
                   >
                     <div className="relative mb-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-aviation-primary/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-primary/20 group-hover:to-aviation-primary/10 transition-all duration-300">
-                        <svg className="w-7 h-7 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-16 h-16 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
+                        <svg className="w-7 h-7 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                         </svg>
                       </div>
@@ -693,8 +693,8 @@ const AppShell: React.FC = () => {
                       style={{ animationDelay: '500ms' }}
                     >
                       <div className="relative mb-6">
-                        <div className="w-16 h-16 bg-gradient-to-br from-aviation-primary/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-primary/20 group-hover:to-aviation-primary/10 transition-all duration-300">
-                          <svg className="w-7 h-7 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-16 h-16 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
+                          <svg className="w-7 h-7 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                           </svg>
                         </div>
@@ -733,11 +733,11 @@ const AppShell: React.FC = () => {
                             <div className="flex items-center space-x-4 flex-1 min-w-0">
                               <div className={`relative w-10 h-10 rounded-xl flex items-center justify-center ${
                                 answer.isCorrect 
-                                  ? 'bg-gradient-to-br from-aviation-accent/10 to-aviation-accent/5' 
+                                  ? 'bg-gradient-to-br from-aviation-secondary/10 to-aviation-secondary/5' 
                                   : 'bg-gradient-to-br from-red-50 to-red-25'
                               }`}>
                                 {answer.isCorrect ? (
-                                  <svg className="w-5 h-5 text-aviation-accent" fill="currentColor" viewBox="0 0 20 20">
+                                  <svg className="w-5 h-5 text-aviation-secondary" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                   </svg>
                                 ) : (
@@ -772,7 +772,7 @@ const AppShell: React.FC = () => {
 
                 {/* Getting Started */}
                 {!hasProgress && (
-                  <div className="bg-gradient-to-r from-aviation-primary to-aviation-navy rounded-2xl p-8 text-white text-center">
+                  <div className="bg-gradient-to-r from-aviation-navy to-aviation-primary rounded-2xl p-8 text-white text-center">
                     <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
                       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -821,7 +821,7 @@ const AppShell: React.FC = () => {
           {currentView === 'exam' && (
             <div className="p-6">
               <div className="max-w-4xl mx-auto">
-                <div className="bg-gradient-to-r from-aviation-accent to-green-600 rounded-2xl p-8 text-white text-center mb-8">
+                <div className="bg-gradient-to-r from-aviation-secondary to-aviation-navy rounded-2xl p-8 text-white text-center mb-8">
                   <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
