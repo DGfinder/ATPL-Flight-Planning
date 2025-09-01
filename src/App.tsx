@@ -6,9 +6,9 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 
-// Placeholder components for other routes
+// Import actual page components
+import QuestionsPage from './pages/QuestionsPage';
 const NotesPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Course Notes</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
-const QuestionsPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Practice Questions</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
 const ExamPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Trial Exam</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
 const FlightPlanPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Flight Planning</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
 const AnalyticsPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Performance Analytics</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
@@ -19,7 +19,7 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            {/* Public routes */}
+            {/* Public login route */}
             <Route 
               path="/login" 
               element={
@@ -29,14 +29,10 @@ function App() {
               } 
             />
             
-            {/* Protected routes with layout */}
+            {/* Main app routes with layout - allow guest access */}
             <Route 
               path="/" 
-              element={
-                <ProtectedRoute>
-                  <Layout />
-                </ProtectedRoute>
-              }
+              element={<Layout />}
             >
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<DashboardPage />} />

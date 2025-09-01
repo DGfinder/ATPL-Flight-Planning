@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Question, UserAnswer, QuestionCategory, PerformanceMetrics } from '../types';
 import { sampleQuestions, questionCategories } from '../data/questions';
 import { storageService } from '../utils/localStorage';
@@ -7,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   
   // Core state
   const [questions] = useState<Question[]>(sampleQuestions);
@@ -126,7 +128,10 @@ const DashboardPage: React.FC = () => {
       {/* Quick Actions Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Course Notes */}
-        <div className="aviation-card p-6 group hover-lift cursor-pointer">
+        <div 
+          className="aviation-card p-6 group hover-lift cursor-pointer"
+          onClick={() => navigate('/notes')}
+        >
           <div className="relative mb-6">
             <div className="w-16 h-16 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
               <svg className="w-7 h-7 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +150,10 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Practice Questions */}
-        <div className="aviation-card p-6 group hover-lift cursor-pointer">
+        <div 
+          className="aviation-card p-6 group hover-lift cursor-pointer"
+          onClick={() => navigate('/questions')}
+        >
           <div className="relative mb-6">
             <div className="w-16 h-16 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
               <svg className="w-7 h-7 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +172,10 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Trial Exam */}
-        <div className="aviation-card p-6 group hover-lift cursor-pointer">
+        <div 
+          className="aviation-card p-6 group hover-lift cursor-pointer"
+          onClick={() => navigate('/exam')}
+        >
           <div className="relative mb-6">
             <div className="w-16 h-16 bg-gradient-to-br from-aviation-secondary/10 to-aviation-secondary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-secondary/20 group-hover:to-aviation-secondary/10 transition-all duration-300">
               <svg className="w-7 h-7 text-aviation-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -188,7 +199,10 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Flight Planning */}
-        <div className="aviation-card p-6 group hover-lift cursor-pointer">
+        <div 
+          className="aviation-card p-6 group hover-lift cursor-pointer"
+          onClick={() => navigate('/flight-plan')}
+        >
           <div className="relative mb-6">
             <div className="w-16 h-16 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
               <svg className="w-7 h-7 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -207,7 +221,10 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Analytics */}
-        <div className="aviation-card p-6 group hover-lift cursor-pointer">
+        <div 
+          className="aviation-card p-6 group hover-lift cursor-pointer"
+          onClick={() => navigate('/analytics')}
+        >
           <div className="relative mb-6">
             <div className="w-16 h-16 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
               <svg className="w-7 h-7 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
