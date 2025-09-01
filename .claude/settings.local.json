@@ -18,7 +18,9 @@
       "Bash(cp:*)",
       "Bash(find:*)",
       "Bash(pkill:*)",
-      "Bash(npm run typecheck:*)"
+      "Bash(npm run typecheck:*)",
+      "Bash(rm:*)",
+      "Bash(timeout 15 npm run dev)"
     ],
     "deny": [],
     "ask": []
