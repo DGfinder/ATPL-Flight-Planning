@@ -259,16 +259,20 @@ const AppShell: React.FC = () => {
         <nav className="flex-1 px-3 py-4 space-y-1">
           <button
             onClick={() => setCurrentView('dashboard')}
-            className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
+            className={`sidebar-nav-item w-full flex items-center space-x-3 px-4 py-3 transition-all duration-200 group ${
               currentView === 'dashboard' 
-                ? 'bg-blue-50 text-blue-700 shadow-sm' 
+                ? 'active bg-aviation-light text-aviation-primary shadow-sm' 
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className={`p-1.5 rounded-md transition-colors ${currentView === 'dashboard' ? 'bg-blue-100' : 'bg-slate-100 group-hover:bg-slate-200'}`}>
+            <div className={`p-2 rounded-xl transition-colors ${
+              currentView === 'dashboard' 
+                ? 'bg-aviation-primary/10 text-aviation-primary' 
+                : 'bg-slate-100 group-hover:bg-aviation-primary/10 text-slate-600 group-hover:text-aviation-primary'
+            }`}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v14l-8-14z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v14l-8-14z" />
               </svg>
             </div>
             {!sidebarCollapsed && (
@@ -281,13 +285,17 @@ const AppShell: React.FC = () => {
 
           <button
             onClick={() => setCurrentView('notes')}
-            className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
+            className={`sidebar-nav-item w-full flex items-center space-x-3 px-4 py-3 transition-all duration-200 group ${
               currentView === 'notes' 
-                ? 'bg-aviation-light text-aviation-primary shadow-sm' 
+                ? 'active bg-aviation-light text-aviation-primary shadow-sm' 
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className={`p-1.5 rounded-md transition-colors ${currentView === 'notes' ? 'bg-aviation-primary/20' : 'bg-slate-100 group-hover:bg-slate-200'}`}>
+            <div className={`p-2 rounded-xl transition-colors ${
+              currentView === 'notes' 
+                ? 'bg-aviation-primary/10 text-aviation-primary' 
+                : 'bg-slate-100 group-hover:bg-aviation-primary/10 text-slate-600 group-hover:text-aviation-primary'
+            }`}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
@@ -302,15 +310,19 @@ const AppShell: React.FC = () => {
 
           <button
             onClick={() => setCurrentView('questions')}
-            className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
+            className={`sidebar-nav-item w-full flex items-center space-x-3 px-4 py-3 transition-all duration-200 group ${
               currentView === 'questions' 
-                ? 'bg-aviation-light text-aviation-primary shadow-sm' 
+                ? 'active bg-aviation-light text-aviation-primary shadow-sm' 
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className={`p-1.5 rounded-md transition-colors ${currentView === 'questions' ? 'bg-aviation-primary/20' : 'bg-slate-100 group-hover:bg-slate-200'}`}>
+            <div className={`p-2 rounded-xl transition-colors ${
+              currentView === 'questions' 
+                ? 'bg-aviation-primary/10 text-aviation-primary' 
+                : 'bg-slate-100 group-hover:bg-aviation-primary/10 text-slate-600 group-hover:text-aviation-primary'
+            }`}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
             {!sidebarCollapsed && (
@@ -323,13 +335,17 @@ const AppShell: React.FC = () => {
 
           <button
             onClick={() => setCurrentView('exam')}
-            className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
+            className={`sidebar-nav-item w-full flex items-center space-x-3 px-4 py-3 transition-all duration-200 group ${
               currentView === 'exam' 
-                ? 'bg-green-50 text-aviation-accent shadow-sm' 
+                ? 'active bg-green-50 text-aviation-accent shadow-sm' 
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className={`p-1.5 rounded-md transition-colors ${currentView === 'exam' ? 'bg-aviation-accent/20' : 'bg-slate-100 group-hover:bg-slate-200'}`}>
+            <div className={`p-2 rounded-xl transition-colors ${
+              currentView === 'exam' 
+                ? 'bg-aviation-accent/10 text-aviation-accent' 
+                : 'bg-slate-100 group-hover:bg-aviation-accent/10 text-slate-600 group-hover:text-aviation-accent'
+            }`}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -344,13 +360,17 @@ const AppShell: React.FC = () => {
 
           <button
             onClick={() => setCurrentView('flightplan')}
-            className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
+            className={`sidebar-nav-item w-full flex items-center space-x-3 px-4 py-3 transition-all duration-200 group ${
               currentView === 'flightplan' 
-                ? 'bg-aviation-light text-aviation-primary shadow-sm' 
+                ? 'active bg-aviation-light text-aviation-primary shadow-sm' 
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
             }`}
           >
-            <div className={`p-1.5 rounded-md transition-colors ${currentView === 'flightplan' ? 'bg-aviation-primary/20' : 'bg-slate-100 group-hover:bg-slate-200'}`}>
+            <div className={`p-2 rounded-xl transition-colors ${
+              currentView === 'flightplan' 
+                ? 'bg-aviation-primary/10 text-aviation-primary' 
+                : 'bg-slate-100 group-hover:bg-aviation-primary/10 text-slate-600 group-hover:text-aviation-primary'
+            }`}>
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
               </svg>
@@ -366,13 +386,17 @@ const AppShell: React.FC = () => {
           {hasProgress && (
             <button
               onClick={() => setCurrentView('analytics')}
-              className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${
+              className={`sidebar-nav-item w-full flex items-center space-x-3 px-4 py-3 transition-all duration-200 group ${
                 currentView === 'analytics' 
-                  ? 'bg-aviation-light text-aviation-primary shadow-sm' 
+                  ? 'active bg-aviation-light text-aviation-primary shadow-sm' 
                   : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
-              <div className={`p-1.5 rounded-md transition-colors ${currentView === 'analytics' ? 'bg-aviation-primary/20' : 'bg-slate-100 group-hover:bg-slate-200'}`}>
+              <div className={`p-2 rounded-xl transition-colors ${
+                currentView === 'analytics' 
+                  ? 'bg-aviation-primary/10 text-aviation-primary' 
+                  : 'bg-slate-100 group-hover:bg-aviation-primary/10 text-slate-600 group-hover:text-aviation-primary'
+              }`}>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
@@ -525,109 +549,218 @@ const AppShell: React.FC = () => {
                 </div>
 
                 {/* Quick Actions */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
                   <button
                     onClick={() => setCurrentView('notes')}
-                    className="group bg-white rounded-xl p-6 border border-slate-200 hover:border-aviation-primary hover:shadow-lg transition-all duration-300 text-left"
+                    className="group aviation-card hover-lift p-8 text-left scale-in"
+                    style={{ animationDelay: '100ms' }}
                   >
-                    <div className="w-12 h-12 bg-aviation-light rounded-xl flex items-center justify-center mb-4 group-hover:bg-aviation-primary/20 transition-colors">
-                      <svg className="w-6 h-6 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <div className="relative mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-aviation-primary/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-primary/20 group-hover:to-aviation-primary/10 transition-all duration-300">
+                        <svg className="w-7 h-7 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-aviation-accent rounded-full flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Course Notes</h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">Study materials, OCR tools, and comprehensive course resources</p>
+                    <div className="mt-4 flex items-center text-xs font-medium text-aviation-primary">
+                      <span>Start Learning</span>
+                      <svg className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </div>
-                    <h3 className="font-semibold text-slate-900 mb-1">Course Notes</h3>
-                    <p className="text-sm text-slate-600">Study materials & OCR</p>
                   </button>
 
                   <button
                     onClick={() => setCurrentView('questions')}
-                    className="group bg-white rounded-xl p-6 border border-slate-200 hover:border-aviation-primary hover:shadow-lg transition-all duration-300 text-left"
+                    className="group aviation-card hover-lift p-8 text-left scale-in"
+                    style={{ animationDelay: '200ms' }}
                   >
-                    <div className="w-12 h-12 bg-aviation-light rounded-xl flex items-center justify-center mb-4 group-hover:bg-aviation-primary/20 transition-colors">
-                      <svg className="w-6 h-6 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                    <div className="relative mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-aviation-primary/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-primary/20 group-hover:to-aviation-primary/10 transition-all duration-300">
+                        <svg className="w-7 h-7 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      {hasProgress && (
+                        <div className="absolute -top-2 -right-2 bg-aviation-primary text-white text-xs font-bold px-2 py-1 rounded-full">
+                          {metrics.answeredQuestions}
+                        </div>
+                      )}
                     </div>
-                    <h3 className="font-semibold text-slate-900 mb-1">Practice Questions</h3>
-                    <p className="text-sm text-slate-600 mb-2">{questions.length} questions available</p>
+                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Practice Questions</h3>
+                    <p className="text-sm text-slate-600 leading-relaxed mb-3">
+                      {questions.length} comprehensive questions to test your knowledge
+                    </p>
                     {hasProgress && (
-                      <div className="text-xs text-aviation-primary font-medium">
-                        {metrics.answeredQuestions} answered
+                      <div className="mb-3">
+                        <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
+                          <span>Progress</span>
+                          <span>{Math.round((metrics.answeredQuestions / questions.length) * 100)}%</span>
+                        </div>
+                        <div className="w-full bg-slate-100 rounded-full h-1.5">
+                          <div 
+                            className="bg-aviation-primary h-1.5 rounded-full transition-all duration-500"
+                            style={{ width: `${(metrics.answeredQuestions / questions.length) * 100}%` }}
+                          />
+                        </div>
                       </div>
                     )}
+                    <div className="flex items-center text-xs font-medium text-aviation-primary">
+                      <span>Continue Practice</span>
+                      <svg className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
                   </button>
 
                   <button
                     onClick={() => setCurrentView('exam')}
-                    className="group bg-white rounded-xl p-6 border border-slate-200 hover:border-aviation-accent hover:shadow-lg transition-all duration-300 text-left"
+                    className="group aviation-card hover-lift p-8 text-left scale-in"
+                    style={{ animationDelay: '300ms' }}
                   >
-                    <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-aviation-accent/20 transition-colors">
-                      <svg className="w-6 h-6 text-aviation-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                    <div className="relative mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-aviation-accent/10 to-aviation-accent/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-accent/20 group-hover:to-aviation-accent/10 transition-all duration-300">
+                        <svg className="w-7 h-7 text-aviation-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      </div>
                     </div>
-                    <h3 className="font-semibold text-slate-900 mb-1">Trial Exam</h3>
-                    <p className="text-sm text-slate-600">Timed practice session</p>
+                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Trial Exam</h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      Timed examination under real ATPL conditions
+                    </p>
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="flex items-center text-xs text-slate-500">
+                        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>120 minutes</span>
+                      </div>
+                      <div className="flex items-center text-xs font-medium text-aviation-accent">
+                        <span>Take Exam</span>
+                        <svg className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
                   </button>
 
                   <button
                     onClick={() => setCurrentView('flightplan')}
-                    className="group bg-white rounded-xl p-6 border border-slate-200 hover:border-aviation-primary hover:shadow-lg transition-all duration-300 text-left"
+                    className="group aviation-card hover-lift p-8 text-left scale-in"
+                    style={{ animationDelay: '400ms' }}
                   >
-                    <div className="w-12 h-12 bg-aviation-light rounded-xl flex items-center justify-center mb-4 group-hover:bg-aviation-primary/20 transition-colors">
-                      <svg className="w-6 h-6 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    <div className="relative mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-aviation-primary/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-primary/20 group-hover:to-aviation-primary/10 transition-all duration-300">
+                        <svg className="w-7 h-7 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                        </svg>
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-slate-900 rounded-full flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Flight Planning</h3>
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      Interactive worksheets for practical flight planning
+                    </p>
+                    <div className="mt-4 flex items-center text-xs font-medium text-aviation-primary">
+                      <span>Start Planning</span>
+                      <svg className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </div>
-                    <h3 className="font-semibold text-slate-900 mb-1">Flight Planning</h3>
-                    <p className="text-sm text-slate-600">Interactive worksheets</p>
                   </button>
 
                   {hasProgress && (
                     <button
                       onClick={() => setCurrentView('analytics')}
-                      className="group bg-white rounded-xl p-6 border border-slate-200 hover:border-aviation-primary hover:shadow-lg transition-all duration-300 text-left"
+                      className="group aviation-card hover-lift p-8 text-left scale-in"
+                      style={{ animationDelay: '500ms' }}
                     >
-                      <div className="w-12 h-12 bg-aviation-light rounded-xl flex items-center justify-center mb-4 group-hover:bg-aviation-primary/20 transition-colors">
-                        <svg className="w-6 h-6 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      <div className="relative mb-6">
+                        <div className="w-16 h-16 bg-gradient-to-br from-aviation-primary/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-primary/20 group-hover:to-aviation-primary/10 transition-all duration-300">
+                          <svg className="w-7 h-7 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                        </div>
+                        <div className="absolute -top-2 -right-2 bg-aviation-accent text-white text-xs font-bold px-2 py-1 rounded-full">
+                          {Math.round(metrics.accuracy)}%
+                        </div>
+                      </div>
+                      <h3 className="text-lg font-semibold text-slate-900 mb-2">Analytics</h3>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        Detailed performance insights and progress tracking
+                      </p>
+                      <div className="mt-4 flex items-center text-xs font-medium text-aviation-primary">
+                        <span>View Analytics</span>
+                        <svg className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </div>
-                      <h3 className="font-semibold text-slate-900 mb-1">Analytics</h3>
-                      <p className="text-sm text-slate-600">Performance insights</p>
                     </button>
                   )}
                 </div>
 
                 {/* Recent Activity */}
                 {hasProgress && userAnswers.length > 0 && (
-                  <div className="bg-white rounded-xl border border-slate-200 p-6">
-                    <h3 className="font-semibold text-slate-900 mb-4">Recent Activity</h3>
-                    <div className="space-y-3">
+                  <div className="aviation-card-elevated p-8 fade-in" style={{ animationDelay: '600ms' }}>
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-xl font-semibold text-slate-900">Recent Activity</h3>
+                      <div className="w-2 h-2 bg-aviation-accent rounded-full animate-pulse"></div>
+                    </div>
+                    <div className="space-y-4">
                       {userAnswers.slice(-5).reverse().map((answer, index) => {
                         const question = questions.find(q => q.id === answer.questionId);
                         const categoryName = question?.category ? questionCategories[question.category] : 'Unknown';
                         
                         return (
-                          <div key={index} className="flex items-center space-x-4 p-3 bg-slate-50 rounded-lg">
-                            <div className={`w-2 h-2 rounded-full ${answer.isCorrect ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                            <div className="flex-1 min-w-0">
-                              <div className="font-medium text-slate-900 text-sm truncate">
-                                {question?.title || 'Unknown Question'}
+                          <div key={index} className="group flex items-center justify-between p-4 bg-gradient-to-r from-slate-50/50 to-white rounded-xl border border-slate-100 hover:border-aviation-primary/20 hover:shadow-sm transition-all duration-200">
+                            <div className="flex items-center space-x-4 flex-1 min-w-0">
+                              <div className={`relative w-10 h-10 rounded-xl flex items-center justify-center ${
+                                answer.isCorrect 
+                                  ? 'bg-gradient-to-br from-aviation-accent/10 to-aviation-accent/5' 
+                                  : 'bg-gradient-to-br from-red-50 to-red-25'
+                              }`}>
+                                {answer.isCorrect ? (
+                                  <svg className="w-5 h-5 text-aviation-accent" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                ) : (
+                                  <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                  </svg>
+                                )}
                               </div>
-                              <div className="flex items-center space-x-3 mt-1">
-                                <span className="text-xs text-slate-500">{Math.round(answer.timeSpent)}s</span>
-                                <span className={`text-xs px-2 py-1 rounded-md ${
-                                  answer.isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                                }`}>
-                                  {answer.isCorrect ? 'Correct' : 'Incorrect'}
-                                </span>
-                                <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-md">
-                                  {categoryName}
-                                </span>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium text-slate-900 text-sm truncate mb-1">
+                                  {question?.title || 'Unknown Question'}
+                                </div>
+                                <div className="flex items-center space-x-3">
+                                  <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
+                                    {Math.round(answer.timeSpent)}s
+                                  </span>
+                                  <span className="text-xs px-2 py-1 bg-aviation-light text-aviation-primary rounded-md font-medium">
+                                    {categoryName}
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                            <div className="text-xs text-slate-500">
+                            <div className="text-xs text-slate-400 font-medium">
                               {new Date(answer.timestamp).toLocaleDateString()}
                             </div>
                           </div>
