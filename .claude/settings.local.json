@@ -22,7 +22,9 @@
       "Bash(rm:*)",
       "Bash(timeout 15 npm run dev)",
       "Bash(curl:*)",
-      "Bash(ss:*)"
+      "Bash(ss:*)",
+      "Bash(grep:*)",
+      "Bash(npm run preview:*)"
     ],
     "deny": [],
     "ask": []

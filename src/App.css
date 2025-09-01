@@ -1,42 +1,75 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Aviation Color Utilities - Fallback for Production */
+@layer utilities {
+  /* Aviation Primary Colors */
+  .text-aviation-primary { color: #1e3a8a !important; }
+  .bg-aviation-primary { background-color: #1e3a8a !important; }
+  .border-aviation-primary { border-color: #1e3a8a !important; }
+  
+  .text-aviation-secondary { color: #dc2626 !important; }
+  .bg-aviation-secondary { background-color: #dc2626 !important; }
+  .border-aviation-secondary { border-color: #dc2626 !important; }
+  
+  .text-aviation-accent { color: #f8fafc !important; }
+  .bg-aviation-accent { background-color: #f8fafc !important; }
+  .border-aviation-accent { border-color: #f8fafc !important; }
+  
+  .text-aviation-navy { color: #0f172a !important; }
+  .bg-aviation-navy { background-color: #0f172a !important; }
+  .border-aviation-navy { border-color: #0f172a !important; }
+  
+  .text-aviation-text { color: #334155 !important; }
+  .bg-aviation-text { background-color: #334155 !important; }
+  .border-aviation-text { border-color: #334155 !important; }
+  
+  .text-aviation-light { color: #f1f5f9 !important; }
+  .bg-aviation-light { background-color: #f1f5f9 !important; }
+  .border-aviation-light { border-color: #f1f5f9 !important; }
+  
+  .text-aviation-dark { color: #0f172a !important; }
+  .bg-aviation-dark { background-color: #0f172a !important; }
+  .border-aviation-dark { border-color: #0f172a !important; }
+  
+  .text-aviation-muted { color: #64748b !important; }
+  .bg-aviation-muted { background-color: #64748b !important; }
+  .border-aviation-muted { border-color: #64748b !important; }
+  
+  .text-aviation-border { color: #e2e8f0 !important; }
+  .bg-aviation-border { background-color: #e2e8f0 !important; }
+  .border-aviation-border { border-color: #e2e8f0 !important; }
+
+  /* Aviation Color Gradients */
+  .from-aviation-primary { --tw-gradient-from: #1e3a8a !important; }
+  .to-aviation-primary { --tw-gradient-to: #1e3a8a !important; }
+  .via-aviation-primary { --tw-gradient-via: #1e3a8a !important; }
+  
+  .from-aviation-secondary { --tw-gradient-from: #dc2626 !important; }
+  .to-aviation-secondary { --tw-gradient-to: #dc2626 !important; }
+  .via-aviation-secondary { --tw-gradient-via: #dc2626 !important; }
+
+  /* Aviation Color with Opacity */
+  .from-aviation-secondary\/10 { --tw-gradient-from: rgba(220, 38, 38, 0.1) !important; }
+  .to-aviation-secondary\/5 { --tw-gradient-to: rgba(220, 38, 38, 0.05) !important; }
+  .border-aviation-secondary\/20 { border-color: rgba(220, 38, 38, 0.2) !important; }
+  .bg-aviation-primary\/10 { background-color: rgba(30, 58, 138, 0.1) !important; }
+  .text-aviation-primary\/80 { color: rgba(30, 58, 138, 0.8) !important; }
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* CSS Loading Indicator */
+.css-loading-indicator {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #dc2626;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: monospace;
+  z-index: 9999;
+  display: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+/* Show indicator if aviation colors aren't working */
+body:not(.aviation-colors-loaded) .css-loading-indicator {
+  display: block;
 }

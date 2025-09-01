@@ -9,6 +9,7 @@ import DashboardPage from './pages/DashboardPage';
 // Development debugging components
 import CSSDebug from './components/debug/CSSDebug';
 import BuildStatus from './components/debug/BuildStatus';
+import CSSLoadingDiagnostic from './components/debug/CSSLoadingDiagnostic';
 
 // Import actual page components
 import QuestionsPage from './pages/QuestionsPage';
@@ -58,6 +59,9 @@ function App() {
               <CSSDebug />
             </>
           )}
+          
+          {/* CSS Loading Diagnostic - Always visible for debugging */}
+          <CSSLoadingDiagnostic enabled={true} />
         </Router>
       </AuthProvider>
     </ThemeProvider>
