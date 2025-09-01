@@ -116,13 +116,36 @@ export interface PerformanceMetrics {
 
 // Notes / Theory Types
 export type NoteTopicId =
-  | 'flight_planning'
-  | 'navigation'
-  | 'performance'
-  | 'meteorology'
-  | 'weight_balance'
-  | 'fuel_planning'
-  | 'other';
+  | 'tas_heading_ground_speed'
+  | 'speed_sound_mach_tat'
+  | 'route_sector_winds_temp'
+  | 'magnetic_variation'
+  | 'ins_data'
+  | 'climb_tables'
+  | 'descent_tables'
+  | 'altitude_capability'
+  | 'cruise_data'
+  | 'buffet_boundary_charts'
+  | 'flight_planning_basics'
+  | 'real_flight_plans'
+  | 'step_climbs'
+  | 'backwards_flight_plans'
+  | 'max_payload_min_fuel_abnormal'
+  | 'depressurised_flight'
+  | 'yaw_damper_inoperative'
+  | 'tailskid_extended'
+  | 'landing_gear_extended'
+  | 'one_engine_inoperative'
+  | 'fuel_dumping'
+  | 'holding_fuel'
+  | 'company_fuel_policy'
+  | 'minimum_fuel_requirements'
+  | 'minimum_aerodrome_standards'
+  | 'inflight_replanning'
+  | 'boeing_727_weight_limits'
+  | 'destination_alternate_fuel'
+  | 'equi_time_point'
+  | 'point_no_return';
 
 // Comprehensive ATPL Curriculum Types
 export type AtplSubjectId =
@@ -262,6 +285,33 @@ export interface NoteSection {
 
 export interface NotesData {
   sections: NoteSection[];
+}
+
+export interface TopicContent {
+  topicId: NoteTopicId;
+  theory: string;
+  videos: VideoContent[];
+  practice: PracticeContent[];
+  lastUpdated: string;
+}
+
+export interface VideoContent {
+  id: string;
+  title: string;
+  youtubeId: string;
+  description?: string;
+  duration?: number;
+}
+
+export interface PracticeContent {
+  id: string;
+  title: string;
+  content: string;
+  type: 'example' | 'exercise' | 'quiz';
+}
+
+export interface TopicData {
+  topics: TopicContent[];
 }
 
 export interface AltitudeCapability {
