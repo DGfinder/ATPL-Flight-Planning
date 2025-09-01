@@ -66,12 +66,12 @@ const Breadcrumb: React.FC = () => {
   }
 
   return (
-    <nav className="flex items-center space-x-2 text-sm">
+    <nav className="flex items-center space-x-1 text-xs">
       {breadcrumbs.map((item, index) => (
         <React.Fragment key={item.path}>
           {index > 0 && (
             <svg 
-              className="w-4 h-4 text-white/40" 
+              className="w-3 h-3 text-white/40 mx-1" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"

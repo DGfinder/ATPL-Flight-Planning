@@ -200,7 +200,7 @@ const Layout: React.FC = () => {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
         <header className="bg-gradient-to-r from-aviation-navy via-aviation-primary to-aviation-navy text-white shadow-lg z-20">
-          <div className="px-6 py-4">
+          <div className="px-6 py-2">
             <div className="flex items-center justify-between">
               {/* Breadcrumb */}
               <div className="flex-1">
