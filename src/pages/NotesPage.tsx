@@ -50,7 +50,7 @@ const NotesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/20">
       {currentSubject ? (
         // Topic Detail View
         <div>
@@ -233,7 +233,7 @@ const NotesPage: React.FC = () => {
                 <p className="text-gray-600">Try adjusting your search term</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 auto-rows-max">
                 {filteredSubjects.map((subject) => (
                   <TopicCard
                     key={subject.id}
@@ -271,7 +271,7 @@ const TopicCard: React.FC<{
   return (
     <div
       onClick={onClick}
-      className="bg-white rounded-xl border border-gray-200 hover:border-aviation-primary hover:shadow-xl transition-all duration-300 cursor-pointer group overflow-hidden transform hover:-translate-y-1"
+      className="bg-white rounded-2xl border border-gray-200 hover:border-aviation-primary hover:shadow-2xl hover:shadow-aviation-primary/10 transition-all duration-500 cursor-pointer group overflow-hidden transform hover:-translate-y-2 hover:scale-[1.02] backdrop-blur-sm"
     >
       {/* Card Header */}
       <div className="p-6 pb-4">

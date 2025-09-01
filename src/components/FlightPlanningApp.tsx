@@ -6,7 +6,7 @@ import QuestionDisplay from './questions/QuestionDisplay';
 import PerformanceDashboard from './ui/PerformanceDashboard';
 import SettingsPanel from './ui/SettingsPanel';
 import FlightPlanTable from './flight-plan/FlightPlanTable';
-import CourseNotes from './notes/CourseNotes';
+import NotesPage from '../pages/NotesPage';
 
 const FlightPlanningApp: React.FC = () => {
   const [questions] = useState<Question[]>(sampleQuestions);
@@ -324,9 +324,7 @@ const FlightPlanningApp: React.FC = () => {
             <FlightPlanTable />
           </div>
         ) : (
-          <div className="max-w-6xl mx-auto p-6">
-            <CourseNotes />
-          </div>
+          <NotesPage />
         )}
       </main>
 

@@ -8,7 +8,7 @@ import QuestionDisplay from './questions/QuestionDisplay';
 import PerformanceDashboard from './ui/PerformanceDashboard';
 import SettingsPanel from './ui/SettingsPanel';
 import FlightPlanTable from './flight-plan/FlightPlanTable';
-import CourseNotes from './notes/CourseNotes';
+import NotesPage from '../pages/NotesPage';
 import AuthModal from './auth/AuthModal';
 import Calculator from './ui/Calculator';
 import LegendPopover from './ui/LegendPopover';
@@ -803,9 +803,7 @@ const AppShell: React.FC = () => {
           )}
 
           {currentView === 'notes' && (
-            <div className="p-6">
-              <CourseNotes />
-            </div>
+            <NotesPage />
           )}
 
           {currentView === 'questions' && currentQuestion && (

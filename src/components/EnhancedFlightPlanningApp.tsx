@@ -8,7 +8,7 @@ import QuestionDisplay from './questions/QuestionDisplay';
 import PerformanceDashboard from './ui/PerformanceDashboard';
 import SettingsPanel from './ui/SettingsPanel';
 import FlightPlanTable from './flight-plan/FlightPlanTable';
-import CourseNotes from './notes/CourseNotes';
+import NotesPage from '../pages/NotesPage';
 import AuthModal from './auth/AuthModal';
 import { useTheme } from '../hooks/useTheme';
 import Calculator from './ui/Calculator';
@@ -584,9 +584,7 @@ const EnhancedFlightPlanningApp: React.FC = () => {
             <FlightPlanTable />
           </div>
         ) : (
-          <div className="max-w-6xl mx-auto p-6">
-            <CourseNotes />
-          </div>
+          <NotesPage />
         )}
       </main>
 
