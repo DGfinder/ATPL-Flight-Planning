@@ -3,7 +3,7 @@ import type { Question, UserAnswer, SessionProgress, StudyMode, QuestionCategory
 import { sampleQuestions, questionCategories } from '../data/questions';
 import { storageService } from '../utils/localStorage';
 import { databaseService } from '../services/database';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import QuestionDisplay from './questions/QuestionDisplay';
 import PerformanceDashboard from './ui/PerformanceDashboard';
 import SettingsPanel from './ui/SettingsPanel';

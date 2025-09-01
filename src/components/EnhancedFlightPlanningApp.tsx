@@ -3,14 +3,14 @@ import type { Question, UserAnswer, SessionProgress, StudyMode, QuestionCategory
 import { sampleQuestions, questionCategories } from '../data/questions';
 import { storageService } from '../utils/localStorage';
 import { databaseService } from '../services/database';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import QuestionDisplay from './questions/QuestionDisplay';
 import PerformanceDashboard from './ui/PerformanceDashboard';
 import SettingsPanel from './ui/SettingsPanel';
 import FlightPlanTable from './flight-plan/FlightPlanTable';
 import CourseNotes from './notes/CourseNotes';
 import AuthModal from './auth/AuthModal';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../hooks/useTheme';
 import Calculator from './ui/Calculator';
 import LegendPopover from './ui/LegendPopover';
 import ExamTimer from './ui/ExamTimer';
@@ -438,7 +438,7 @@ const EnhancedFlightPlanningApp: React.FC = () => {
                   <select
                     aria-label="Theme"
                     value={theme}
-                    onChange={(e) => setTheme(e.target.value as any)}
+                    onChange={(e) => setTheme(e.target.value as 'light' | 'dark')}
                     className="bg-white/10 backdrop-blur-sm text-white border border-white/20 px-3 py-2 rounded-lg text-sm appearance-none cursor-pointer hover:bg-white/20 transition-all duration-200"
                     title={`Theme (${resolvedTheme})`}
                   >

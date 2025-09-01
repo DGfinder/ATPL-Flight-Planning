@@ -1,15 +1,15 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useEffect, useMemo, useState } from 'react';
 
 type ThemeMode = 'light' | 'dark' | 'system';
 
-interface ThemeContextValue {
+export interface ThemeContextValue {
   theme: ThemeMode;
   resolvedTheme: 'light' | 'dark';
   toggleTheme: () => void;
   setTheme: (mode: ThemeMode) => void;
 }
 
-const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 const STORAGE_KEY = 'atpl_theme_mode';
 
@@ -54,10 +54,5 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
-export const useTheme = (): ThemeContextValue => {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
-  return ctx;
-};
 
 

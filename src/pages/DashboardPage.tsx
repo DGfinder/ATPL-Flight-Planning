@@ -4,7 +4,7 @@ import type { Question, UserAnswer, QuestionCategory, PerformanceMetrics } from 
 import { sampleQuestions, questionCategories } from '../data/questions';
 import { storageService } from '../utils/localStorage';
 import { databaseService } from '../services/database';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();

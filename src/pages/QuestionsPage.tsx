@@ -3,7 +3,7 @@ import type { Question, UserAnswer, StudyMode, QuestionCategory } from '../types
 import { sampleQuestions, questionCategories } from '../data/questions';
 import { storageService } from '../utils/localStorage';
 import { databaseService } from '../services/database';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import QuestionDisplay from '../components/questions/QuestionDisplay';
 
 const QuestionsPage: React.FC = () => {
@@ -42,8 +42,8 @@ const QuestionsPage: React.FC = () => {
             if (dbQuestions && dbQuestions.length > 0) {
               setQuestions(dbQuestions);
             }
-          } catch (error) {
-            console.warn('Could not load questions from database, using sample questions');
+          } catch (dbError) {
+            console.warn('Could not load questions from database, using sample questions:', dbError);
           }
         } else {
           // Load from localStorage for guest users

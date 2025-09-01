@@ -75,7 +75,7 @@ async function verifyAltitudeCapability() {
       return;
     }
     
-    console.log(`✅ Altitude capability records: ${(data as any)?.[0]?.count || 0}`);
+    console.log(`✅ Altitude capability records: ${(data as unknown as { count: number }[])?.[0]?.count || 0}`);
     
     // Test sample query
     const { data: sampleData, error: sampleError } = await supabase

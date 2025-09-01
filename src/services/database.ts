@@ -246,7 +246,7 @@ class DatabaseService {
       console.warn('Max altitude query failed:', error);
       return 250;
     }
-    return (data as any)?.[0]?.flight_level || 250; // Default to FL250 if no suitable altitude found
+    return (data as unknown as { flight_level: number }[])?.[0]?.flight_level || 250; // Default to FL250 if no suitable altitude found
   }
 
   async getOptimumAltitudeForWeight(weight: number, track: number, isaDeviation: number = 0): Promise<{flightLevel: number, cruiseSchedule: string}> {

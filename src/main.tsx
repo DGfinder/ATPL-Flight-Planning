@@ -8,7 +8,7 @@ import { testSupabaseConnection } from './test/supabase-test'
 
 // Make test functions globally available in development
 if (import.meta.env.DEV) {
-  (window as any).testSupabaseConnection = testSupabaseConnection;
+  (window as Window & { testSupabaseConnection?: typeof testSupabaseConnection }).testSupabaseConnection = testSupabaseConnection;
 }
 
 createRoot(document.getElementById('root')!).render(

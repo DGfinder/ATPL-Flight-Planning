@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { databaseService } from '../services/database';
@@ -9,15 +9,8 @@ interface AuthContextType {
   signOut: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-}
 
 interface AuthProviderProps {
   children: React.ReactNode;

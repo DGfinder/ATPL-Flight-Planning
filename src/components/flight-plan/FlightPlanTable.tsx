@@ -73,7 +73,7 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
           }));
         } else {
           setAltitudeWarnings(prev => {
-            const { [segment.id]: removed, ...rest } = prev;
+            const { [segment.id]: _, ...rest } = prev;
             return rest;
           });
         }
@@ -303,7 +303,11 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                         ...s,
                         altitudeTrend: s.altitudeTrend === undefined ? 'climb' : s.altitudeTrend === 'climb' ? 'level' : s.altitudeTrend === 'level' ? 'descent' : undefined
                       } : s));
-                      try { window.localStorage.setItem('fp_hint_fl_trend_seen', '1'); } catch {}
+                      try { 
+                        window.localStorage.setItem('fp_hint_fl_trend_seen', '1'); 
+                      } catch (storageError) {
+                        console.warn('Could not save hint state:', storageError);
+                      }
                       setShowFlHint(false);
                     }}>
                       {renderEditableCell(segment.id, 'flightLevel', segment.flightLevel)}
@@ -418,7 +422,14 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
 
       {showFlHint && (
         <div className="mt-3 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded p-2">
-          Double‑click FL to set climb/descent arrow. <button className="underline" onClick={() => { try { window.localStorage.setItem('fp_hint_fl_trend_seen', '1'); } catch {}; setShowFlHint(false); }}>Got it</button>
+          Double‑click FL to set climb/descent arrow. <button className="underline" onClick={() => { 
+            try { 
+              window.localStorage.setItem('fp_hint_fl_trend_seen', '1'); 
+            } catch (storageError) { 
+              console.warn('Could not save hint state:', storageError);
+            }
+            setShowFlHint(false); 
+          }}>Got it</button>
         </div>
       )}
     </div>

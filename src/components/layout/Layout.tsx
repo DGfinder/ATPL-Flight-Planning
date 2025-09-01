@@ -14,7 +14,7 @@ import {
   LogOut,
   Plane
 } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import Breadcrumb from '../ui/Breadcrumb';
 
 const Layout: React.FC = () => {

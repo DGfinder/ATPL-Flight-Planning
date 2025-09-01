@@ -9,7 +9,7 @@ export async function testSupabaseConnection() {
   try {
     // Test 1: Basic connection
     console.log('📡 Testing basic connectivity...');
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('questions')
       .select('count(*)')
       .limit(1);
@@ -58,4 +58,4 @@ export async function testSupabaseConnection() {
 }
 
 // Make function available globally for browser console testing
-(window as any).testSupabaseConnection = testSupabaseConnection;
+(window as Window & { testSupabaseConnection?: typeof testSupabaseConnection }).testSupabaseConnection = testSupabaseConnection;

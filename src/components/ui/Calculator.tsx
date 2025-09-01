@@ -119,7 +119,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onClose }) => {
               key={idx}
               className={`py-2 rounded text-sm font-medium transition-all ${
                 b.match(/^MC|MR|M[+]|M−|C$/) ? 'aviation-button-secondary' :
-                b.match(/^[÷×\-\+=]$/) ? 'aviation-button' : 'aviation-button-secondary'
+                b.match(/^[÷×\-+=]$/) ? 'aviation-button' : 'aviation-button-secondary'
               }`}
               onClick={() => onButton(b)}
             >

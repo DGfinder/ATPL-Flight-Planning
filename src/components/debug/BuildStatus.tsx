@@ -16,7 +16,7 @@ export const BuildStatus: React.FC = () => {
     document.body.removeChild(testDiv);
 
     // Check if HMR is active (Vite specific)
-    setHmrActive(!!(window as any).__vite_plugin_react_preamble_installed__);
+    setHmrActive(!!(window as Window & { __vite_plugin_react_preamble_installed__?: boolean }).__vite_plugin_react_preamble_installed__);
 
     // Update timestamp every second to show live updates
     const interval = setInterval(() => {
