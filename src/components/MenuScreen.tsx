@@ -44,262 +44,154 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
   const hasProgress = userAnswers.length > 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Modern Hero Section */}
-      <section className="relative bg-gradient-to-br from-white via-slate-50 to-blue-50/30 overflow-hidden">
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 opacity-[0.02]" style={{
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
-        }}></div>
-        
-        <div className="relative max-w-6xl mx-auto px-6 py-24">
-          <div className="text-center max-w-4xl mx-auto">
-            {/* Icon */}
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-aviation-primary to-aviation-secondary rounded-2xl shadow-lg mb-8">
-              <span className="text-2xl">✈️</span>
+    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
+      {/* Compact Header Bar */}
+      <header className="flex-shrink-0 bg-white border-b border-gray-200 px-6 py-3">
+        <div className="flex items-center justify-between">
+          {/* Logo & Title */}
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-aviation-primary to-aviation-secondary rounded-lg flex items-center justify-center">
+              <span className="text-sm">✈️</span>
             </div>
-            
-            {/* Main heading */}
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              ATPL Flight Planning
-              <span className="block text-2xl md:text-3xl font-medium text-gray-600 mt-2">
-                Study Platform
-              </span>
-            </h1>
-            
-            {/* Description */}
-            <p className="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-              Master ATPL flight planning with comprehensive practice questions, interactive calculations, and personalized learning paths.
-            </p>
-            
-            {/* Stats overview */}
-            {hasProgress && (
-              <div className="flex flex-wrap justify-center gap-8 mb-12">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-aviation-primary mb-1">{metrics.correctAnswers}</div>
-                  <div className="text-sm font-medium text-gray-600">Correct</div>
-                </div>
-                <div className="w-px h-12 bg-gray-200 hidden sm:block"></div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600 mb-1">{metrics.answeredQuestions}</div>
-                  <div className="text-sm font-medium text-gray-600">Answered</div>
-                </div>
-                <div className="w-px h-12 bg-gray-200 hidden sm:block"></div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-600 mb-1">{metrics.accuracy.toFixed(0)}%</div>
-                  <div className="text-sm font-medium text-gray-600">Accuracy</div>
-                </div>
+            <div>
+              <h1 className="text-lg font-bold text-gray-900">ATPL Flight Planning</h1>
+              <p className="text-xs text-gray-500">Study Platform</p>
+            </div>
+          </div>
+
+          {/* Inline Stats */}
+          {hasProgress ? (
+            <div className="flex items-center space-x-6 text-sm">
+              <div className="text-center">
+                <div className="text-lg font-bold text-aviation-primary">{metrics.correctAnswers}</div>
+                <div className="text-xs text-gray-600">Correct</div>
               </div>
-            )}
-            
-            {/* Primary CTA */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => onNavigate('questions')}
-                className="inline-flex items-center px-8 py-4 bg-aviation-primary hover:bg-aviation-primary/90 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-aviation-primary focus:ring-offset-2"
-              >
-                <span>Start Practicing</span>
-                <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </button>
-              
-              {!hasProgress && (
+              <div className="text-center">
+                <div className="text-lg font-bold text-blue-600">{metrics.answeredQuestions}</div>
+                <div className="text-xs text-gray-600">Answered</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-purple-600">{metrics.accuracy.toFixed(0)}%</div>
+                <div className="text-xs text-gray-600">Accuracy</div>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={onShowAuthModal}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            >
+              Sign In
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* Main Dashboard Content */}
+      <main className="flex-1 flex min-h-0">
+        {/* Left Column - Feature Cards */}
+        <div className="flex-1 p-4">
+          <div className="h-full flex flex-col">
+            {/* Welcome Message */}
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 mb-1">Welcome back!</h2>
+              <p className="text-sm text-gray-600">Choose your study approach below</p>
+            </div>
+
+            {/* Feature Cards Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+              {/* Questions Card */}
+              <div className="bg-white rounded-xl p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                    <span className="text-sm">📚</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-sm">Practice Questions</h3>
+                    <p className="text-xs text-gray-600">{questions.length} questions available</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-600 mb-3">Test your knowledge with comprehensive practice questions</p>
                 <button
-                  onClick={onShowAuthModal}
-                  className="inline-flex items-center px-8 py-4 bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                  onClick={() => onNavigate('questions')}
+                  className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium py-2 px-3 rounded-lg transition-colors"
                 >
-                  Sign In
+                  Start Questions
                 </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
+              </div>
 
-      {/* Main Content */}
-      <section className="max-w-6xl mx-auto px-6 py-16">
-        {/* Feature Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-          {/* Questions Card */}
-          <div className="group relative bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all duration-300">
-            <div className="flex items-center justify-center w-12 h-12 bg-blue-50 rounded-xl mb-6 group-hover:bg-blue-100 transition-colors">
-              <span className="text-xl">📚</span>
-            </div>
-            
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">Practice Questions</h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              Test your knowledge with comprehensive questions designed to mirror real exam conditions.
-            </p>
-            
-            <div className="space-y-2 mb-8 text-sm text-gray-600">
-              <div className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-3"></div>
-                <span>{questions.length} practice questions</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-3"></div>
-                <span>Detailed explanations</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-3"></div>
-                <span>Progress tracking</span>
-              </div>
-            </div>
-            
-            <button
-              onClick={() => onNavigate('questions')}
-              className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium py-3 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Start Questions
-            </button>
-          </div>
-
-          {/* Flight Plan Card */}
-          <div className="group relative bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all duration-300">
-            <div className="flex items-center justify-center w-12 h-12 bg-green-50 rounded-xl mb-6 group-hover:bg-green-100 transition-colors">
-              <span className="text-xl">🛩️</span>
-            </div>
-            
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">Flight Planning</h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              Practice real-world flight planning calculations with interactive tools.
-            </p>
-            
-            <div className="space-y-2 mb-8 text-sm text-gray-600">
-              <div className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-3"></div>
-                <span>Manual calculations</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-3"></div>
-                <span>Weight & balance</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-3"></div>
-                <span>Export capabilities</span>
-              </div>
-            </div>
-            
-            <button
-              onClick={() => onNavigate('flightplan')}
-              className="w-full bg-green-50 hover:bg-green-100 text-green-700 font-medium py-3 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-            >
-              Open Flight Plan
-            </button>
-          </div>
-
-          {/* Notes Card */}
-          <div className="group relative bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all duration-300">
-            <div className="flex items-center justify-center w-12 h-12 bg-purple-50 rounded-xl mb-6 group-hover:bg-purple-100 transition-colors">
-              <span className="text-xl">📝</span>
-            </div>
-            
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">Course Notes</h3>
-            <p className="text-gray-600 mb-6 leading-relaxed">
-              Access course materials and build your personal knowledge base with OCR.
-            </p>
-            
-            <div className="space-y-2 mb-8 text-sm text-gray-600">
-              <div className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-3"></div>
-                <span>PDF materials</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-3"></div>
-                <span>OCR text extraction</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-3"></div>
-                <span>Personal notes</span>
-              </div>
-            </div>
-            
-            <button
-              onClick={() => onNavigate('notes')}
-              className="w-full bg-purple-50 hover:bg-purple-100 text-purple-700 font-medium py-3 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-            >
-              View Notes
-            </button>
-          </div>
-        </div>
-
-        {/* Progressive Disclosure: Detailed Stats */}
-        {hasProgress && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-16">
-            <div className="px-8 py-6 border-b border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Your Progress</h2>
-                  <p className="text-sm text-gray-600 mt-1">Detailed breakdown by topic area</p>
+              {/* Flight Planning Card */}
+              <div className="bg-white rounded-xl p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center">
+                    <span className="text-sm">🛩️</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-sm">Flight Planning</h3>
+                    <p className="text-xs text-gray-600">Interactive calculations</p>
+                  </div>
                 </div>
+                <p className="text-xs text-gray-600 mb-3">Practice real-world flight planning calculations</p>
                 <button
-                  onClick={() => setShowDetailedStats(!showDetailedStats)}
-                  className="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 rounded-lg"
+                  onClick={() => onNavigate('flightplan')}
+                  className="w-full bg-green-50 hover:bg-green-100 text-green-700 text-sm font-medium py-2 px-3 rounded-lg transition-colors"
                 >
-                  {showDetailedStats ? 'Hide Details' : 'Show Details'}
-                  <svg 
-                    className={`ml-2 w-4 h-4 transition-transform ${showDetailedStats ? 'rotate-180' : ''}`}
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  Open Flight Plan
+                </button>
+              </div>
+
+              {/* Notes Card */}
+              <div className="bg-white rounded-xl p-4 border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center">
+                    <span className="text-sm">📝</span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-sm">Course Notes</h3>
+                    <p className="text-xs text-gray-600">Study materials & OCR</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-600 mb-3">Access course materials and build knowledge base</p>
+                <button
+                  onClick={() => onNavigate('notes')}
+                  className="w-full bg-purple-50 hover:bg-purple-100 text-purple-700 text-sm font-medium py-2 px-3 rounded-lg transition-colors"
+                >
+                  View Notes
                 </button>
               </div>
             </div>
 
-            {showDetailedStats && (
-              <div className="p-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {Object.entries(questionCategories).map(([categoryKey, categoryName]) => {
-                    const category = categoryKey as QuestionCategory;
-                    const stats = categoryPerformance[category];
-                    const questionsInCategory = questions.filter(q => q.category === category).length;
-                    const hasData = stats.attempted > 0;
+            {/* Recent Activity (if exists) */}
+            {hasProgress && userAnswers.length > 0 && (
+              <div className="flex-1 bg-white rounded-xl border border-gray-200 min-h-0">
+                <div className="p-4 border-b border-gray-100">
+                  <h3 className="font-semibold text-gray-900 text-sm">Recent Activity</h3>
+                </div>
+                <div className="p-4 space-y-2 overflow-auto">
+                  {userAnswers.slice(-5).reverse().map((answer, index) => {
+                    const question = questions.find(q => q.id === answer.questionId);
+                    const categoryName = question?.category ? questionCategories[question.category] : 'Unknown';
                     
                     return (
-                      <div key={categoryKey} className="p-6 bg-gray-50 rounded-xl">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="font-medium text-gray-900">{categoryName}</h3>
-                          <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded-md">
-                            {questionsInCategory} total
-                          </span>
-                        </div>
-                        
-                        {hasData ? (
-                          <div className="space-y-3">
-                            <div className="flex justify-between text-sm">
-                              <span className="text-gray-600">Attempted</span>
-                              <span className="font-medium">{stats.attempted}</span>
+                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                        <div className="flex items-center space-x-3 min-w-0 flex-1">
+                          <div className={`w-2 h-2 rounded-full flex-shrink-0 ${answer.isCorrect ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                          <div className="min-w-0 flex-1">
+                            <div className="font-medium text-gray-900 text-xs truncate">
+                              {question?.title || 'Unknown Question'}
                             </div>
-                            <div className="flex justify-between text-sm">
-                              <span className="text-gray-600">Correct</span>
-                              <span className="font-medium text-green-600">{stats.correct}</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                              <div 
-                                className={`h-2 rounded-full transition-all ${stats.accuracy >= 80 ? 'bg-green-500' : stats.accuracy >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                                style={{ width: `${Math.min(stats.accuracy, 100)}%` }}
-                              ></div>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                              <span className="text-gray-600">Accuracy</span>
-                              <span className={`font-medium ${stats.accuracy >= 80 ? 'text-green-600' : stats.accuracy >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
-                                {stats.accuracy.toFixed(1)}%
+                            <div className="flex items-center space-x-2 mt-1">
+                              <span className="text-xs text-gray-500">{Math.round(answer.timeSpent)}s</span>
+                              <span className={`text-xs px-1.5 py-0.5 rounded ${
+                                answer.isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                              }`}>
+                                {answer.isCorrect ? 'Correct' : 'Wrong'}
+                              </span>
+                              <span className="text-xs px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded">
+                                {categoryName}
                               </span>
                             </div>
                           </div>
-                        ) : (
-                          <div className="text-center py-4">
-                            <div className="text-gray-400 text-sm mb-2">Not started yet</div>
-                            <button 
-                              onClick={() => onNavigate('questions')}
-                              className="text-xs text-aviation-primary hover:text-aviation-secondary font-medium transition-colors"
-                            >
-                              Start practicing →
-                            </button>
-                          </div>
-                        )}
+                        </div>
                       </div>
                     );
                   })}
@@ -307,56 +199,131 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               </div>
             )}
           </div>
-        )}
+        </div>
 
-        {/* Recent Activity - Only show if there's activity */}
-        {userAnswers.length > 0 && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
-            <div className="px-8 py-6 border-b border-gray-100">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
-              <p className="text-sm text-gray-600 mt-1">Your latest practice sessions</p>
-            </div>
+        {/* Right Column - Progress Sidebar */}
+        <div className="w-80 bg-white border-l border-gray-200 p-4 flex flex-col">
+          <div className="mb-4">
+            <h3 className="font-semibold text-gray-900 text-sm mb-2">Progress Overview</h3>
             
-            <div className="p-8">
-              <div className="space-y-4">
-                {userAnswers.slice(-3).reverse().map((answer, index) => {
-                  const question = questions.find(q => q.id === answer.questionId);
-                  const categoryName = question?.category ? questionCategories[question.category] : 'Unknown';
+            {hasProgress ? (
+              <div className="space-y-3">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="text-xs text-gray-600 mb-1">Overall Progress</div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium">{metrics.answeredQuestions} / {questions.length}</span>
+                    <span className="text-gray-600">{((metrics.answeredQuestions / questions.length) * 100).toFixed(0)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+                    <div 
+                      className="bg-aviation-primary h-1.5 rounded-full transition-all"
+                      style={{ width: `${(metrics.answeredQuestions / questions.length) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
+
+                {/* Category Breakdown */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-medium text-gray-700">Categories</span>
+                    <button
+                      onClick={() => setShowDetailedStats(!showDetailedStats)}
+                      className="text-xs text-aviation-primary hover:text-aviation-secondary"
+                    >
+                      {showDetailedStats ? 'Hide' : 'Details'}
+                    </button>
+                  </div>
                   
-                  return (
-                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                      <div className="flex items-center space-x-4">
-                        <div className={`w-2 h-2 rounded-full ${answer.isCorrect ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                        <div>
-                          <div className="font-medium text-gray-900 text-sm">
-                            {question?.title || 'Unknown Question'}
+                  <div className="space-y-2">
+                    {Object.entries(questionCategories).map(([categoryKey, categoryName]) => {
+                      const category = categoryKey as QuestionCategory;
+                      const stats = categoryPerformance[category];
+                      const questionsInCategory = questions.filter(q => q.category === category).length;
+                      
+                      return (
+                        <div key={categoryKey} className="bg-gray-50 rounded-lg p-2">
+                          <div className="flex items-center justify-between text-xs mb-1">
+                            <span className="font-medium text-gray-700 truncate">{categoryName}</span>
+                            {stats.attempted > 0 ? (
+                              <span className={`font-medium ${stats.accuracy >= 80 ? 'text-green-600' : stats.accuracy >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
+                                {stats.accuracy.toFixed(0)}%
+                              </span>
+                            ) : (
+                              <span className="text-gray-400">Not started</span>
+                            )}
                           </div>
-                          <div className="flex items-center space-x-3 mt-1">
-                            <span className="text-xs text-gray-500">
-                              {Math.round(answer.timeSpent)}s
-                            </span>
-                            <span className={`text-xs px-2 py-0.5 rounded-md ${
-                              answer.isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                            }`}>
-                              {answer.isCorrect ? 'Correct' : 'Incorrect'}
-                            </span>
-                            <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-md">
-                              {categoryName}
-                            </span>
-                          </div>
+                          
+                          {stats.attempted > 0 && (
+                            <>
+                              <div className="w-full bg-gray-200 rounded-full h-1">
+                                <div 
+                                  className={`h-1 rounded-full ${stats.accuracy >= 80 ? 'bg-green-500' : stats.accuracy >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                                  style={{ width: `${Math.min(stats.accuracy, 100)}%` }}
+                                ></div>
+                              </div>
+                              
+                              {showDetailedStats && (
+                                <div className="mt-2 text-xs text-gray-600 space-y-1">
+                                  <div className="flex justify-between">
+                                    <span>Attempted:</span>
+                                    <span>{stats.attempted} / {questionsInCategory}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span>Correct:</span>
+                                    <span className="text-green-600">{stats.correct}</span>
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          )}
                         </div>
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {new Date(answer.timestamp).toLocaleTimeString()}
-                      </div>
-                    </div>
-                  );
-                })}
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="text-center py-6">
+                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-lg">🚀</span>
+                </div>
+                <p className="text-sm text-gray-600 mb-4">Start practicing to track your progress</p>
+                <button
+                  onClick={() => onNavigate('questions')}
+                  className="text-sm text-aviation-primary hover:text-aviation-secondary font-medium"
+                >
+                  Begin your journey →
+                </button>
+              </div>
+            )}
           </div>
-        )}
-      </section>
+        </div>
+      </main>
+
+      {/* Bottom Action Bar */}
+      <footer className="flex-shrink-0 bg-white border-t border-gray-200 px-6 py-3">
+        <div className="flex items-center justify-between">
+          <div className="text-xs text-gray-500">
+            ATPL Flight Planning Study Platform
+          </div>
+          <div className="flex space-x-3">
+            <button
+              onClick={() => onNavigate('questions')}
+              className="px-6 py-2 bg-aviation-primary hover:bg-aviation-primary/90 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              Start Practicing
+            </button>
+            {!hasProgress && (
+              <button
+                onClick={onShowAuthModal}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              >
+                Sign In
+              </button>
+            )}
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
