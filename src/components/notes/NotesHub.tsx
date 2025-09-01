@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { notesStorage } from '../../utils/notesStorage';
 import { topicStorage } from '../../utils/topicStorage';
-import type { NoteSection, NoteTopicId, TopicContent } from '../../types';
+import type { NoteSection, NoteTopicId } from '../../types';
 import { GlobalWorkerOptions, getDocument, version } from 'pdfjs-dist';
 import { extractTextFromImage, renderPdfPageToImageDataUrl } from '../../utils/ocr';
 import { initialTopics } from '../../data/initialTopics';
@@ -54,8 +54,6 @@ const NotesHub: React.FC = () => {
   const [isImporting, setIsImporting] = useState(false);
   const [importProgress, setImportProgress] = useState<string>('');
   
-  const topicContent = selectedTopic ? topicStorage.getTopicContent(selectedTopic) : null;
-
   useEffect(() => {
     const existingData = topicStorage.load();
     if (existingData.topics.length === 0) {
@@ -192,7 +190,7 @@ const NotesHub: React.FC = () => {
 const ImportForm: React.FC<{ onImport: (file: File, topic: NoteTopicId) => void; isImporting: boolean; progress: string }>
   = ({ onImport, isImporting, progress }) => {
   const [file, setFile] = useState<File | null>(null);
-  const [topic, setTopic] = useState<NoteTopicId>('other');
+  const [topic, setTopic] = useState<NoteTopicId>('tas_heading_ground_speed');
 
   return (
     <div className="space-y-3">
