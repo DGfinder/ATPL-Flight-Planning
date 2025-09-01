@@ -242,8 +242,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, collapsed, onSignOut })
   const [isHovered, setIsHovered] = React.useState(false);
 
   if (!user) {
-    const [isHovered, setIsHovered] = React.useState(false);
-    
     const signInButtonStyle: React.CSSProperties = {
       display: 'flex',
       alignItems: 'center',

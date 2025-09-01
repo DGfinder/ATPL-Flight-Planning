@@ -292,25 +292,25 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
       ...style
     };
 
-    const handleMouseEnter = (e: React.MouseEvent) => {
+    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
       setIsHovered(true);
-      onMouseEnter?.(e as any);
+      onMouseEnter?.(e);
     };
 
-    const handleMouseLeave = (e: React.MouseEvent) => {
+    const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
       setIsHovered(false);
       setIsPressed(false);
-      onMouseLeave?.(e as any);
+      onMouseLeave?.(e);
     };
 
-    const handleMouseDown = (e: React.MouseEvent) => {
+    const handleMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
       setIsPressed(true);
-      onMouseDown?.(e as any);
+      onMouseDown?.(e);
     };
 
-    const handleMouseUp = (e: React.MouseEvent) => {
+    const handleMouseUp = (e: React.MouseEvent<HTMLButtonElement>) => {
       setIsPressed(false);
-      onMouseUp?.(e as any);
+      onMouseUp?.(e);
     };
 
     const content = (
@@ -334,14 +334,14 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
 
     if (as === 'a') {
       return (
-        <a ref={ref as React.Ref<HTMLAnchorElement>} {...(props as any)} {...commonProps}>
+        <a ref={ref as React.Ref<HTMLAnchorElement>} {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)} {...commonProps}>
           {content}
         </a>
       );
     }
 
     return (
-      <button ref={ref as React.Ref<HTMLButtonElement>} {...(props as any)} {...commonProps}>
+      <button ref={ref as React.Ref<HTMLButtonElement>} {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)} {...commonProps}>
         {content}
       </button>
     );

@@ -73,8 +73,9 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
           }));
         } else {
           setAltitudeWarnings(prev => {
-            const { [segment.id]: _, ...rest } = prev;
-            return rest;
+            const updated = { ...prev };
+            delete updated[segment.id];
+            return updated;
           });
         }
       }
@@ -160,7 +161,7 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
       onFlightPlanUpdate?.(updated);
       return updated;
     });
-  }, [onFlightPlanUpdate]);
+  }, [onFlightPlanUpdate, validateAltitudeCapability]);
 
   const addSegment = () => {
     const newId = `seg-${segments.length + 1}`;

@@ -25,7 +25,8 @@
       "Bash(ss:*)",
       "Bash(grep:*)",
       "Bash(npm run preview:*)",
-      "Bash(npm run lint:*)"
+      "Bash(npm run lint:*)",
+      "Bash(npm run typecheck:*)"
     ],
     "deny": [],
     "ask": []

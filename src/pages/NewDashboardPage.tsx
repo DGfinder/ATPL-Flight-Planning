@@ -334,7 +334,7 @@ const NewDashboardPage: React.FC = () => {
         : 0;
 
       // Category performance with error handling
-      const categoryPerformance: Record<QuestionCategory, { attempted: number; correct: number; accuracy: number }> = {} as any;
+      const categoryPerformance: Record<QuestionCategory, { attempted: number; correct: number; accuracy: number }> = {} as Record<QuestionCategory, { attempted: number; correct: number; accuracy: number }>;
       
       Object.keys(questionCategories).forEach(cat => {
         try {

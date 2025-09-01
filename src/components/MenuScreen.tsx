@@ -74,7 +74,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               )}
               {/* Fallback emoji (hidden by default) */}
               <div className="w-8 h-8 bg-gradient-to-br from-aviation-primary to-aviation-secondary rounded-lg items-center justify-center shadow-sm hidden">
-                <span className="text-sm">✈️</span>
+                <span className="text-sm font-bold text-white">A</span>
               </div>
             </div>
             {!sidebarCollapsed && (
@@ -90,7 +90,9 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
         <nav className="flex-1 p-3 space-y-2">
           <div className="relative">
             <button className="w-full flex items-center space-x-3 px-3 py-3 text-left rounded-xl bg-gradient-to-r from-aviation-primary to-aviation-secondary text-white shadow-lg transform scale-105 transition-all duration-200">
-              <span className="text-lg">🏠</span>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
               {!sidebarCollapsed && <span className="font-semibold text-sm">Dashboard</span>}
             </button>
           </div>
@@ -99,7 +101,9 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
             onClick={() => onNavigate('questions')}
             className="w-full flex items-center space-x-3 px-3 py-3 text-left rounded-xl text-gray-700 hover:bg-blue-50 hover:text-aviation-primary transition-all duration-200 group"
           >
-            <span className="text-lg group-hover:scale-110 transition-transform">📚</span>
+            <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
             {!sidebarCollapsed && (
               <div className="flex-1">
                 <span className="font-medium text-sm">Practice Questions</span>
@@ -112,7 +116,9 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
             onClick={() => onNavigate('flightplan')}
             className="w-full flex items-center space-x-3 px-3 py-3 text-left rounded-xl text-gray-700 hover:bg-green-50 hover:text-green-700 transition-all duration-200 group"
           >
-            <span className="text-lg group-hover:scale-110 transition-transform">🛩️</span>
+            <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+            </svg>
             {!sidebarCollapsed && (
               <div className="flex-1">
                 <span className="font-medium text-sm">Flight Planning</span>
@@ -125,7 +131,9 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
             onClick={() => onNavigate('notes')}
             className="w-full flex items-center space-x-3 px-3 py-3 text-left rounded-xl text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-all duration-200 group"
           >
-            <span className="text-lg group-hover:scale-110 transition-transform">📝</span>
+            <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
             {!sidebarCollapsed && (
               <div className="flex-1">
                 <span className="font-medium text-sm">Course Notes</span>
@@ -137,7 +145,9 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
           {hasProgress && (
             <div className="pt-4 border-t border-gray-100">
               <button className="w-full flex items-center space-x-3 px-3 py-3 text-left rounded-xl text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200 group">
-                <span className="text-lg group-hover:scale-110 transition-transform">📊</span>
+                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
                 {!sidebarCollapsed && (
                   <div className="flex-1">
                     <span className="font-medium text-sm">Analytics</span>
@@ -183,7 +193,20 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               onClick={onShowAuthModal}
               className="w-full bg-gradient-to-r from-aviation-primary to-aviation-secondary text-white rounded-xl py-3 px-4 text-sm font-medium hover:shadow-lg transition-all duration-200 transform hover:scale-105"
             >
-              {sidebarCollapsed ? '🔐' : '🔐 Sign In'}
+              {sidebarCollapsed ? (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2a3 3 0 11-6 0v-2c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.5 11.25H13.5a2.25 2.25 0 012.25 2.25v1.5a2.25 2.25 0 01-2.25 2.25H10.5a2.25 2.25 0 01-2.25-2.25v-1.5a2.25 2.25 0 012.25-2.25z" />
+                </svg>
+              ) : (
+                <span className="flex items-center space-x-2">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2a3 3 0 11-6 0v-2c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.5 11.25H13.5a2.25 2.25 0 012.25 2.25v1.5a2.25 2.25 0 01-2.25 2.25H10.5a2.25 2.25 0 01-2.25-2.25v-1.5a2.25 2.25 0 012.25-2.25z" />
+                  </svg>
+                  <span>Sign In</span>
+                </span>
+              )}
             </button>
           )}
         </div>
@@ -271,7 +294,9 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                    onClick={() => onNavigate('questions')}>
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-xl">📚</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-gray-900">{questions.length}</div>
@@ -297,7 +322,9 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                    onClick={() => onNavigate('flightplan')}>
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-xl">🛩️</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-gray-900">∞</div>
@@ -319,7 +346,9 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                    onClick={() => onNavigate('notes')}>
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-xl">📝</span>
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-gray-900">3</div>
@@ -464,7 +493,9 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                 }}></div>
                 <div className="relative">
                   <div className="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <span className="text-3xl">🚀</span>
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
                   </div>
                   <h2 className="text-2xl font-bold mb-4">Ready to Begin Your ATPL Journey?</h2>
                   <p className="text-blue-100 mb-8 max-w-2xl mx-auto">

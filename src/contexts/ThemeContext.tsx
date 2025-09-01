@@ -9,6 +9,7 @@ export interface ThemeContextValue {
   setTheme: (mode: ThemeMode) => void;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 const STORAGE_KEY = 'atpl_theme_mode';

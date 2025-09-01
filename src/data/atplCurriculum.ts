@@ -42,7 +42,7 @@ const atplCategories: Record<AtplSubjectCategory, {
     title: 'Flight Performance & Planning',
     description: 'Boeing 727 flight planning, performance calculations, and operational procedures',
     color: 'bg-aviation-primary',
-    icon: '📊'
+    icon: 'FPL'
   }
 };
 

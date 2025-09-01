@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { UserAnswer, PerformanceMetrics, QuestionCategory } from '../types';
+import type { UserAnswer, PerformanceMetrics, QuestionCategory, Question } from '../types';
 import { questionCategories } from '../data/questions';
 import { databaseService } from '../services/database';
 import { storageService } from '../utils/localStorage';
 import { useAuth } from './useAuth';
 
-export const useUserProgress = (questions: any[]) => {
+export const useUserProgress = (questions: Question[]) => {
   const { user } = useAuth();
   const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
   const [loading, setLoading] = useState(false);

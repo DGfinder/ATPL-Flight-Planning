@@ -39,7 +39,7 @@ export const CSSLoadingDiagnostic: React.FC<CSSDiagnosticProps> = ({ enabled = t
         stylesheets.forEach(sheet => {
           try {
             totalRules += sheet.cssRules?.length || 0;
-          } catch (e) {
+          } catch {
             // Cross-origin stylesheets can't be accessed
           }
         });
@@ -84,7 +84,7 @@ export const CSSLoadingDiagnostic: React.FC<CSSDiagnosticProps> = ({ enabled = t
     <>
       {/* CSS Loading Indicator */}
       <div className="css-loading-indicator">
-        ⚠️ CSS Loading Issue Detected
+        WARNING: CSS Loading Issue Detected
       </div>
 
       {/* Diagnostic Panel */}
@@ -105,29 +105,29 @@ export const CSSLoadingDiagnostic: React.FC<CSSDiagnosticProps> = ({ enabled = t
         }}
       >
         <div style={{ fontWeight: 'bold', marginBottom: '8px', color: '#fbbf24' }}>
-          🔍 CSS Diagnostics
+          CSS DIAGNOSTICS
         </div>
         
         <div style={{ marginBottom: '4px' }}>
           <span style={{ color: tailwindLoaded ? '#10b981' : '#ef4444' }}>
-            {tailwindLoaded ? '✅' : '❌'}
+            {tailwindLoaded ? 'OK' : 'FAIL'}
           </span>
           {' '}Tailwind Base: {tailwindLoaded ? 'OK' : 'FAILED'}
         </div>
         
         <div style={{ marginBottom: '4px' }}>
           <span style={{ color: aviationColorsLoaded ? '#10b981' : '#ef4444' }}>
-            {aviationColorsLoaded ? '✅' : '❌'}
+            {aviationColorsLoaded ? 'OK' : 'FAIL'}
           </span>
           {' '}Aviation Colors: {aviationColorsLoaded ? 'OK' : 'FAILED'}
         </div>
         
         <div style={{ marginBottom: '4px' }}>
-          📄 Stylesheets: {stylesheetCount}
+          Stylesheets: {stylesheetCount}
         </div>
         
         <div style={{ marginBottom: '4px' }}>
-          📋 CSS Rules: {cssRules}
+          CSS Rules: {cssRules}
         </div>
         
         <div style={{ fontSize: '10px', color: '#9ca3af', marginTop: '8px' }}>
@@ -142,7 +142,7 @@ export const CSSLoadingDiagnostic: React.FC<CSSDiagnosticProps> = ({ enabled = t
             borderRadius: '4px',
             fontSize: '10px'
           }}>
-            💡 Fallback CSS activated
+            INFO: Fallback CSS activated
           </div>
         )}
       </div>

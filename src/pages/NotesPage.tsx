@@ -83,15 +83,15 @@ const NotesPage: React.FC = () => {
                 
                 <div className="flex items-center space-x-8 text-sm">
                   <span className="flex items-center space-x-2">
-                    <span>📄</span>
+                    <span className="text-blue-200">DOC</span>
                     <span>{currentSubject.documents.length} Documents</span>
                   </span>
                   <span className="flex items-center space-x-2">
-                    <span>🎥</span>
+                    <span className="text-blue-200">VID</span>
                     <span>{currentSubject.videos.length} Videos</span>
                   </span>
                   <span className="flex items-center space-x-2">
-                    <span>⏱️</span>
+                    <span className="text-blue-200">HRS</span>
                     <span>{currentSubject.estimatedStudyHours} Hours</span>
                   </span>
                 </div>
@@ -113,10 +113,10 @@ const NotesPage: React.FC = () => {
                         : 'border-transparent text-gray-500 hover:text-gray-700'
                     }`}
                   >
-                    {tab === 'notes' && '📄 Theory'}
-                    {tab === 'videos' && '🎥 Videos'}
-                    {tab === 'practice' && '✏️ Practice'}
-                    {tab === 'questions' && '❓ Questions'}
+                    {tab === 'notes' && 'Theory'}
+                    {tab === 'videos' && 'Videos'}
+                    {tab === 'practice' && 'Practice'}
+                    {tab === 'questions' && 'Questions'}
                   </button>
                 ))}
               </div>
@@ -164,7 +164,7 @@ const NotesPage: React.FC = () => {
                     </div>
                   ) : (
                     <div className="bg-white rounded-xl p-12 text-center">
-                      <div className="text-gray-400 text-6xl mb-4">✏️</div>
+                      <div className="text-gray-400 text-2xl font-bold mb-4">PRACTICE</div>
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">Practice Content Coming Soon</h3>
                       <p className="text-gray-600">
                         Practice exercises for {currentSubject.title} will be added soon.
@@ -199,9 +199,9 @@ const NotesPage: React.FC = () => {
                 <h1 className="text-4xl font-bold text-gray-900 mb-4">Flight Planning & Performance</h1>
                 <p className="text-xl text-gray-600 mb-8">Boeing 727 Flight Planning Course</p>
                 <div className="flex justify-center space-x-8 text-sm text-gray-500">
-                  <span>📄 {atplCurriculum.subjects.filter(s => s.documents.length > 0).length} Topics with Theory</span>
-                  <span>🎥 {atplCurriculum.subjects.filter(s => s.videos.length > 0).length} Video Tutorials</span>
-                  <span>⏱️ {atplCurriculum.subjects.reduce((sum, s) => sum + s.estimatedStudyHours, 0)} Study Hours</span>
+                  <span>{atplCurriculum.subjects.filter(s => s.documents.length > 0).length} Topics with Theory</span>
+                  <span>{atplCurriculum.subjects.filter(s => s.videos.length > 0).length} Video Tutorials</span>
+                  <span>{atplCurriculum.subjects.reduce((sum, s) => sum + s.estimatedStudyHours, 0)} Study Hours</span>
                 </div>
               </div>
             </div>
@@ -218,8 +218,8 @@ const NotesPage: React.FC = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-aviation-primary focus:border-transparent text-sm shadow-sm"
                 />
-                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">
-                  🔍
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm font-medium">
+                  SEARCH
                 </div>
               </div>
             </div>
@@ -229,7 +229,7 @@ const NotesPage: React.FC = () => {
           <div className="max-w-7xl mx-auto px-6 py-8">
             {filteredSubjects.length === 0 ? (
               <div className="text-center py-16">
-                <div className="text-gray-400 text-6xl mb-4">🔍</div>
+                <div className="text-gray-400 text-2xl font-bold mb-4">NO RESULTS</div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">No topics found</h3>
                 <p className="text-gray-600">Try adjusting your search term</p>
               </div>
@@ -257,38 +257,38 @@ const TopicCard: React.FC<{
 }> = ({ subject, onClick }) => {
   const getTopicIcon = (subjectId: string) => {
     const iconMap: Record<string, string> = {
-      'tas_heading_ground_speed': '🧭',
-      'speed_sound_mach_tat': '🔊',
-      'route_sector_winds_temp': '🌪️',
-      'magnetic_variation': '🧲',
-      'ins_data': '📡',
-      'climb_tables': '📈',
-      'descent_tables': '📉',
-      'altitude_capability': '⛰️',
-      'cruise_data': '✈️',
-      'buffet_boundary_charts': '📊',
-      'flight_planning_basics': '📋',
-      'real_flight_plans': '🗺️',
-      'step_climbs': '🪜',
-      'backwards_flight_plans': '↩️',
-      'max_payload_min_fuel_abnormal': '⚖️',
-      'depressurised_flight': '💨',
-      'yaw_damper_inoperative': '⚙️',
-      'tailskid_extended': '🦽',
-      'landing_gear_extended': '🛬',
-      'one_engine_inoperative': '🔧',
-      'fuel_dumping': '⛽',
-      'holding_fuel': '🔄',
-      'company_fuel_policy': '📜',
-      'minimum_fuel_requirements': '⚡',
-      'minimum_aerodrome_standards': '🏢',
-      'inflight_replanning': '🔀',
-      'boeing_727_weight_limits': '🏋️',
-      'destination_alternate_fuel': '🎯',
-      'equi_time_point': '⏰',
-      'point_no_return': '🚨'
+      'tas_heading_ground_speed': 'NAV',
+      'speed_sound_mach_tat': 'SPD',
+      'route_sector_winds_temp': 'WX',
+      'magnetic_variation': 'MAG',
+      'ins_data': 'INS',
+      'climb_tables': 'CLB',
+      'descent_tables': 'DES',
+      'altitude_capability': 'ALT',
+      'cruise_data': 'CRZ',
+      'buffet_boundary_charts': 'BUF',
+      'flight_planning_basics': 'FPL',
+      'real_flight_plans': 'PLN',
+      'step_climbs': 'STP',
+      'backwards_flight_plans': 'REV',
+      'max_payload_min_fuel_abnormal': 'WGT',
+      'depressurised_flight': 'DPR',
+      'yaw_damper_inoperative': 'YAW',
+      'tailskid_extended': 'TSK',
+      'landing_gear_extended': 'LDG',
+      'one_engine_inoperative': 'ENG',
+      'fuel_dumping': 'DMP',
+      'holding_fuel': 'HLD',
+      'company_fuel_policy': 'POL',
+      'minimum_fuel_requirements': 'MIN',
+      'minimum_aerodrome_standards': 'STD',
+      'inflight_replanning': 'RPL',
+      'boeing_727_weight_limits': 'LIM',
+      'destination_alternate_fuel': 'ALT',
+      'equi_time_point': 'ETP',
+      'point_no_return': 'PNR'
     };
-    return iconMap[subjectId] || '📚';
+    return iconMap[subjectId] || 'THY';
   };
 
   return (
@@ -299,7 +299,7 @@ const TopicCard: React.FC<{
     >
       {/* Large Icon */}
       <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="text-6xl mb-6 group-hover:scale-110 transition-transform duration-300">
+        <div className="w-16 h-16 bg-aviation-primary text-white rounded-xl flex items-center justify-center text-sm font-bold mb-6 group-hover:scale-110 transition-transform duration-300">
           {getTopicIcon(subject.id)}
         </div>
         
