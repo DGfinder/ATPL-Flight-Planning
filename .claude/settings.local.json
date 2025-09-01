@@ -20,7 +20,9 @@
       "Bash(pkill:*)",
       "Bash(npm run typecheck:*)",
       "Bash(rm:*)",
-      "Bash(timeout 15 npm run dev)"
+      "Bash(timeout 15 npm run dev)",
+      "Bash(curl:*)",
+      "Bash(ss:*)"
     ],
     "deny": [],
     "ask": []
