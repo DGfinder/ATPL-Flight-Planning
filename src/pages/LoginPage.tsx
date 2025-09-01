@@ -122,22 +122,64 @@ const LoginPage: React.FC = () => {
     resetForm();
   };
 
+  // Check if screen is desktop size (1024px+)
+  const [isDesktop, setIsDesktop] = React.useState(false);
+  
+  React.useEffect(() => {
+    const checkScreenSize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   return (
-    <div className="min-h-screen flex">
+    <div 
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        border: '2px solid red' // Debug border
+      }}
+    >
       {/* Left Side - Hero Image Section */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-aviation-navy via-aviation-primary to-aviation-secondary">
-        {/* Aviation Hero Image */}
+      {isDesktop && (
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: 'url(/logo.webp)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
+            width: '50%',
+            position: 'relative',
+            display: 'flex',
+            border: '2px solid blue' // Debug border
+          }}
+        >
+        {/* Aviation Hero Background */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #dc2626 100%)',
           }}
         />
         
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-aviation-navy/80 via-aviation-primary/70 to-aviation-secondary/60" />
+        {/* Aviation Pattern Overlay */}
+        <div 
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(`
+              <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <g fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+                  <path d="M50 20 L70 40 L50 60 L30 40 Z M20 50 L80 50 M50 10 L50 90"/>
+                  <circle cx="50" cy="50" r="25"/>
+                </g>
+              </svg>
+            `)}")`,
+            backgroundSize: '100px 100px',
+            backgroundPosition: '0 0, 50px 50px'
+          }}
+        />
+        
+        {/* Subtle texture */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/20" />
         
         {/* Hero Content */}
         <div className="relative z-10 flex flex-col justify-center px-12 py-16 text-white">
@@ -197,10 +239,21 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      )}
 
       {/* Right Side - Login Form Section */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gradient-to-br from-aviation-light via-white to-aviation-accent relative">
+      <div 
+        style={{
+          width: isDesktop ? '50%' : '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(135deg, #f1f5f9 0%, #ffffff 50%, #f8fafc 100%)',
+          position: 'relative',
+          border: '2px solid green' // Debug border
+        }}
+      >
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
@@ -221,7 +274,8 @@ const LoginPage: React.FC = () => {
         {/* Compact Header */}
         <div className="text-center mb-8">
           {/* Mobile Logo (only visible on mobile) */}
-          <div className="lg:hidden inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-aviation-navy to-aviation-primary rounded-2xl shadow-lg mb-6">
+          {!isDesktop && (
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-aviation-navy to-aviation-primary rounded-2xl shadow-lg mb-6">
             <img 
               src="/favicon.png" 
               alt="Aviation Theory Services"
@@ -239,13 +293,16 @@ const LoginPage: React.FC = () => {
                 }
               }}
             />
-          </div>
+            </div>
+          )}
           
           {/* Mobile Branding (only visible on mobile) */}
-          <div className="lg:hidden mb-6">
-            <h1 className="text-2xl font-bold text-aviation-navy mb-1">Aviation Theory Services</h1>
-            <p className="text-sm text-aviation-muted">ATPL Training Platform</p>
-          </div>
+          {!isDesktop && (
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold text-aviation-navy mb-1">Aviation Theory Services</h1>
+              <p className="text-sm text-aviation-muted">ATPL Training Platform</p>
+            </div>
+          )}
         </div>
 
         {/* Main Card */}
