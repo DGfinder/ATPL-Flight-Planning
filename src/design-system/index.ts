@@ -43,6 +43,25 @@ export {
   type CardFooterProps
 } from './components/Card';
 
+export {
+  Layout,
+  type LayoutProps
+} from './components/Layout';
+
+export {
+  Sidebar,
+  type SidebarProps
+} from './components/Sidebar';
+
+export {
+  Header,
+  Breadcrumb,
+  MobileMenuButton,
+  type HeaderProps,
+  type BreadcrumbProps,
+  type BreadcrumbItem
+} from './components/Header';
+
 /**
  * Design System Theme
  * Complete theme configuration for consistent styling
