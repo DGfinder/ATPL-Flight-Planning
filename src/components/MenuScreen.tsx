@@ -17,6 +17,28 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
   onNavigate,
   onShowAuthModal
 }) => {
+  // Calculate category performance
+  const calculateCategoryPerformance = () => {
+    const categoryStats: Record<QuestionCategory, { attempted: number; correct: number; accuracy: number }> = {} as Record<QuestionCategory, { attempted: number; correct: number; accuracy: number }>;
+    
+    Object.keys(questionCategories).forEach(cat => {
+      const category = cat as QuestionCategory;
+      const categoryAnswers = userAnswers.filter(a => {
+        const question = questions.find(q => q.id === a.questionId);
+        return question?.category === category;
+      });
+      
+      const attempted = categoryAnswers.length;
+      const correct = categoryAnswers.filter(a => a.isCorrect).length;
+      const accuracy = attempted > 0 ? (correct / attempted) * 100 : 0;
+      
+      categoryStats[category] = { attempted, correct, accuracy };
+    });
+    
+    return categoryStats;
+  };
+
+  const categoryPerformance = calculateCategoryPerformance();
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Hero Section */}
@@ -180,6 +202,68 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
         </div>
       </div>
 
+      {/* Category Performance Section */}
+      {userAnswers.length > 0 && (
+        <div className="max-w-7xl mx-auto px-6 pb-16">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Performance by Category</h2>
+            <p className="text-lg text-gray-600">Track your progress across different topic areas</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Object.entries(questionCategories).map(([categoryKey, categoryName]) => {
+              const category = categoryKey as QuestionCategory;
+              const stats = categoryPerformance[category];
+              const hasData = stats.attempted > 0;
+              
+              return (
+                <div key={categoryKey} className={`bg-white rounded-2xl p-6 shadow-lg border ${hasData ? 'border-gray-200 hover:shadow-xl' : 'border-gray-100 opacity-75'} transition-all duration-300`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-gray-900 text-lg">{categoryName}</h3>
+                    <div className={`w-3 h-3 rounded-full ${hasData ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                  </div>
+                  
+                  {hasData ? (
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Questions Attempted</span>
+                        <span className="font-semibold text-gray-900">{stats.attempted}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Correct Answers</span>
+                        <span className="font-semibold text-green-600">{stats.correct}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Accuracy</span>
+                        <span className={`font-semibold ${stats.accuracy >= 80 ? 'text-green-600' : stats.accuracy >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
+                          {stats.accuracy.toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
+                        <div 
+                          className={`h-2 rounded-full transition-all duration-300 ${stats.accuracy >= 80 ? 'bg-green-500' : stats.accuracy >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                          style={{ width: `${Math.min(stats.accuracy, 100)}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-4">
+                      <div className="text-gray-400 text-sm">No questions attempted yet</div>
+                      <button 
+                        onClick={() => onNavigate('questions')}
+                        className="mt-2 text-aviation-primary hover:text-aviation-secondary text-sm font-medium transition-colors duration-200"
+                      >
+                        Start practicing →
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Recent Activity Section */}
       {userAnswers.length > 0 && (
         <div className="max-w-7xl mx-auto px-6 pb-16">
@@ -193,6 +277,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               <div className="space-y-4">
                 {userAnswers.slice(-5).reverse().map((answer, index) => {
                   const question = questions.find(q => q.id === answer.questionId);
+                  const categoryName = question?.category ? questionCategories[question.category] : 'Unknown Category';
                   return (
                     <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
                       <div className="flex items-center space-x-4">
@@ -202,6 +287,9 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                           <div className="text-sm text-gray-500 flex items-center space-x-4">
                             <span>⏱️ {Math.round(answer.timeSpent)}s</span>
                             <span>📊 {answer.isCorrect ? 'Correct' : 'Incorrect'}</span>
+                            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">
+                              {categoryName}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -216,6 +304,50 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
           </div>
         </div>
       )}
+
+      {/* Category Quick Access Section */}
+      <div className="max-w-7xl mx-auto px-6 pb-16">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Study by Topic</h2>
+          <p className="text-gray-600">Focus your practice on specific areas of ATPL flight planning</p>
+        </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-16">
+          {Object.entries(questionCategories).map(([categoryKey, categoryName]) => {
+            const category = categoryKey as QuestionCategory;
+            const stats = categoryPerformance[category];
+            const questionsInCategory = questions.filter(q => q.category === category).length;
+            
+            return (
+              <button
+                key={categoryKey}
+                onClick={() => onNavigate('questions')}
+                className="bg-white hover:bg-gray-50 border border-gray-200 hover:border-aviation-primary rounded-xl p-4 transition-all duration-200 text-left group hover:shadow-md"
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-semibold text-gray-900 text-sm group-hover:text-aviation-primary transition-colors">
+                    {categoryName}
+                  </h3>
+                  <div className="text-xs text-gray-500">
+                    {questionsInCategory} questions
+                  </div>
+                </div>
+                {stats.attempted > 0 && (
+                  <div className="flex items-center space-x-2">
+                    <div className="flex-1 bg-gray-200 rounded-full h-1.5">
+                      <div 
+                        className={`h-1.5 rounded-full transition-all duration-300 ${stats.accuracy >= 80 ? 'bg-green-500' : stats.accuracy >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                        style={{ width: `${Math.min(stats.accuracy, 100)}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-xs text-gray-500">{stats.accuracy.toFixed(0)}%</span>
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Call to Action Section */}
       <div className="max-w-7xl mx-auto px-6 pb-16">
