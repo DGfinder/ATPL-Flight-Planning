@@ -1,23 +1,27 @@
 import '@testing-library/jest-dom'
+import { vi } from 'vitest'
 
 // Mock IntersectionObserver
-global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  observe() {
-    return null
+Object.defineProperty(global, 'IntersectionObserver', {
+  writable: true,
+  value: class IntersectionObserver {
+    constructor() {}
+    observe() {
+      return null
+    }
+    disconnect() {
+      return null
+    }
+    unobserve() {
+      return null
+    }
   }
-  disconnect() {
-    return null
-  }
-  unobserve() {
-    return null
-  }
-}
+})
 
 // Mock matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query: string) => ({
     matches: false,
     media: query,
     onchange: null,

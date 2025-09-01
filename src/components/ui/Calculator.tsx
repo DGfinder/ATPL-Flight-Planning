@@ -14,7 +14,7 @@ const buttons: Array<string[]> = [
   ['0', '.', '=', '+']
 ];
 
-const sanitize = (val: string): string => (val.replace(/[^0-9.\-]/g, ''));
+const sanitize = (val: string): string => (val.replace(/[^0-9.-]/g, ''));
 
 const Calculator: React.FC<CalculatorProps> = ({ onClose }) => {
   const [display, setDisplay] = useState<string>('0');
@@ -118,7 +118,7 @@ const Calculator: React.FC<CalculatorProps> = ({ onClose }) => {
             <button
               key={idx}
               className={`py-2 rounded text-sm font-medium transition-all ${
-                b.match(/^MC|MR|M\+|M−|C$/) ? 'aviation-button-secondary' :
+                b.match(/^MC|MR|M[+]|M−|C$/) ? 'aviation-button-secondary' :
                 b.match(/^[÷×\-\+=]$/) ? 'aviation-button' : 'aviation-button-secondary'
               }`}
               onClick={() => onButton(b)}
