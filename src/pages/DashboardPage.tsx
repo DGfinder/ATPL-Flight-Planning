@@ -82,11 +82,11 @@ const DashboardPage: React.FC = () => {
   const hasProgress = userAnswers.length > 0;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-aviation-navy to-aviation-primary rounded-2xl p-8 text-white text-center">
-        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="bg-gradient-to-r from-aviation-navy to-aviation-primary rounded-xl p-6 text-white text-center">
+        <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
           </svg>
         </div>
@@ -100,7 +100,7 @@ const DashboardPage: React.FC = () => {
 
       {/* Progress Overview */}
       {hasProgress && (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4">
           <div className="mb-4">
             <h3 className="text-lg font-semibold text-slate-700 mb-2">Study Progress</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -126,15 +126,15 @@ const DashboardPage: React.FC = () => {
       )}
 
       {/* Quick Actions Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Course Notes */}
         <div 
-          className="aviation-card p-6 group hover-lift cursor-pointer"
+          className="aviation-card p-4 group hover-lift cursor-pointer"
           onClick={() => navigate('/notes')}
         >
-          <div className="relative mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
-              <svg className="w-7 h-7 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="relative mb-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
+              <svg className="w-4 h-4 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
@@ -151,12 +151,12 @@ const DashboardPage: React.FC = () => {
 
         {/* Practice Questions */}
         <div 
-          className="aviation-card p-6 group hover-lift cursor-pointer"
+          className="aviation-card p-4 group hover-lift cursor-pointer"
           onClick={() => navigate('/questions')}
         >
-          <div className="relative mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
-              <svg className="w-7 h-7 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="relative mb-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
+              <svg className="w-4 h-4 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
@@ -173,12 +173,12 @@ const DashboardPage: React.FC = () => {
 
         {/* Trial Exam */}
         <div 
-          className="aviation-card p-6 group hover-lift cursor-pointer"
+          className="aviation-card p-4 group hover-lift cursor-pointer"
           onClick={() => navigate('/exam')}
         >
-          <div className="relative mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-aviation-secondary/10 to-aviation-secondary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-secondary/20 group-hover:to-aviation-secondary/10 transition-all duration-300">
-              <svg className="w-7 h-7 text-aviation-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="relative mb-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-aviation-secondary/10 to-aviation-secondary/5 rounded-xl flex items-center justify-center group-hover:from-aviation-secondary/20 group-hover:to-aviation-secondary/10 transition-all duration-300">
+              <svg className="w-4 h-4 text-aviation-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
@@ -200,12 +200,12 @@ const DashboardPage: React.FC = () => {
 
         {/* Flight Planning */}
         <div 
-          className="aviation-card p-6 group hover-lift cursor-pointer"
+          className="aviation-card p-4 group hover-lift cursor-pointer"
           onClick={() => navigate('/flight-plan')}
         >
-          <div className="relative mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
-              <svg className="w-7 h-7 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="relative mb-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
+              <svg className="w-4 h-4 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
               </svg>
             </div>
@@ -222,12 +222,12 @@ const DashboardPage: React.FC = () => {
 
         {/* Analytics */}
         <div 
-          className="aviation-card p-6 group hover-lift cursor-pointer"
+          className="aviation-card p-4 group hover-lift cursor-pointer"
           onClick={() => navigate('/analytics')}
         >
-          <div className="relative mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-2xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
-              <svg className="w-7 h-7 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="relative mb-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-aviation-navy/10 to-aviation-primary/5 rounded-xl flex items-center justify-center group-hover:from-aviation-navy/20 group-hover:to-aviation-primary/10 transition-all duration-300">
+              <svg className="w-4 h-4 text-aviation-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
@@ -245,7 +245,7 @@ const DashboardPage: React.FC = () => {
 
       {/* Recent Activity */}
       {hasProgress && (
-        <div className="aviation-card p-6">
+        <div className="aviation-card p-4">
           <h3 className="text-lg font-semibold text-slate-900 mb-4">Recent Activity</h3>
           <div className="space-y-3">
             {userAnswers.slice(-5).reverse().map((answer, index) => {
@@ -255,17 +255,17 @@ const DashboardPage: React.FC = () => {
               return (
                 <div key={index} className="group flex items-center justify-between p-4 bg-gradient-to-r from-slate-50/50 to-white rounded-xl border border-slate-100 hover:border-aviation-primary/20 hover:shadow-sm transition-all duration-200">
                   <div className="flex items-center space-x-4 flex-1 min-w-0">
-                    <div className={`relative w-10 h-10 rounded-xl flex items-center justify-center ${
+                    <div className={`relative w-8 h-8 rounded-lg flex items-center justify-center ${
                       answer.isCorrect 
                         ? 'bg-gradient-to-br from-aviation-secondary/10 to-aviation-secondary/5' 
                         : 'bg-gradient-to-br from-red-50 to-red-25'
                     }`}>
                       {answer.isCorrect ? (
-                        <svg className="w-5 h-5 text-aviation-secondary" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 text-aviation-secondary" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                       ) : (
-                        <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
                       )}

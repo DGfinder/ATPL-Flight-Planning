@@ -126,8 +126,8 @@ const QuestionsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="aviation-card p-8 text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-2 border-aviation-primary border-t-transparent mx-auto mb-4"></div>
+        <div className="aviation-card p-4 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-aviation-primary border-t-transparent mx-auto mb-3"></div>
           <p className="text-aviation-text">Loading questions...</p>
         </div>
       </div>
@@ -136,10 +136,10 @@ const QuestionsPage: React.FC = () => {
 
   if (!currentQuestion) {
     return (
-      <div className="p-8">
-        <div className="aviation-card p-8 text-center">
-          <div className="w-16 h-16 bg-aviation-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="p-4">
+        <div className="aviation-card p-4 text-center">
+          <div className="w-8 h-8 bg-aviation-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <svg className="w-4 h-4 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
@@ -164,9 +164,9 @@ const QuestionsPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Question Controls */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           {/* Category Filter */}
           <div className="flex items-center space-x-4">
