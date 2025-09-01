@@ -123,47 +123,129 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-aviation-light via-white to-aviation-accent flex items-center justify-center relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(`
-            <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-              <g fill="none" fill-rule="evenodd">
-                <g fill="#1e3a8a" fill-opacity="0.1">
-                  <path d="M30 0l30 30-30 30L0 30z"/>
-                </g>
-              </g>
-            </svg>
-          `)}")`,
-          backgroundSize: '60px 60px'
-        }} />
+    <div className="min-h-screen flex">
+      {/* Left Side - Hero Image Section */}
+      <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-aviation-navy via-aviation-primary to-aviation-secondary">
+        {/* Aviation Hero Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: 'url(/logo.webp)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        />
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-aviation-navy/80 via-aviation-primary/70 to-aviation-secondary/60" />
+        
+        {/* Hero Content */}
+        <div className="relative z-10 flex flex-col justify-center px-12 py-16 text-white">
+          <div className="max-w-md">
+            {/* Large Logo */}
+            <div className="mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl mb-4">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4s-2 2-3.5 3.5L11 16l-8.2 1.8c-.5.1-.8.6-.8 1.1s.3 1 .8 1.1L11 21l5.5-1.5c.4-.1.8-.6.8-1.1s-.4-1-.5-1.2z"/>
+                </svg>
+              </div>
+              <h1 className="text-4xl font-bold mb-2">Aviation Theory Services</h1>
+              <p className="text-xl text-white/90">ATPL Training Platform</p>
+            </div>
+            
+            {/* Hero Benefits */}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <span className="text-lg">Comprehensive ATPL Study Materials</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <span className="text-lg">Practice Exams & Question Banks</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  </svg>
+                </div>
+                <span className="text-lg">Flight Planning Tools</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+                  </svg>
+                </div>
+                <span className="text-lg">Progress Analytics & Tracking</span>
+              </div>
+            </div>
+            
+            {/* Professional Message */}
+            <div className="mt-12 p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
+              <p className="text-sm text-white/80 italic">
+                "Elevate your aviation career with comprehensive ATPL training designed by industry professionals."
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="relative z-10 w-full max-w-md px-4">
-        {/* Logo and Header */}
+      {/* Right Side - Login Form Section */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center bg-gradient-to-br from-aviation-light via-white to-aviation-accent relative">
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(`
+              <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <g fill="none" fill-rule="evenodd">
+                  <g fill="#1e3a8a" fill-opacity="0.1">
+                    <path d="M30 0l30 30-30 30L0 30z"/>
+                  </g>
+                </g>
+              </svg>
+            `)}")`,
+            backgroundSize: '60px 60px'
+          }} />
+        </div>
+
+        <div className="relative z-10 w-full max-w-md px-6 py-8">
+        {/* Compact Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-aviation-navy to-aviation-primary rounded-2xl shadow-lg mb-6">
+          {/* Mobile Logo (only visible on mobile) */}
+          <div className="lg:hidden inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-aviation-navy to-aviation-primary rounded-2xl shadow-lg mb-6">
             <img 
               src="/favicon.png" 
               alt="Aviation Theory Services"
-              className="w-12 h-12 object-contain"
+              className="w-10 h-10 object-contain"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
                 const fallback = target.parentElement;
                 if (fallback) {
                   fallback.innerHTML = `
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4s-2 2-3.5 3.5L11 16l-8.2 1.8c-.5.1-.8.6-.8 1.1s.3 1 .8 1.1L11 21l5.5-1.5c.4-.1.8-.6.8-1.1s-.4-1-.5-1.2z" />
                     </svg>
                   `;
                 }
               }}
             />
           </div>
-          <h1 className="text-2xl font-bold text-aviation-navy mb-2">Aviation Theory Services</h1>
-          <p className="text-aviation-muted">ATPL Training Platform</p>
+          
+          {/* Mobile Branding (only visible on mobile) */}
+          <div className="lg:hidden mb-6">
+            <h1 className="text-2xl font-bold text-aviation-navy mb-1">Aviation Theory Services</h1>
+            <p className="text-sm text-aviation-muted">ATPL Training Platform</p>
+          </div>
         </div>
 
         {/* Main Card */}
@@ -389,9 +471,10 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="text-center mt-8 text-xs text-aviation-muted">
-          <p>© 2024 Aviation Theory Services. All rights reserved.</p>
+          {/* Footer */}
+          <div className="text-center mt-8 text-xs text-aviation-muted">
+            <p>© 2024 Aviation Theory Services. All rights reserved.</p>
+          </div>
         </div>
       </div>
     </div>
