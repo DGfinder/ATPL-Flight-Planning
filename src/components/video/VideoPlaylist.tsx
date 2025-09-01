@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import YouTubePlayer from './YouTubePlayer';
 import type { AtplVideo } from '../../types';
+import { Button } from '../../design-system';
 
 interface VideoPlaylistProps {
   videos: AtplVideo[];
@@ -77,7 +78,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({
           {/* Playlist header */}
           <div className="bg-white rounded-lg p-6 shadow-lg">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-aviation-primary text-white rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
@@ -125,8 +126,8 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({
                   <button
                     key={video.id}
                     onClick={() => handleVideoSelect(index)}
-                    className={`w-full text-left p-4 border-b border-gray-100 hover:bg-gradient-to-r hover:from-aviation-primary/5 hover:to-blue-50 transition-all duration-300 group ${
-                      isActive ? 'bg-gradient-to-r from-aviation-primary/10 to-blue-50 border-l-4 border-l-aviation-primary shadow-md' : ''
+                    className={`w-full text-left p-4 border-b border-gray-100 hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-50 transition-all duration-300 group ${
+                      isActive ? 'bg-gradient-to-r from-blue-100 to-blue-50 border-l-4 border-l-blue-600 shadow-md' : ''
                     }`}
                   >
                     <div className="flex items-start space-x-4">
@@ -152,7 +153,7 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({
                             isWatched
                               ? 'bg-green-500 text-white'
                               : isActive
-                              ? 'bg-aviation-primary text-white'
+                              ? 'bg-blue-600 text-white'
                               : 'bg-gray-400 text-white'
                           }`}>
                             {isWatched ? (
@@ -169,17 +170,17 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({
                       {/* Video info */}
                       <div className="flex-1 min-w-0">
                         <h4 className={`font-semibold text-sm leading-tight mb-1 ${
-                          isActive ? 'text-aviation-primary' : 'text-gray-900 group-hover:text-aviation-primary'
+                          isActive ? 'text-blue-600' : 'text-gray-900 group-hover:text-blue-600'
                         } transition-colors`}>
                           {video.title}
                         </h4>
                         <p className={`text-xs leading-relaxed line-clamp-2 mb-2 ${
-                          isActive ? 'text-aviation-primary/80' : 'text-gray-600'
+                          isActive ? 'text-blue-500' : 'text-gray-600'
                         }`}>
                           {video.description}
                         </p>
                         <div className={`flex items-center space-x-3 text-xs ${
-                          isActive ? 'text-aviation-primary/60' : 'text-gray-500'
+                          isActive ? 'text-blue-500' : 'text-gray-500'
                         }`}>
                           <span className="flex items-center space-x-1">
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -220,20 +221,24 @@ const VideoPlaylist: React.FC<VideoPlaylistProps> = ({
               <span className="text-sm font-medium text-gray-700">Playlist Controls</span>
             </div>
             <div className="space-y-2">
-              <button
+              <Button
+                variant="secondary"
+                size="sm"
                 onClick={() => setCurrentVideoIndex(Math.max(0, currentVideoIndex - 1))}
                 disabled={currentVideoIndex === 0}
-                className="w-full px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full"
               >
                 ⏮️ Previous Video
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
                 onClick={() => setCurrentVideoIndex(Math.min(sortedVideos.length - 1, currentVideoIndex + 1))}
                 disabled={currentVideoIndex === sortedVideos.length - 1}
-                className="w-full px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full"
               >
                 Next Video ⏭️
-              </button>
+              </Button>
             </div>
             <div className="mt-3 pt-3 border-t border-gray-200">
               <label className="flex items-center space-x-2 text-sm text-gray-700">

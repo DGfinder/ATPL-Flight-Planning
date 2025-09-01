@@ -99,6 +99,11 @@ export function injectDesignTokens(target: HTMLElement = document.documentElemen
 }
 
 /**
+ * Design System Hook
+ */
+export { useDesignSystem } from './hooks/useDesignSystem';
+
+/**
  * Type exports for better TypeScript support
  */
 export type AviationTheme = typeof aviationTheme;

@@ -9,6 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
+    "check-design-system": "node scripts/check-design-system.cjs",
+    "fix-ui-issues": "node scripts/scan-ui-issues.js",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "typecheck": "tsc --noEmit"

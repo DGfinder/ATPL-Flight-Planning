@@ -1,417 +1,321 @@
 import React, { forwardRef } from 'react';
 import { colors, colorTokens } from '../colors';
 import { spacing } from '../spacing';
+import { typography } from '../typography';
 
 /**
- * Card variant definitions
+ * Card Component Props
  */
-export type CardVariant = 'default' | 'elevated' | 'interactive' | 'outline' | 'gradient';
+export interface CardProps {
+  children: React.ReactNode;
+  variant?: 'default' | 'elevated' | 'outline' | 'gradient' | 'interactive';
+  padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
+  loading?: boolean;
+  onClick?: () => void;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * Card Variant Types
+ */
+export type CardVariant = 'default' | 'elevated' | 'outline' | 'gradient' | 'interactive';
 export type CardPadding = 'none' | 'sm' | 'md' | 'lg' | 'xl';
 
 /**
- * Card component props
+ * Card Header Props
  */
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: CardVariant;
-  padding?: CardPadding;
-  hover?: boolean;
-  clickable?: boolean;
-  loading?: boolean;
+export interface CardHeaderProps {
+  title?: string;
+  subtitle?: string;
   children?: React.ReactNode;
-  as?: 'div' | 'article' | 'section';
+  style?: React.CSSProperties;
 }
 
 /**
- * Get card styles based on variant and options
+ * Card Content Props
  */
-function getCardStyles(
-  variant: CardVariant,
-  padding: CardPadding,
-  clickable: boolean,
-  loading: boolean
-) {
-  // Base styles for all cards
-  const baseStyles: React.CSSProperties = {
-    position: 'relative',
-    overflow: 'hidden',
-    borderRadius: spacing.radius['2xl'],
-    transition: 'all 300ms cubic-bezier(0.16, 1, 0.3, 1)',
-    opacity: loading ? 0.7 : 1,
-    pointerEvents: loading ? 'none' : 'auto'
-  };
-
-  // Padding styles
-  const paddingStyles = (() => {
-    switch (padding) {
-      case 'none': return {};
-      case 'sm': return { padding: spacing.component.card.sm };
-      case 'md': return { padding: spacing.component.card.md };
-      case 'lg': return { padding: spacing.component.card.lg };
-      case 'xl': return { padding: spacing.component.card.xl };
-      default: return {};
-    }
-  })();
-
-  // Variant-specific styles
-  const variantStyles = {
-    default: {
-      background: colorTokens.gradients.card,
-      border: `1px solid ${colors.withOpacity(colors.gray[200], 0.8)}`,
-      boxShadow: spacing.shadows.md
-    },
-    elevated: {
-      background: colorTokens.gradients.card,
-      border: `1px solid ${colors.withOpacity(colors.gray[200], 0.5)}`,
-      boxShadow: spacing.shadows.lg
-    },
-    interactive: {
-      background: colorTokens.gradients.card,
-      border: `1px solid ${colors.withOpacity(colors.gray[200], 0.8)}`,
-      boxShadow: spacing.shadows.md,
-      cursor: clickable ? 'pointer' : 'default'
-    },
-    outline: {
-      background: colors.transparent,
-      border: `1px solid ${colorTokens.borders.medium}`,
-      boxShadow: 'none'
-    },
-    gradient: {
-      background: colorTokens.gradients.primary,
-      border: 'none',
-      boxShadow: `0 10px 15px -3px ${colors.withOpacity(colors.aviation.primary, 0.1)}, 0 4px 6px -4px ${colors.withOpacity(colors.aviation.primary, 0.1)}`,
-      color: colors.white
-    }
-  };
-
-  // Add highlight effect for elevated cards
-  const highlightStyles = variant === 'default' || variant === 'elevated' || variant === 'interactive' ? {
-    '::before': {
-      content: '""',
-      position: 'absolute' as const,
-      top: 0,
-      left: 0,
-      right: 0,
-      height: '1px',
-      background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent)'
-    }
-  } : {};
-
-  return {
-    ...baseStyles,
-    ...paddingStyles,
-    ...variantStyles[variant],
-    ...highlightStyles
-  };
+export interface CardContentProps {
+  children: React.ReactNode;
+  style?: React.CSSProperties;
 }
 
 /**
- * Get hover styles for interactive cards
+ * Card Footer Props
  */
-function getHoverStyles(variant: CardVariant, clickable: boolean): React.CSSProperties {
-  if (!clickable && variant !== 'interactive') return {};
-
-  const hoverStyles = {
-    default: {
-      transform: 'translateY(-2px)',
-      boxShadow: spacing.shadows.xl,
-      borderColor: colors.withOpacity(colors.aviation.primary, 0.2)
-    },
-    elevated: {
-      transform: 'translateY(-4px)',
-      boxShadow: spacing.shadows['2xl'],
-      borderColor: colors.withOpacity(colors.aviation.primary, 0.2)
-    },
-    interactive: {
-      transform: 'translateY(-2px)',
-      boxShadow: spacing.shadows.xl,
-      borderColor: colors.withOpacity(colors.aviation.primary, 0.3)
-    },
-    outline: {
-      borderColor: colorTokens.borders.strong,
-      background: colors.withOpacity(colors.aviation.primary, 0.02)
-    },
-    gradient: {
-      transform: 'translateY(-2px)',
-      boxShadow: `0 20px 25px -5px ${colors.withOpacity(colors.aviation.primary, 0.15)}, 0 8px 10px -6px ${colors.withOpacity(colors.aviation.primary, 0.1)}`
-    }
-  };
-
-  return hoverStyles[variant];
-}
-
-/**
- * Loading skeleton overlay
- */
-function LoadingOverlay() {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
-        animation: 'shimmer 2s infinite',
-        pointerEvents: 'none'
-      }}
-    >
-      <style>
-        {`
-          @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(200%); }
-          }
-        `}
-      </style>
-    </div>
-  );
+export interface CardFooterProps {
+  children: React.ReactNode;
+  style?: React.CSSProperties;
 }
 
 /**
  * Aviation Card Component
  * 
- * A flexible card component that follows the aviation design system.
- * Supports multiple variants, interactive states, and loading indicators.
- * 
- * @example
- * ```tsx
- * <Card variant="elevated" padding="lg" hover clickable>
- *   <h3>Card Title</h3>
- *   <p>Card content goes here...</p>
- * </Card>
- * 
- * <Card variant="gradient" padding="md">
- *   <h2>Special Announcement</h2>
- * </Card>
- * 
- * <Card loading padding="md">
- *   <p>Loading content...</p>
- * </Card>
- * ```
+ * Professional card component with consistent aviation styling using inline CSS
  */
-export const Card = forwardRef<HTMLDivElement, CardProps>(
-  (
-    {
-      variant = 'default',
-      padding = 'md',
-      hover = false,
-      clickable = false,
-      loading = false,
-      children,
-      className = '',
-      style,
-      as: Component = 'div',
-      onMouseEnter,
-      onMouseLeave,
-      ...props
+export const Card = forwardRef<HTMLDivElement, CardProps>(({
+  children,
+  variant = 'default',
+  padding = 'md',
+  loading = false,
+  onClick,
+  className,
+  style,
+  ...props
+}, ref) => {
+  // Base card styles
+  const baseStyle: React.CSSProperties = {
+    position: 'relative',
+    borderRadius: spacing.radius.xl,
+    overflow: 'hidden',
+    transition: 'all 300ms cubic-bezier(0.16, 1, 0.3, 1)',
+    fontFamily: typography.fontFamilies.primary.join(', '),
+    cursor: onClick ? 'pointer' : 'default',
+    ...style
+  };
+
+  // Variant styles
+  const variantStyles: Record<CardVariant, React.CSSProperties> = {
+    default: {
+      background: 'linear-gradient(135deg, #ffffff 0%, #fefefe 100%)',
+      border: `1px solid ${colors.gray[200]}`,
+      boxShadow: spacing.shadows.md
     },
-    ref
-  ) => {
-    const [isHovered, setIsHovered] = React.useState(false);
-
-    const cardStyles = getCardStyles(variant, padding, clickable, loading);
-    
-    let dynamicStyles: React.CSSProperties = cardStyles;
-    if (isHovered && (hover || clickable) && !loading) {
-      dynamicStyles = { ...dynamicStyles, ...getHoverStyles(variant, clickable) };
+    elevated: {
+      background: 'linear-gradient(135deg, #ffffff 0%, #fefefe 100%)',
+      border: `1px solid ${colors.gray[100]}`,
+      boxShadow: spacing.shadows.lg
+    },
+    outline: {
+      background: colors.transparent,
+      border: `1px solid ${colors.gray[300]}`,
+      boxShadow: 'none'
+    },
+    gradient: {
+      background: colorTokens.gradients.primary,
+      border: 'none',
+      boxShadow: spacing.shadows.lg,
+      color: colors.white
+    },
+    interactive: {
+      background: 'linear-gradient(135deg, #ffffff 0%, #fefefe 100%)',
+      border: `1px solid ${colors.gray[200]}`,
+      boxShadow: spacing.shadows.md,
+      cursor: 'pointer'
     }
+  };
 
-    const combinedStyles: React.CSSProperties = {
-      ...dynamicStyles,
-      ...style
-    };
+  // Padding styles
+  const paddingStyles: Record<CardPadding, React.CSSProperties> = {
+    none: { padding: 0 },
+    sm: { padding: spacing.scale[3] },
+    md: { padding: spacing.scale[4] },
+    lg: { padding: spacing.scale[6] },
+    xl: { padding: spacing.scale[8] }
+  };
 
-    const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-      if (hover || clickable) {
-        setIsHovered(true);
-      }
-      onMouseEnter?.(e);
-    };
+  // Hover effects
+  const hoverStyle: React.CSSProperties = onClick ? {
+    transform: 'translateY(-2px)',
+    boxShadow: spacing.shadows.xl
+  } : {};
 
-    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-      setIsHovered(false);
-      onMouseLeave?.(e);
-    };
+  // Loading overlay
+  const loadingOverlayStyle: React.CSSProperties = {
+    position: 'absolute',
+    inset: 0,
+    background: 'rgba(255, 255, 255, 0.8)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 10
+  };
 
-    return (
-      <Component
-        ref={ref}
-        style={combinedStyles}
-        className={className}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        {...props}
-      >
-        {children}
-        {loading && <LoadingOverlay />}
-      </Component>
-    );
-  }
-);
+  const combinedStyles: React.CSSProperties = {
+    ...baseStyle,
+    ...variantStyles[variant],
+    ...paddingStyles[padding],
+    ...(onClick ? hoverStyle : {})
+  };
+
+  return (
+    <div
+      ref={ref}
+      className={className}
+      style={combinedStyles}
+      onClick={loading ? undefined : onClick}
+      {...props}
+    >
+      {loading && (
+        <div style={loadingOverlayStyle}>
+          <div style={{
+            width: '2rem',
+            height: '2rem',
+            border: '2px solid transparent',
+            borderTop: `2px solid ${colors.aviation.primary}`,
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }} />
+        </div>
+      )}
+      {children}
+    </div>
+  );
+});
 
 Card.displayName = 'Card';
 
 /**
  * Card Header Component
- * Provides consistent header styling within cards
  */
-export interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  title?: string;
-  subtitle?: string;
-  icon?: React.ReactNode;
-  action?: React.ReactNode;
-}
+export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(({
+  title,
+  subtitle,
+  children,
+  style,
+  ...props
+}, ref) => {
+  const headerStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.scale[4],
+    ...style
+  };
 
-export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
-  ({ title, subtitle, icon, action, children, style, ...props }, ref) => {
-    const headerStyles: React.CSSProperties = {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: spacing.scale[4],
-      ...style
-    };
+  const titleStyle: React.CSSProperties = {
+    fontSize: '1.125rem',
+    fontWeight: 600,
+    color: 'inherit',
+    margin: 0,
+    lineHeight: 1.4
+  };
 
-    return (
-      <div ref={ref} style={headerStyles} {...props}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.scale[3] }}>
-          {icon && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '2rem',
-                height: '2rem',
-                borderRadius: spacing.radius.lg,
-                background: colors.withOpacity(colors.aviation.primary, 0.1),
-                color: colors.aviation.primary
-              }}
-            >
-              {icon}
-            </div>
-          )}
-          <div>
-            {title && (
-              <h3
-                style={{
-                  fontSize: '1.125rem',
-                  fontWeight: 600,
-                  color: colorTokens.text.primary,
-                  margin: 0,
-                  lineHeight: 1.5
-                }}
-              >
-                {title}
-              </h3>
-            )}
-            {subtitle && (
-              <p
-                style={{
-                  fontSize: '0.875rem',
-                  color: colorTokens.text.muted,
-                  margin: 0,
-                  lineHeight: 1.5
-                }}
-              >
-                {subtitle}
-              </p>
-            )}
-          </div>
+  const subtitleStyle: React.CSSProperties = {
+    fontSize: '0.875rem',
+    color: colors.gray[500],
+    margin: '0.25rem 0 0 0',
+    lineHeight: 1.4
+  };
+
+  return (
+    <div ref={ref} style={headerStyle} {...props}>
+      {(title || subtitle) && (
+        <div>
+          {title && <h3 style={titleStyle}>{title}</h3>}
+          {subtitle && <p style={subtitleStyle}>{subtitle}</p>}
         </div>
-        {action && (
-          <div style={{ flexShrink: 0 }}>
-            {action}
-          </div>
-        )}
-        {children}
-      </div>
-    );
-  }
-);
+      )}
+      {children}
+    </div>
+  );
+});
 
 CardHeader.displayName = 'CardHeader';
 
 /**
  * Card Content Component
- * Provides consistent content spacing within cards
  */
-export interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-}
+export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(({
+  children,
+  style,
+  ...props
+}, ref) => {
+  const contentStyle: React.CSSProperties = {
+    ...style
+  };
 
-export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
-  ({ children, style, ...props }, ref) => {
-    const contentStyles: React.CSSProperties = {
-      lineHeight: 1.6,
-      ...style
-    };
-
-    return (
-      <div ref={ref} style={contentStyles} {...props}>
-        {children}
-      </div>
-    );
-  }
-);
+  return (
+    <div ref={ref} style={contentStyle} {...props}>
+      {children}
+    </div>
+  );
+});
 
 CardContent.displayName = 'CardContent';
 
 /**
  * Card Footer Component
- * Provides consistent footer styling within cards
  */
-export interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-  justify?: 'start' | 'center' | 'end' | 'between';
-}
+export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(({
+  children,
+  style,
+  ...props
+}, ref) => {
+  const footerStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: spacing.scale[3],
+    marginTop: spacing.scale[4],
+    paddingTop: spacing.scale[4],
+    borderTop: `1px solid ${colors.gray[200]}`,
+    ...style
+  };
 
-export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
-  ({ children, justify = 'end', style, ...props }, ref) => {
-    const justifyContent = {
-      start: 'flex-start',
-      center: 'center',
-      end: 'flex-end',
-      between: 'space-between'
-    };
-
-    const footerStyles: React.CSSProperties = {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: justifyContent[justify],
-      gap: spacing.scale[3],
-      marginTop: spacing.scale[6],
-      paddingTop: spacing.scale[4],
-      borderTop: `1px solid ${colorTokens.borders.light}`,
-      ...style
-    };
-
-    return (
-      <div ref={ref} style={footerStyles} {...props}>
-        {children}
-      </div>
-    );
-  }
-);
+  return (
+    <div ref={ref} style={footerStyle} {...props}>
+      {children}
+    </div>
+  );
+});
 
 CardFooter.displayName = 'CardFooter';
 
 /**
- * Preset card components for common use cases
+ * Interactive Card Component
  */
-export const InteractiveCard = (props: Omit<CardProps, 'variant' | 'hover' | 'clickable'>) => (
-  <Card {...props} variant="interactive" hover clickable />
-);
+export const InteractiveCard = forwardRef<HTMLDivElement, CardProps>((props, ref) => (
+  <Card
+    ref={ref}
+    variant="default"
+    {...props}
+    style={{
+      cursor: 'pointer',
+      ...props.style
+    }}
+  />
+));
 
-export const ElevatedCard = (props: Omit<CardProps, 'variant'>) => (
-  <Card {...props} variant="elevated" />
-);
+InteractiveCard.displayName = 'InteractiveCard';
 
-export const GradientCard = (props: Omit<CardProps, 'variant'>) => (
-  <Card {...props} variant="gradient" />
-);
+/**
+ * Elevated Card Component
+ */
+export const ElevatedCard = forwardRef<HTMLDivElement, CardProps>((props, ref) => (
+  <Card
+    ref={ref}
+    variant="elevated"
+    {...props}
+  />
+));
 
-export const OutlineCard = (props: Omit<CardProps, 'variant'>) => (
-  <Card {...props} variant="outline" />
-);
+ElevatedCard.displayName = 'ElevatedCard';
+
+/**
+ * Gradient Card Component
+ */
+export const GradientCard = forwardRef<HTMLDivElement, CardProps>((props, ref) => (
+  <Card
+    ref={ref}
+    variant="gradient"
+    {...props}
+  />
+));
+
+GradientCard.displayName = 'GradientCard';
+
+/**
+ * Outline Card Component
+ */
+export const OutlineCard = forwardRef<HTMLDivElement, CardProps>((props, ref) => (
+  <Card
+    ref={ref}
+    variant="outline"
+    {...props}
+  />
+));
+
+OutlineCard.displayName = 'OutlineCard';
+
+export default Card;

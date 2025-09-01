@@ -6,7 +6,8 @@ import {
   CardContent, 
   InteractiveCard,
   GradientCard,
-  SecondaryButton
+  SecondaryButton,
+  useDesignSystem
 } from '../design-system';
 import type { Question, UserAnswer, QuestionCategory, PerformanceMetrics } from '../types';
 import { sampleQuestions, questionCategories } from '../data/questions';
@@ -16,61 +17,61 @@ import { useAuth } from '../hooks/useAuth';
 
 // Icons components for better maintenance
 const AirplaneIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
   </svg>
 );
 
 const DocumentIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
   </svg>
 );
 
 const QuestionIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
 );
 
 const ClockIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
 );
 
 const MapIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
   </svg>
 );
 
 const ChartIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
   </svg>
 );
 
 const ArrowRightIcon = () => (
-  <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ marginLeft: '0.5rem', transition: 'transform 0.2s ease' }}>
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
   </svg>
 );
 
 const StarIcon = () => (
-  <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+  <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
   </svg>
 );
 
 const CheckIcon = () => (
-  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+  <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
   </svg>
 );
 
 const XIcon = () => (
-  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+  <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
     <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
   </svg>
 );
@@ -93,37 +94,32 @@ const ActionCard: React.FC<ActionCardProps> = ({
   onClick, 
   variant = 'default' 
 }) => {
-  const cardStyle: React.CSSProperties = {
-    position: 'relative',
-    cursor: 'pointer'
-  };
+  const { colors, spacing, styles } = useDesignSystem();
 
   const iconWrapperStyle: React.CSSProperties = {
     width: '2rem',
     height: '2rem',
-    borderRadius: '0.75rem',
+    borderRadius: spacing.radius.lg,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.1) 0%, rgba(30, 58, 138, 0.05) 100%)',
-    color: '#1e3a8a',
-    marginBottom: '0.75rem',
+    background: `linear-gradient(135deg, ${colors.withOpacity(colors.aviation.primary, 0.1)} 0%, ${colors.withOpacity(colors.aviation.primary, 0.05)} 100%)`,
+    color: colors.aviation.primary,
+    marginBottom: spacing.scale[3],
     transition: 'all 300ms ease'
   };
 
   const titleStyle: React.CSSProperties = {
+    ...styles.heading,
     fontSize: '1.125rem',
-    fontWeight: 600,
-    color: '#0f172a',
-    marginBottom: '0.5rem',
+    marginBottom: spacing.scale[2],
     lineHeight: 1.5
   };
 
   const descriptionStyle: React.CSSProperties = {
+    ...styles.body,
     fontSize: '0.875rem',
-    color: '#64748b',
-    lineHeight: 1.6,
-    marginBottom: '1rem'
+    marginBottom: spacing.scale[4]
   };
 
   const ctaStyle: React.CSSProperties = {
@@ -131,17 +127,15 @@ const ActionCard: React.FC<ActionCardProps> = ({
     alignItems: 'center',
     fontSize: '0.875rem',
     fontWeight: 500,
-    color: '#1e3a8a'
+    color: colors.aviation.primary
   };
 
   return (
     <InteractiveCard 
       padding="lg" 
-      style={cardStyle}
       onClick={onClick}
-      className="group"
     >
-      <div style={iconWrapperStyle} className="group-hover:bg-opacity-20 transition-all duration-300">
+      <div style={iconWrapperStyle}>
         {icon}
       </div>
       
@@ -183,11 +177,13 @@ interface ProgressMetricProps {
 }
 
 const ProgressMetric: React.FC<ProgressMetricProps> = ({ label, value, color }) => {
-  const colors = {
-    primary: '#1e3a8a',
-    secondary: '#dc2626',
-    navy: '#0f172a',
-    muted: '#64748b'
+  const { colors, spacing, styles } = useDesignSystem();
+  
+  const colorMap = {
+    primary: colors.aviation.primary,
+    secondary: colors.aviation.secondary,
+    navy: colors.aviation.navy,
+    muted: colors.aviation.muted
   };
 
   const metricStyle: React.CSSProperties = {
@@ -197,14 +193,13 @@ const ProgressMetric: React.FC<ProgressMetricProps> = ({ label, value, color }) 
   const valueStyle: React.CSSProperties = {
     fontSize: '2rem',
     fontWeight: 700,
-    color: colors[color],
+    color: colorMap[color],
     lineHeight: 1.2,
-    marginBottom: '0.25rem'
+    marginBottom: spacing.scale[1]
   };
 
   const labelStyle: React.CSSProperties = {
-    fontSize: '0.875rem',
-    color: '#64748b',
+    ...styles.caption,
     lineHeight: 1.4
   };
 
@@ -225,21 +220,23 @@ interface ActivityItemProps {
 }
 
 const ActivityItem: React.FC<ActivityItemProps> = ({ question, answer }) => {
+  const { colors, spacing, styles } = useDesignSystem();
+
   const containerStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '1rem',
-    background: 'linear-gradient(135deg, rgba(248, 250, 252, 0.5) 0%, #ffffff 100%)',
-    borderRadius: '0.75rem',
-    border: '1px solid #e2e8f0',
+    padding: spacing.scale[4],
+    background: `linear-gradient(135deg, ${colors.withOpacity(colors.aviation.light, 0.5)} 0%, ${colors.white} 100%)`,
+    borderRadius: spacing.radius.lg,
+    border: `1px solid ${colors.gray[200]}`,
     transition: 'all 200ms ease'
   };
 
   const leftSectionStyle: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    gap: '1rem',
+    gap: spacing.scale[4],
     flex: 1,
     minWidth: 0
   };
@@ -247,14 +244,14 @@ const ActivityItem: React.FC<ActivityItemProps> = ({ question, answer }) => {
   const iconWrapperStyle: React.CSSProperties = {
     width: '2rem',
     height: '2rem',
-    borderRadius: '0.5rem',
+    borderRadius: spacing.radius.md,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     background: answer.isCorrect 
-      ? 'linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%)'
-      : 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%)',
-    color: answer.isCorrect ? '#dc2626' : '#ef4444'
+      ? `linear-gradient(135deg, ${colors.withOpacity(colors.aviation.secondary, 0.1)} 0%, ${colors.withOpacity(colors.aviation.secondary, 0.05)} 100%)`
+      : `linear-gradient(135deg, ${colors.withOpacity(colors.semantic.error, 0.1)} 0%, ${colors.withOpacity(colors.semantic.error, 0.05)} 100%)`,
+    color: answer.isCorrect ? colors.aviation.secondary : colors.semantic.error
   };
 
   const textSectionStyle: React.CSSProperties = {
@@ -263,30 +260,29 @@ const ActivityItem: React.FC<ActivityItemProps> = ({ question, answer }) => {
   };
 
   const titleStyle: React.CSSProperties = {
+    ...styles.body,
     fontSize: '0.875rem',
     fontWeight: 500,
-    color: '#0f172a',
-    marginBottom: '0.25rem',
+    marginBottom: spacing.scale[1],
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap'
   };
 
   const subtitleStyle: React.CSSProperties = {
-    fontSize: '0.75rem',
-    color: '#64748b',
+    ...styles.caption,
     textTransform: 'capitalize'
   };
 
   const badgeStyle: React.CSSProperties = {
     fontSize: '0.75rem',
     fontWeight: 600,
-    padding: '0.25rem 0.5rem',
+    padding: `${spacing.scale[1]} ${spacing.scale[2]}`,
     borderRadius: '9999px',
     background: answer.isCorrect 
-      ? 'rgba(220, 38, 38, 0.1)' 
-      : 'rgba(239, 68, 68, 0.1)',
-    color: answer.isCorrect ? '#dc2626' : '#ef4444'
+      ? colors.withOpacity(colors.aviation.secondary, 0.1)
+      : colors.withOpacity(colors.semantic.error, 0.1),
+    color: answer.isCorrect ? colors.aviation.secondary : colors.semantic.error
   };
 
   return (
@@ -316,6 +312,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({ question, answer }) => {
 const NewDashboardPage: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { colors, spacing, styles } = useDesignSystem();
   
   // State management with error handling
   const [questions] = useState<Question[]>(sampleQuestions);
@@ -448,13 +445,13 @@ const NewDashboardPage: React.FC = () => {
 
   if (error) {
     return (
-      <div style={{ padding: '1.5rem' }}>
+      <div style={{ padding: spacing.scale[6] }}>
         <Card variant="outline" padding="lg">
-          <div style={{ textAlign: 'center', color: '#ef4444' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+          <div style={{ textAlign: 'center', color: colors.semantic.error }}>
+            <h2 style={{ ...styles.heading, fontSize: '1.5rem', marginBottom: spacing.scale[2] }}>
               Something went wrong
             </h2>
-            <p style={{ marginBottom: '1rem' }}>{error}</p>
+            <p style={{ marginBottom: spacing.scale[4] }}>{error}</p>
             <SecondaryButton onClick={() => window.location.reload()}>
               Reload Page
             </SecondaryButton>
@@ -465,26 +462,26 @@ const NewDashboardPage: React.FC = () => {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[6] }}>
       {/* Welcome Section */}
       <GradientCard padding="lg">
-        <div style={{ textAlign: 'center', color: '#ffffff' }}>
+        <div style={{ textAlign: 'center', color: colors.white }}>
           <div style={{
             width: '2rem',
             height: '2rem',
             background: 'rgba(255, 255, 255, 0.2)',
-            borderRadius: '0.75rem',
+            borderRadius: spacing.radius.lg,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            margin: '0 auto 1rem auto'
+            margin: `0 auto ${spacing.scale[4]} auto`
           }}>
             <AirplaneIcon />
           </div>
           <h1 style={{ 
+            ...styles.heading,
             fontSize: '2rem', 
-            fontWeight: 700, 
-            marginBottom: '0.5rem',
+            marginBottom: spacing.scale[2],
             lineHeight: 1.2
           }}>
             Welcome to ATPL Training Platform
@@ -506,7 +503,7 @@ const NewDashboardPage: React.FC = () => {
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-            gap: '1.5rem' 
+            gap: spacing.scale[6] 
           }}>
             <ProgressMetric
               label="Questions Attempted"
@@ -536,7 +533,7 @@ const NewDashboardPage: React.FC = () => {
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-        gap: '1.5rem' 
+        gap: spacing.scale[6] 
       }}>
         {actionCards.map((card, index) => (
           <ActionCard
@@ -555,7 +552,7 @@ const NewDashboardPage: React.FC = () => {
         <Card variant="default" padding="lg">
           <CardHeader title="Recent Activity" />
           <CardContent>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
               {userAnswers
                 .slice(-5)
                 .reverse()
@@ -579,8 +576,8 @@ const NewDashboardPage: React.FC = () => {
       {/* Loading State */}
       {isLoading && (
         <Card variant="default" padding="lg" loading>
-          <div style={{ textAlign: 'center', padding: '2rem' }}>
-            <p style={{ color: '#64748b' }}>Loading your dashboard...</p>
+          <div style={{ textAlign: 'center', padding: spacing.scale[8] }}>
+            <p style={{ color: colors.aviation.muted }}>Loading your dashboard...</p>
           </div>
         </Card>
       )}

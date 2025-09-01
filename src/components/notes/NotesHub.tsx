@@ -6,6 +6,7 @@ import { GlobalWorkerOptions, getDocument, version } from 'pdfjs-dist';
 import { extractTextFromImage, renderPdfPageToImageDataUrl } from '../../utils/ocr';
 import { initialTopics } from '../../data/initialTopics';
 import TASPracticeTable from '../practice/TASPracticeTable';
+import { Card, Button } from '../../design-system';
 
 // Configure worker (CDN fallback)
 GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
@@ -117,30 +118,33 @@ const NotesHub: React.FC = () => {
   };
 
   return (
-    <div className="aviation-card p-4">
+    <Card className="p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
-          <button
-            className={`px-3 py-1 rounded text-sm ${tab === 'topics' ? 'bg-aviation-light text-aviation-primary' : 'hover:bg-gray-100'}`}
+          <Button
+            variant={tab === 'topics' ? 'primary' : 'ghost'}
+            size="sm"
             onClick={() => setTab('topics')}
           >
             Topics
-          </button>
-          <button
-            className={`px-3 py-1 rounded text-sm ${tab === 'import' ? 'bg-aviation-light text-aviation-primary' : 'hover:bg-gray-100'}`}
+          </Button>
+          <Button
+            variant={tab === 'import' ? 'primary' : 'ghost'}
+            size="sm"
             onClick={() => setTab('import')}
           >
             Import from PDF (OCR)
-          </button>
+          </Button>
         </div>
 
         {tab === 'topics' && selectedTopic && (
-          <button
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={() => setSelectedTopic(null)}
-            className="aviation-button-secondary text-sm"
           >
             ← Back to Topics
-          </button>
+          </Button>
         )}
       </div>
 
@@ -159,17 +163,18 @@ const NotesHub: React.FC = () => {
             const hasContent = topicStorage.getTopicContent(topic.id);
             const hasImportedNotes = groupedSections[topic.id]?.length > 0;
             return (
-              <button
+              <Card
                 key={topic.id}
+                variant="interactive"
+                className="p-4 cursor-pointer"
                 onClick={() => setSelectedTopic(topic.id)}
-                className="p-4 border rounded-lg hover:bg-gray-50 text-left transition-colors"
               >
                 <div className="font-medium text-sm text-gray-800 mb-1">{topic.label}</div>
                 <div className="text-xs text-gray-500">
                   {hasContent ? '✓ Theory content' : 'No theory content'}
                   {hasImportedNotes && <span className="block">📄 {groupedSections[topic.id].length} imported notes</span>}
                 </div>
-              </button>
+              </Card>
             );
           })}
         </div>
@@ -183,7 +188,7 @@ const NotesHub: React.FC = () => {
           importedSections={groupedSections[selectedTopic] || []}
         />
       )}
-    </div>
+    </Card>
   );
 };
 
@@ -196,18 +201,23 @@ const ImportForm: React.FC<{ onImport: (file: File, topic: NoteTopicId) => void;
     <div className="space-y-3">
       <div className="flex items-center gap-3">
         <input type="file" accept="application/pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <select className="aviation-input text-sm" value={topic} onChange={(e) => setTopic(e.target.value as NoteTopicId)}>
+        <select 
+          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          value={topic} 
+          onChange={(e) => setTopic(e.target.value as NoteTopicId)}
+        >
           {TOPICS.map(t => (
             <option key={t.id} value={t.id}>{t.label}</option>
           ))}
         </select>
-        <button
-          className={`aviation-button text-sm ${!file || isImporting ? 'opacity-50 cursor-not-allowed' : ''}`}
+        <Button
+          variant="primary"
+          size="sm"
           onClick={() => file && onImport(file, topic)}
           disabled={!file || isImporting}
         >
           {isImporting ? 'Importing…' : 'Import'}
-        </button>
+        </Button>
       </div>
       {progress && <div className="text-xs text-gray-600">{progress}</div>}
     </div>
@@ -228,31 +238,39 @@ const TopicDetailView: React.FC<{
       <h3 className="font-semibold text-gray-800">{topicInfo.label}</h3>
       
       <div className="flex space-x-2 border-b">
-        <button
-          className={`px-3 py-2 text-sm ${topicTab === 'theory' ? 'border-b-2 border-aviation-primary text-aviation-primary' : 'text-gray-600 hover:text-gray-800'}`}
+        <Button
+          variant={topicTab === 'theory' ? 'primary' : 'ghost'}
+          size="sm"
+          className={`${topicTab === 'theory' ? 'border-b-2 border-blue-600' : ''}`}
           onClick={() => setTopicTab('theory')}
         >
           Theory
-        </button>
-        <button
-          className={`px-3 py-2 text-sm ${topicTab === 'videos' ? 'border-b-2 border-aviation-primary text-aviation-primary' : 'text-gray-600 hover:text-gray-800'}`}
+        </Button>
+        <Button
+          variant={topicTab === 'videos' ? 'primary' : 'ghost'}
+          size="sm"
+          className={`${topicTab === 'videos' ? 'border-b-2 border-blue-600' : ''}`}
           onClick={() => setTopicTab('videos')}
         >
           Videos
-        </button>
-        <button
-          className={`px-3 py-2 text-sm ${topicTab === 'practice' ? 'border-b-2 border-aviation-primary text-aviation-primary' : 'text-gray-600 hover:text-gray-800'}`}
+        </Button>
+        <Button
+          variant={topicTab === 'practice' ? 'primary' : 'ghost'}
+          size="sm"
+          className={`${topicTab === 'practice' ? 'border-b-2 border-blue-600' : ''}`}
           onClick={() => setTopicTab('practice')}
         >
           Practice
-        </button>
+        </Button>
         {importedSections.length > 0 && (
-          <button
-            className={`px-3 py-2 text-sm ${topicTab === 'imported' ? 'border-b-2 border-aviation-primary text-aviation-primary' : 'text-gray-600 hover:text-gray-800'}`}
+          <Button
+            variant={topicTab === 'imported' ? 'primary' : 'ghost'}
+            size="sm"
+            className={`${topicTab === 'imported' ? 'border-b-2 border-blue-600' : ''}`}
             onClick={() => setTopicTab('imported' as TopicTab)}
           >
             Imported ({importedSections.length})
-          </button>
+          </Button>
         )}
       </div>
 

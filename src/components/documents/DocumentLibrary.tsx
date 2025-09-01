@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AtplDocumentViewer from './AtplDocumentViewer';
 import RichContentViewer from '../content/RichContentViewer';
 import type { AtplDocument } from '../../types';
+import { Button } from '../../design-system';
 
 interface DocumentLibraryProps {
   documents: AtplDocument[];
@@ -63,15 +64,17 @@ const DocumentLibrary: React.FC<DocumentLibraryProps> = ({
       <div className={`document-library ${className}`}>
         {/* Back navigation */}
         <div className="mb-6">
-          <button
+          <Button
+            variant="secondary"
+            size="md"
             onClick={handleBackToList}
-            className="flex items-center space-x-2 px-4 py-2 text-sm bg-aviation-primary/10 hover:bg-aviation-primary/20 text-aviation-primary rounded-xl transition-all duration-200 hover:scale-105"
+            className="flex items-center space-x-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             <span>Back to Topics</span>
-          </button>
+          </Button>
         </div>
 
         {/* Document content */}
@@ -93,19 +96,19 @@ const DocumentLibrary: React.FC<DocumentLibraryProps> = ({
     <div className={`document-library ${className}`}>
       {/* Modern Header */}
       <div className="mb-8">
-        <div className="bg-gradient-to-r from-aviation-primary/5 to-blue-50 rounded-2xl p-6 border border-aviation-primary/10">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-aviation-primary text-white rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
             </div>
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-gray-900 mb-1">{title}</h2>
-              <p className="text-aviation-primary/80 font-medium">{sortedDocuments.length} documents available</p>
+              <p className="text-blue-600 font-medium">{sortedDocuments.length} documents available</p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-aviation-primary">
+              <div className="text-2xl font-bold text-blue-600">
                 {sortedDocuments.filter(doc => doc.pdfUrl || doc.pdfPath).length}
               </div>
               <div className="text-xs text-gray-600">Ready Now</div>
@@ -122,13 +125,13 @@ const DocumentLibrary: React.FC<DocumentLibraryProps> = ({
           return (
             <div
               key={document.id}
-              className={`group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-aviation-primary/10 transition-all duration-300 transform hover:-translate-y-1 ${
-                hasUrl ? 'cursor-pointer hover:border-aviation-primary/30' : 'cursor-not-allowed opacity-75'
+              className={`group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1 ${
+                hasUrl ? 'cursor-pointer hover:border-blue-300' : 'cursor-not-allowed opacity-75'
               }`}
             >
               {/* Modern document preview */}
               <div className={`h-48 relative overflow-hidden ${
-                hasUrl ? 'bg-gradient-to-br from-aviation-primary/5 via-blue-50 to-indigo-50' : 'bg-gray-50'
+                hasUrl ? 'bg-gradient-to-br from-blue-50 via-blue-50 to-indigo-50' : 'bg-gray-50'
               }`}>
                 {/* Background pattern */}
                 <div className="absolute inset-0 opacity-10">
@@ -139,9 +142,9 @@ const DocumentLibrary: React.FC<DocumentLibraryProps> = ({
                 </div>
                 
                 <div className="relative h-full flex items-center justify-center">
-                  <div className={`text-center ${hasUrl ? 'text-aviation-primary' : 'text-gray-400'}`}>
+                  <div className={`text-center ${hasUrl ? 'text-blue-600' : 'text-gray-400'}`}>
                     <div className={`w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center ${
-                      hasUrl ? 'bg-aviation-primary/10 group-hover:bg-aviation-primary/20' : 'bg-gray-100'
+                      hasUrl ? 'bg-blue-100 group-hover:bg-blue-200' : 'bg-gray-100'
                     } transition-colors duration-300`}>
                       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -170,7 +173,7 @@ const DocumentLibrary: React.FC<DocumentLibraryProps> = ({
 
               {/* Document info */}
               <div className="p-6">
-                <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 group-hover:text-aviation-primary transition-colors">
+                <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
                   {document.title}
                 </h3>
                 <p className="text-gray-600 text-sm mb-4 line-clamp-3 leading-relaxed">
@@ -184,7 +187,7 @@ const DocumentLibrary: React.FC<DocumentLibraryProps> = ({
                       {document.subtopics.slice(0, 3).map((subtopic, index) => (
                         <span
                           key={index}
-                          className="px-3 py-1 bg-aviation-primary/10 text-aviation-primary text-xs font-medium rounded-lg border border-aviation-primary/20"
+                          className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-lg border border-blue-200"
                         >
                           {subtopic}
                         </span>
@@ -202,31 +205,37 @@ const DocumentLibrary: React.FC<DocumentLibraryProps> = ({
                 <div className="space-y-3">
                   {hasUrl ? (
                     <>
-                      <button
+                      <Button
+                        variant="primary"
+                        size="md"
                         onClick={() => handleDocumentSelect(document)}
-                        className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-aviation-primary text-white font-semibold rounded-xl hover:bg-aviation-primary/90 hover:shadow-lg hover:scale-105 transition-all duration-200 group"
+                        className="w-full flex items-center justify-center space-x-2"
                       >
                         <svg className="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                         </svg>
                         <span>Study Theory</span>
-                      </button>
+                      </Button>
                       <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e?: React.MouseEvent<HTMLButtonElement>) => {
+                            e?.stopPropagation();
                             window.open(document.pdfUrl || document.pdfPath, '_blank');
                           }}
-                          className="flex items-center justify-center space-x-1 px-3 py-2 bg-gray-50 text-gray-700 text-xs font-medium rounded-lg hover:bg-gray-100 hover:shadow-md transition-all duration-200"
+                          className="flex items-center justify-center space-x-1"
                         >
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                           </svg>
                           <span>Open</span>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e?: React.MouseEvent<HTMLButtonElement>) => {
+                            e?.stopPropagation();
                             const url = document.pdfUrl || document.pdfPath;
                             if (url) {
                               const link = window.document.createElement('a');
@@ -235,13 +244,13 @@ const DocumentLibrary: React.FC<DocumentLibraryProps> = ({
                               link.click();
                             }
                           }}
-                          className="flex items-center justify-center space-x-1 px-3 py-2 bg-gray-50 text-gray-700 text-xs font-medium rounded-lg hover:bg-gray-100 hover:shadow-md transition-all duration-200"
+                          className="flex items-center justify-center space-x-1"
                         >
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                           </svg>
                           <span>Download</span>
-                        </button>
+                        </Button>
                       </div>
                     </>
                   ) : (
@@ -260,9 +269,9 @@ const DocumentLibrary: React.FC<DocumentLibraryProps> = ({
       </div>
 
       {/* Modern Analytics Dashboard */}
-      <div className="mt-12 bg-gradient-to-br from-aviation-primary/5 via-blue-50 to-indigo-50 rounded-2xl p-8 border border-aviation-primary/10">
+      <div className="mt-12 bg-gradient-to-br from-blue-50 via-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-200">
         <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center space-x-3">
-          <svg className="w-6 h-6 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
           </svg>
           <span>Study Progress</span>

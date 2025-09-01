@@ -1,374 +1,203 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import { colors, colorTokens } from '../colors';
-import { spacing, spacingUtils } from '../spacing';
-import { textStyles } from '../typography';
+import { spacing } from '../spacing';
+import { typography } from '../typography';
 
 /**
- * Button variant definitions
+ * Button Component Props
+ */
+export interface ButtonProps {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'success';
+  size?: 'sm' | 'md' | 'lg';
+  disabled?: boolean;
+  loading?: boolean;
+  onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
+  type?: 'button' | 'submit' | 'reset';
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+/**
+ * Button Variant Types
  */
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'success';
-export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-
-/**
- * Button component props
- */
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  loading?: boolean;
-  icon?: React.ReactNode;
-  iconPosition?: 'left' | 'right';
-  fullWidth?: boolean;
-  as?: 'button' | 'a';
-  href?: string;
-}
-
-/**
- * Get button styles based on variant and size
- */
-function getButtonStyles(variant: ButtonVariant, size: ButtonSize, loading: boolean, fullWidth: boolean) {
-  // Base styles for all buttons
-  const baseStyles: React.CSSProperties = {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontFamily: textStyles.label.md.fontFamily,
-    fontWeight: textStyles.label.md.fontWeight,
-    letterSpacing: textStyles.label.md.letterSpacing,
-    lineHeight: textStyles.label.md.lineHeight,
-    textDecoration: 'none',
-    border: 'none',
-    borderRadius: spacing.radius.xl,
-    cursor: loading ? 'wait' : 'pointer',
-    transition: 'all 200ms cubic-bezier(0.16, 1, 0.3, 1)',
-    position: 'relative',
-    overflow: 'hidden',
-    userSelect: 'none',
-    outline: 'none',
-    width: fullWidth ? '100%' : 'auto',
-    opacity: loading ? 0.7 : 1,
-    pointerEvents: loading ? 'none' : 'auto'
-  };
-
-  // Size-specific styles
-  const sizeStyles = {
-    xs: {
-      fontSize: '0.75rem',
-      ...spacingUtils.padding(2, 1),
-      gap: spacing.scale[1.5]
-    },
-    sm: {
-      fontSize: '0.875rem',
-      ...spacingUtils.padding(3, 1.5),
-      gap: spacing.scale[2]
-    },
-    md: {
-      fontSize: '0.875rem',
-      ...spacingUtils.padding(4, 2),
-      gap: spacing.scale[2]
-    },
-    lg: {
-      fontSize: '1rem',
-      ...spacingUtils.padding(6, 3),
-      gap: spacing.scale[2.5]
-    },
-    xl: {
-      fontSize: '1.125rem',
-      ...spacingUtils.padding(8, 4),
-      gap: spacing.scale[3]
-    }
-  };
-
-  // Variant-specific styles
-  const variantStyles = {
-    primary: {
-      background: colorTokens.gradients.primary,
-      color: colors.white,
-      boxShadow: `0 10px 15px -3px ${colors.withOpacity(colors.aviation.primary, 0.1)}, 0 4px 6px -4px ${colors.withOpacity(colors.aviation.primary, 0.1)}`
-    },
-    secondary: {
-      background: colorTokens.gradients.subtle,
-      color: colorTokens.text.primary,
-      border: `1px solid ${colorTokens.borders.light}`,
-      boxShadow: spacing.shadows.sm
-    },
-    ghost: {
-      background: 'transparent',
-      color: colorTokens.text.accent,
-      border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.3)}`
-    },
-    danger: {
-      background: `linear-gradient(135deg, ${colors.semantic.error} 0%, #dc2626 100%)`,
-      color: colors.white,
-      boxShadow: `0 10px 15px -3px ${colors.withOpacity(colors.semantic.error, 0.1)}, 0 4px 6px -4px ${colors.withOpacity(colors.semantic.error, 0.1)}`
-    },
-    success: {
-      background: `linear-gradient(135deg, ${colors.semantic.success} 0%, #16a34a 100%)`,
-      color: colors.white,
-      boxShadow: `0 10px 15px -3px ${colors.withOpacity(colors.semantic.success, 0.1)}, 0 4px 6px -4px ${colors.withOpacity(colors.semantic.success, 0.1)}`
-    }
-  };
-
-  return {
-    ...baseStyles,
-    ...sizeStyles[size],
-    ...variantStyles[variant]
-  };
-}
-
-/**
- * Get hover styles for button variants
- */
-function getHoverStyles(variant: ButtonVariant): React.CSSProperties {
-  const hoverStyles = {
-    primary: {
-      transform: 'translateY(-2px)',
-      boxShadow: `0 20px 25px -5px ${colors.withOpacity(colors.aviation.primary, 0.15)}, 0 8px 10px -6px ${colors.withOpacity(colors.aviation.primary, 0.1)}`
-    },
-    secondary: {
-      transform: 'translateY(-1px)',
-      background: colorTokens.gradients.card,
-      borderColor: colors.withOpacity(colors.aviation.primary, 0.3),
-      boxShadow: spacing.shadows.md
-    },
-    ghost: {
-      background: colors.withOpacity(colors.aviation.primary, 0.05),
-      borderColor: colors.withOpacity(colors.aviation.primary, 0.5),
-      transform: 'translateY(-1px)'
-    },
-    danger: {
-      transform: 'translateY(-2px)',
-      boxShadow: `0 20px 25px -5px ${colors.withOpacity(colors.semantic.error, 0.15)}, 0 8px 10px -6px ${colors.withOpacity(colors.semantic.error, 0.1)}`
-    },
-    success: {
-      transform: 'translateY(-2px)',
-      boxShadow: `0 20px 25px -5px ${colors.withOpacity(colors.semantic.success, 0.15)}, 0 8px 10px -6px ${colors.withOpacity(colors.semantic.success, 0.1)}`
-    }
-  };
-
-  return hoverStyles[variant];
-}
-
-/**
- * Get active/pressed styles for button variants
- */
-function getActiveStyles(variant: ButtonVariant): React.CSSProperties {
-  const activeStyles = {
-    primary: {
-      transform: 'translateY(0)',
-      boxShadow: `0 10px 15px -3px ${colors.withOpacity(colors.aviation.primary, 0.1)}, 0 4px 6px -4px ${colors.withOpacity(colors.aviation.primary, 0.1)}`
-    },
-    secondary: {
-      transform: 'translateY(0)',
-      boxShadow: spacing.shadows.sm
-    },
-    ghost: {
-      background: colors.withOpacity(colors.aviation.primary, 0.1),
-      transform: 'translateY(0)'
-    },
-    danger: {
-      transform: 'translateY(0)',
-      boxShadow: `0 10px 15px -3px ${colors.withOpacity(colors.semantic.error, 0.1)}, 0 4px 6px -4px ${colors.withOpacity(colors.semantic.error, 0.1)}`
-    },
-    success: {
-      transform: 'translateY(0)',
-      boxShadow: `0 10px 15px -3px ${colors.withOpacity(colors.semantic.success, 0.1)}, 0 4px 6px -4px ${colors.withOpacity(colors.semantic.success, 0.1)}`
-    }
-  };
-
-  return activeStyles[variant];
-}
-
-/**
- * Loading spinner component
- */
-function LoadingSpinner({ size }: { size: ButtonSize }) {
-  const spinnerSizes = {
-    xs: 12,
-    sm: 14,
-    md: 16,
-    lg: 18,
-    xl: 20
-  };
-
-  const spinnerSize = spinnerSizes[size];
-
-  return (
-    <svg
-      width={spinnerSize}
-      height={spinnerSize}
-      viewBox="0 0 24 24"
-      fill="none"
-      style={{
-        animation: 'spin 1s linear infinite'
-      }}
-    >
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="round"
-        strokeDasharray="31.416"
-        strokeDashoffset="31.416"
-        style={{
-          animation: 'spin-dash 2s ease-in-out infinite'
-        }}
-      />
-      <style>
-        {`
-          @keyframes spin {
-            to { transform: rotate(360deg); }
-          }
-          @keyframes spin-dash {
-            0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; }
-            50% { stroke-dasharray: 89, 200; stroke-dashoffset: -35px; }
-            100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; }
-          }
-        `}
-      </style>
-    </svg>
-  );
-}
+export type ButtonSize = 'sm' | 'md' | 'lg';
 
 /**
  * Aviation Button Component
  * 
- * A comprehensive button component that follows the aviation design system.
- * Supports multiple variants, sizes, loading states, and icons.
- * 
- * @example
- * ```tsx
- * <Button variant="primary" size="md" onClick={handleClick}>
- *   Submit Form
- * </Button>
- * 
- * <Button variant="ghost" icon={<PlusIcon />} iconPosition="left">
- *   Add Item
- * </Button>
- * 
- * <Button variant="primary" loading>
- *   Processing...
- * </Button>
- * ```
+ * Professional button with consistent aviation styling using inline CSS
  */
-export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
-  (
-    {
-      variant = 'primary',
-      size = 'md',
-      loading = false,
-      icon,
-      iconPosition = 'left',
-      fullWidth = false,
-      children,
-      className = '',
-      style,
-      as = 'button',
-      disabled,
-      onMouseEnter,
-      onMouseLeave,
-      onMouseDown,
-      onMouseUp,
-      ...props
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  disabled = false,
+  loading = false,
+  onClick,
+  type = 'button',
+  style,
+  ...props
+}) => {
+  // Base button styles
+  const baseStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.scale[2],
+    fontWeight: 600,
+    fontSize: '0.875rem',
+    borderRadius: spacing.radius.lg,
+    border: 'none',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    position: 'relative',
+    overflow: 'hidden',
+    transition: 'all 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+    fontFamily: typography.fontFamilies.primary.join(', '),
+    ...style
+  };
+
+  // Size variations
+  const sizeStyles: Record<ButtonSize, React.CSSProperties> = {
+    sm: {
+      padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
+      fontSize: '0.75rem',
+      minHeight: '2rem'
     },
-    ref
-  ) => {
-    const [isHovered, setIsHovered] = React.useState(false);
-    const [isPressed, setIsPressed] = React.useState(false);
-
-    const buttonStyles = getButtonStyles(variant, size, loading, fullWidth);
-    
-    let dynamicStyles: React.CSSProperties = buttonStyles;
-    if (isPressed && !loading && !disabled) {
-      dynamicStyles = { ...dynamicStyles, ...getActiveStyles(variant) };
-    } else if (isHovered && !loading && !disabled) {
-      dynamicStyles = { ...dynamicStyles, ...getHoverStyles(variant) };
+    md: {
+      padding: `${spacing.scale[2.5]} ${spacing.scale[4]}`,
+      fontSize: '0.875rem',
+      minHeight: '2.5rem'
+    },
+    lg: {
+      padding: `${spacing.scale[3]} ${spacing.scale[5]}`,
+      fontSize: '1rem',
+      minHeight: '3rem'
     }
+  };
 
-    const combinedStyles: React.CSSProperties = {
-      ...dynamicStyles,
-      ...style
-    };
-
-    const handleMouseEnter = (e: React.MouseEvent) => {
-      setIsHovered(true);
-      onMouseEnter?.(e as React.MouseEvent<HTMLButtonElement>);
-    };
-
-    const handleMouseLeave = (e: React.MouseEvent) => {
-      setIsHovered(false);
-      setIsPressed(false);
-      onMouseLeave?.(e as React.MouseEvent<HTMLButtonElement>);
-    };
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-      setIsPressed(true);
-      onMouseDown?.(e as React.MouseEvent<HTMLButtonElement>);
-    };
-
-    const handleMouseUp = (e: React.MouseEvent) => {
-      setIsPressed(false);
-      onMouseUp?.(e as React.MouseEvent<HTMLButtonElement>);
-    };
-
-    const content = (
-      <>
-        {loading && <LoadingSpinner size={size} />}
-        {!loading && icon && iconPosition === 'left' && icon}
-        {children}
-        {!loading && icon && iconPosition === 'right' && icon}
-      </>
-    );
-
-    const commonProps = {
-      style: combinedStyles,
-      className,
-      onMouseEnter: handleMouseEnter,
-      onMouseLeave: handleMouseLeave,
-      onMouseDown: handleMouseDown,
-      onMouseUp: handleMouseUp,
-      disabled: disabled || loading
-    };
-
-    if (as === 'a') {
-      return (
-        <a ref={ref as React.Ref<HTMLAnchorElement>} {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)} {...commonProps}>
-          {content}
-        </a>
-      );
+  // Variant styles
+  const variantStyles: Record<ButtonVariant, React.CSSProperties> = {
+    primary: {
+      background: colorTokens.gradients.primary,
+      color: colors.white,
+      boxShadow: spacing.shadows.md
+    },
+    secondary: {
+      background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+      color: colors.aviation.text,
+      border: `1px solid ${colors.gray[200]}`,
+      boxShadow: spacing.shadows.sm
+    },
+    ghost: {
+      background: colors.transparent,
+      color: colors.aviation.primary,
+      border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.3)}`
+    },
+    danger: {
+      background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+      color: colors.white,
+      boxShadow: spacing.shadows.md
+    },
+    success: {
+      background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+      color: colors.white,
+      boxShadow: spacing.shadows.md
     }
+  };
 
-    return (
-      <button ref={ref as React.Ref<HTMLButtonElement>} {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)} {...commonProps}>
-        {content}
-      </button>
-    );
-  }
-);
+  // Hover effects (unused in current implementation)
+  // const hoverStyles: Record<ButtonVariant, React.CSSProperties> = {
+  //   primary: {
+  //     transform: 'translateY(-1px)',
+  //     boxShadow: spacing.shadows.lg
+  //   },
+  //   secondary: {
+  //     background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)',
+  //     transform: 'translateY(-1px)',
+  //     boxShadow: spacing.shadows.md,
+  //     borderColor: colors.withOpacity(colors.aviation.primary, 0.3)
+  //   },
+  //   ghost: {
+  //     background: colors.withOpacity(colors.aviation.primary, 0.05),
+  //     borderColor: colors.withOpacity(colors.aviation.primary, 0.5),
+  //     transform: 'translateY(-1px)'
+  //   },
+  //   danger: {
+  //     transform: 'translateY(-1px)',
+  //     boxShadow: spacing.shadows.lg
+  //   },
+  //   success: {
+  //     transform: 'translateY(-1px)',
+  //     boxShadow: spacing.shadows.lg
+  //   }
+  // };
 
-Button.displayName = 'Button';
+  // Disabled styles
+  const disabledStyle: React.CSSProperties = {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+    transform: 'none',
+    boxShadow: spacing.shadows.sm
+  };
+
+  // Combine all styles
+  const combinedStyles: React.CSSProperties = {
+    ...baseStyle,
+    ...sizeStyles[size],
+    ...variantStyles[variant],
+    ...(disabled ? disabledStyle : {}),
+    ...(loading ? { pointerEvents: 'none' } : {})
+  };
+
+  // Loading spinner
+  const LoadingSpinner = () => (
+    <div style={{
+      width: '1rem',
+      height: '1rem',
+      border: '2px solid transparent',
+      borderTop: '2px solid currentColor',
+      borderRadius: '50%',
+      animation: 'spin 1s linear infinite'
+    }} />
+  );
+
+  return (
+    <button
+      type={type}
+      style={combinedStyles}
+      onClick={disabled || loading ? undefined : onClick}
+      disabled={disabled}
+      {...props}
+    >
+      {loading && <LoadingSpinner />}
+      {children}
+    </button>
+  );
+};
 
 /**
- * Preset button components for common use cases
+ * Convenience Components
  */
-export const PrimaryButton = (props: Omit<ButtonProps, 'variant'>) => (
-  <Button {...props} variant="primary" />
+export const PrimaryButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => (
+  <Button variant="primary" {...props} />
 );
 
-export const SecondaryButton = (props: Omit<ButtonProps, 'variant'>) => (
-  <Button {...props} variant="secondary" />
+export const SecondaryButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => (
+  <Button variant="secondary" {...props} />
 );
 
-export const GhostButton = (props: Omit<ButtonProps, 'variant'>) => (
-  <Button {...props} variant="ghost" />
+export const GhostButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => (
+  <Button variant="ghost" {...props} />
 );
 
-export const DangerButton = (props: Omit<ButtonProps, 'variant'>) => (
-  <Button {...props} variant="danger" />
+export const DangerButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => (
+  <Button variant="danger" {...props} />
 );
 
-export const SuccessButton = (props: Omit<ButtonProps, 'variant'>) => (
-  <Button {...props} variant="success" />
+export const SuccessButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => (
+  <Button variant="success" {...props} />
 );
+
+export default Button;
