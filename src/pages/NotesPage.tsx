@@ -234,7 +234,7 @@ const NotesPage: React.FC = () => {
                 <p className="text-gray-600">Try adjusting your search term</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 auto-rows-max">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 {filteredSubjects.map((subject) => (
                   <TopicCard
                     key={subject.id}
@@ -255,85 +255,71 @@ const TopicCard: React.FC<{
   subject: AtplSubject;
   onClick: () => void;
 }> = ({ subject, onClick }) => {
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner': return 'bg-green-100 text-green-800';
-      case 'intermediate': return 'bg-yellow-100 text-yellow-800';
-      case 'advanced': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const getTopicIcon = (subjectId: string) => {
+    const iconMap: Record<string, string> = {
+      'tas_heading_ground_speed': '🧭',
+      'speed_sound_mach_tat': '🔊',
+      'route_sector_winds_temp': '🌪️',
+      'magnetic_variation': '🧲',
+      'ins_data': '📡',
+      'climb_tables': '📈',
+      'descent_tables': '📉',
+      'altitude_capability': '⛰️',
+      'cruise_data': '✈️',
+      'buffet_boundary_charts': '📊',
+      'flight_planning_basics': '📋',
+      'real_flight_plans': '🗺️',
+      'step_climbs': '🪜',
+      'backwards_flight_plans': '↩️',
+      'max_payload_min_fuel_abnormal': '⚖️',
+      'depressurised_flight': '💨',
+      'yaw_damper_inoperative': '⚙️',
+      'tailskid_extended': '🦽',
+      'landing_gear_extended': '🛬',
+      'one_engine_inoperative': '🔧',
+      'fuel_dumping': '⛽',
+      'holding_fuel': '🔄',
+      'company_fuel_policy': '📜',
+      'minimum_fuel_requirements': '⚡',
+      'minimum_aerodrome_standards': '🏢',
+      'inflight_replanning': '🔀',
+      'boeing_727_weight_limits': '🏋️',
+      'destination_alternate_fuel': '🎯',
+      'equi_time_point': '⏰',
+      'point_no_return': '🚨'
+    };
+    return iconMap[subjectId] || '📚';
   };
-
-  const hasContent = subject.documents.length > 0 || subject.videos.length > 0;
-  const hasTheory = subject.documents.some(doc => doc.description && doc.description.length > 200);
-  const hasVideos = subject.videos.length > 0;
-  const hasPractice = subject.id === 'tas_heading_ground_speed';
 
   return (
     <Card
       onClick={onClick}
       variant="interactive"
-      className="cursor-pointer group transform hover:-translate-y-2 hover:scale-[1.02] transition-all duration-500"
+      className="cursor-pointer group p-8 text-center transform hover:-translate-y-1 transition-all duration-300 min-h-[280px] flex flex-col justify-between"
     >
-      {/* Card Header */}
-      <div className="p-6 pb-4">
-        <div className="flex items-start justify-between mb-4">
-          <div className="text-3xl group-hover:scale-110 transition-transform duration-200">
-            📊
-          </div>
-          <div className="flex space-x-1">
-            {hasTheory && <div className="w-3 h-3 bg-blue-500 rounded-full" title="Theory Available"></div>}
-            {hasVideos && <div className="w-3 h-3 bg-red-500 rounded-full" title="Videos Available"></div>}
-            {hasPractice && <div className="w-3 h-3 bg-green-500 rounded-full" title="Practice Available"></div>}
-          </div>
+      {/* Large Icon */}
+      <div className="flex-1 flex flex-col items-center justify-center">
+        <div className="text-6xl mb-6 group-hover:scale-110 transition-transform duration-300">
+          {getTopicIcon(subject.id)}
         </div>
         
-        <h3 className="font-bold text-gray-900 text-base leading-tight mb-3 line-clamp-3 group-hover:text-aviation-primary transition-colors min-h-[4rem]">
+        {/* Title */}
+        <h3 className="font-bold text-aviation-navy text-lg leading-tight mb-4 group-hover:text-aviation-primary transition-colors">
           {subject.title}
         </h3>
         
-        <p className="text-sm text-gray-600 line-clamp-3 mb-4 min-h-[3.5rem]">
+        {/* Description */}
+        <p className="text-aviation-muted text-sm leading-relaxed line-clamp-3">
           {subject.description}
         </p>
-
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-1 rounded">
-            {subject.code}
-          </span>
-          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getDifficultyColor(subject.difficulty)}`}>
-            {subject.difficulty}
-          </span>
-        </div>
       </div>
 
-      {/* Card Footer */}
-      <div className="bg-aviation-light px-6 py-4 border-t border-aviation-border">
-        <div className="flex items-center justify-between text-xs text-gray-600 mb-3">
-          <div className="flex space-x-4">
-            <span className="flex items-center space-x-1">
-              <span>📄</span>
-              <span>{subject.documents.length}</span>
-            </span>
-            <span className="flex items-center space-x-1">
-              <span>🎥</span>
-              <span>{subject.videos.length}</span>
-            </span>
-            <span className="flex items-center space-x-1">
-              <span>✏️</span>
-              <span>{hasPractice ? '1' : '0'}</span>
-            </span>
-          </div>
-          <span className="font-bold text-aviation-primary">
-            {subject.estimatedStudyHours}h
-          </span>
-        </div>
-        
-        {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            className="bg-gradient-to-r from-aviation-primary to-blue-500 h-2 rounded-full transition-all duration-500 group-hover:from-blue-500 group-hover:to-aviation-primary"
-            style={{ width: `${hasContent ? Math.min(25 + (hasVideos ? 25 : 0) + (hasPractice ? 25 : 0), 75) : 0}%` }}
-          />
+      {/* Action Button */}
+      <div className="flex justify-end mt-6">
+        <div className="bg-aviation-primary hover:bg-aviation-navy text-white rounded-full p-3 transition-colors duration-300 group-hover:scale-110">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
         </div>
       </div>
     </Card>
