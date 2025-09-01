@@ -9,12 +9,14 @@ export default {
     extend: {
       colors: {
         aviation: {
-          // Approximate ATS brand tones: deep navy to electric blue gradient, with coral accent
-          primary: '#0A2A66',
-          secondary: '#0056D6',
-          accent: '#FF6B6B',
-          light: '#E6F0FF',
-          dark: '#0B1B3A'
+          // Aviation Theory Services brand colors
+          primary: '#6EC1E4',    // ATS Primary Blue
+          secondary: '#54595F',   // ATS Secondary Gray  
+          accent: '#61CE70',      // ATS Accent Green
+          navy: '#262E5B',        // ATS Navy Theme
+          text: '#7A7A7A',        // ATS Text Gray
+          light: '#E8F4FD',       // Light blue tint
+          dark: '#1A1F2E'         // Dark navy
         },
         gray: {
           50: '#f9fafb',
