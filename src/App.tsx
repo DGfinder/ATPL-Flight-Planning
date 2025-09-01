@@ -4,7 +4,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/layout/Layout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
-import SimpleDashboard from './pages/SimpleDashboard';
+import NewDashboardPage from './pages/NewDashboardPage';
 
 // Import actual page components
 import QuestionsPage from './pages/QuestionsPage';
@@ -35,7 +35,7 @@ function App() {
               element={<Layout />}
             >
               <Route index element={<Navigate to="/dashboard" replace />} />
-              <Route path="dashboard" element={<SimpleDashboard />} />
+              <Route path="dashboard" element={<NewDashboardPage />} />
               <Route path="notes" element={<NotesPage />} />
               <Route path="questions" element={<QuestionsPage />} />
               <Route path="exam" element={<ExamPage />} />
