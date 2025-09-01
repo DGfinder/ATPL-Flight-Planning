@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { Plane, MapPin, Wind, Gauge, Clock, Fuel, Navigation, AlertCircle } from 'lucide-react';
+import { Plane, Gauge, Clock, Fuel, Navigation, AlertCircle } from 'lucide-react';
 import { 
   Card, 
   CardHeader, 
   CardContent, 
-  PrimaryButton, 
   SecondaryButton,
   useDesignSystem 
 } from '../../design-system';
@@ -46,8 +45,7 @@ interface FlightPlanVisualizationProps {
 }
 
 const FlightPlanVisualization: React.FC<FlightPlanVisualizationProps> = ({ 
-  flightPlan: propFlightPlan,
-  className 
+  flightPlan: propFlightPlan
 }) => {
   const { colors, spacing, styles } = useDesignSystem();
   const svgRef = useRef<SVGSVGElement>(null);
@@ -124,10 +122,10 @@ const FlightPlanVisualization: React.FC<FlightPlanVisualizationProps> = ({
       flightPlan.departure,
       ...flightPlan.waypoints,
       flightPlan.arrival
-    ].map(point => projection([point.lon, point.lat]));
+    ].map(point => projection([point.lon, point.lat])).filter((point): point is [number, number] => point !== null);
 
     // Draw route line with gradient
-    const line = d3.line()
+    const line = d3.line<[number, number]>()
       .x(d => d[0])
       .y(d => d[1])
       .curve(d3.curveCardinal.tension(0.5));
@@ -176,7 +174,9 @@ const FlightPlanVisualization: React.FC<FlightPlanVisualizationProps> = ({
 
     // Draw waypoints
     flightPlan.waypoints.forEach((waypoint, i) => {
-      const [x, y] = projection([waypoint.lon, waypoint.lat]);
+      const coords = projection([waypoint.lon, waypoint.lat]);
+      if (!coords) return; // Skip if projection fails
+      const [x, y] = coords;
       
       const waypointG = g.append('g')
         .attr('class', 'waypoint')
@@ -219,7 +219,9 @@ const FlightPlanVisualization: React.FC<FlightPlanVisualizationProps> = ({
     ];
 
     airports.forEach((airport, i) => {
-      const [x, y] = projection([airport.lon, airport.lat]);
+      const coords = projection([airport.lon, airport.lat]);
+      if (!coords) return; // Skip if projection fails
+      const [x, y] = coords;
       
       const airportG = g.append('g');
 
@@ -343,14 +345,14 @@ const FlightPlanVisualization: React.FC<FlightPlanVisualizationProps> = ({
       .range([height - margin.bottom, margin.top]);
 
     // Area generator
-    const area = d3.area()
+    const area = d3.area<{ distance: number; altitude: number; point: string }>()
       .x(d => xScale(d.distance))
       .y0(height - margin.bottom)
       .y1(d => yScale(d.altitude))
       .curve(d3.curveCardinal.tension(0.5));
 
     // Line generator
-    const line = d3.line()
+    const line = d3.line<{ distance: number; altitude: number; point: string }>()
       .x(d => xScale(d.distance))
       .y(d => yScale(d.altitude))
       .curve(d3.curveCardinal.tension(0.5));
@@ -410,10 +412,10 @@ const FlightPlanVisualization: React.FC<FlightPlanVisualizationProps> = ({
 
     // Axes
     const xAxis = d3.axisBottom(xScale)
-      .tickFormat(d => `${d}nm`);
+      .tickFormat((d) => `${d}nm`);
     
     const yAxis = d3.axisLeft(yScale)
-      .tickFormat(d => `FL${d/100}`);
+      .tickFormat((d) => `FL${Number(d)/100}`);
 
     svg.append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
@@ -631,9 +633,9 @@ const FlightPlanVisualization: React.FC<FlightPlanVisualizationProps> = ({
         )}
 
         {/* Waypoints Table */}
-        <Card variant="default" padding="none">
+        <Card variant="default">
           <CardHeader title="Route Waypoints" />
-          <CardContent padding="none">
+          <CardContent style={{ padding: 0 }}>
             <div style={{ overflowX: 'auto' }}>
               <table style={tableStyle}>
                 <thead>
@@ -646,7 +648,9 @@ const FlightPlanVisualization: React.FC<FlightPlanVisualizationProps> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style={{ ':hover': { background: colors.gray[50] } }}>
+                  <tr style={{ backgroundColor: 'transparent' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.gray[50]}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                     <td style={tableCellStyle}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.scale[2] }}>
                         <div style={waypointDotStyle('departure')}></div>
@@ -665,7 +669,9 @@ const FlightPlanVisualization: React.FC<FlightPlanVisualizationProps> = ({
                     <td style={{ ...tableCellStyle, color: colors.aviation.muted }}>0 kg</td>
                   </tr>
                   {flightPlan.waypoints.map((waypoint) => (
-                    <tr key={waypoint.id} style={{ ':hover': { background: colors.gray[50] } }}>
+                    <tr key={waypoint.id} style={{ backgroundColor: 'transparent' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.gray[50]}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                       <td style={tableCellStyle}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: spacing.scale[2] }}>
                           <div style={waypointDotStyle('waypoint')}></div>
@@ -688,7 +694,9 @@ const FlightPlanVisualization: React.FC<FlightPlanVisualizationProps> = ({
                       </td>
                     </tr>
                   ))}
-                  <tr style={{ ':hover': { background: colors.gray[50] } }}>
+                  <tr style={{ backgroundColor: 'transparent' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.gray[50]}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
                     <td style={tableCellStyle}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: spacing.scale[2] }}>
                         <div style={waypointDotStyle('arrival')}></div>
