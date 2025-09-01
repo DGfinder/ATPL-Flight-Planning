@@ -19,6 +19,7 @@ const AtplDocumentViewer: React.FC<AtplDocumentViewerProps> = ({
 
   // Get document URL - prefer pdfUrl over pdfPath
   const documentUrl = document.pdfUrl || document.pdfPath;
+  const isTextContent = !documentUrl && document.description && document.description.length > 200;
 
   useEffect(() => {
     if (documentUrl) {
@@ -196,58 +197,81 @@ const AtplDocumentViewer: React.FC<AtplDocumentViewerProps> = ({
           </div>
         </div>
 
-        {/* PDF Viewer */}
+        {/* Content Viewer */}
         <div className="relative" style={{ height: '600px' }}>
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-              <div className="flex flex-col items-center space-y-4">
-                <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent"></div>
-                <p className="text-gray-600 text-sm">Loading document...</p>
-              </div>
-            </div>
-          )}
-
-          {error && (
-            <div className="absolute inset-0 flex items-center justify-center bg-red-50">
-              <div className="text-center max-w-md">
-                <div className="text-red-400 text-4xl mb-4">⚠️</div>
-                <p className="text-red-600 text-sm mb-4">{error}</p>
-                <div className="space-x-2">
-                  <button
-                    onClick={() => {
-                      setError(null);
-                      setIsLoading(true);
-                      if (iframeRef.current) {
-                        iframeRef.current.src = documentUrl;
-                      }
-                    }}
-                    className="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
-                  >
-                    Retry
-                  </button>
-                  <button
-                    onClick={handleDownload}
-                    className="px-4 py-2 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors"
-                  >
-                    Download Instead
-                  </button>
+          {isTextContent ? (
+            // Text content display
+            <div className="h-full overflow-y-auto p-6 bg-white">
+              <div className="prose prose-sm max-w-none">
+                <div className="whitespace-pre-wrap text-gray-800 leading-relaxed" style={{ fontSize: `${scale}em` }}>
+                  {document.description}
                 </div>
               </div>
             </div>
-          )}
+          ) : documentUrl ? (
+            // PDF viewer
+            <>
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+                  <div className="flex flex-col items-center space-y-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent"></div>
+                    <p className="text-gray-600 text-sm">Loading document...</p>
+                  </div>
+                </div>
+              )}
 
-          <iframe
-            ref={iframeRef}
-            src={documentUrl}
-            title={document.title}
-            className={`w-full h-full border-0 ${isLoading || error ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-            style={{
-              transform: `scale(${scale})`,
-              transformOrigin: 'top left',
-            }}
-            onLoad={handleIframeLoad}
-            onError={handleIframeError}
-          />
+              {error && (
+                <div className="absolute inset-0 flex items-center justify-center bg-red-50">
+                  <div className="text-center max-w-md">
+                    <div className="text-red-400 text-4xl mb-4">⚠️</div>
+                    <p className="text-red-600 text-sm mb-4">{error}</p>
+                    <div className="space-x-2">
+                      <button
+                        onClick={() => {
+                          setError(null);
+                          setIsLoading(true);
+                          if (iframeRef.current) {
+                            iframeRef.current.src = documentUrl;
+                          }
+                        }}
+                        className="px-4 py-2 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+                      >
+                        Retry
+                      </button>
+                      <button
+                        onClick={handleDownload}
+                        className="px-4 py-2 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors"
+                      >
+                        Download Instead
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <iframe
+                ref={iframeRef}
+                src={documentUrl}
+                title={document.title}
+                className={`w-full h-full border-0 ${isLoading || error ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+                style={{
+                  transform: `scale(${scale})`,
+                  transformOrigin: 'top left',
+                }}
+                onLoad={handleIframeLoad}
+                onError={handleIframeError}
+              />
+            </>
+          ) : (
+            // No content available
+            <div className="h-full flex items-center justify-center bg-gray-50">
+              <div className="text-center">
+                <div className="text-gray-400 text-6xl mb-4">📄</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Content Coming Soon</h3>
+                <p className="text-gray-600">This topic content will be available soon.</p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer with reading progress */}

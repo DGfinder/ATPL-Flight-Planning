@@ -4,6 +4,7 @@ import { atplCurriculum, getSubjectById, getSubjectsByCategory, getAllCategories
 import { VideoPlaylist } from '../components/video';
 import { DocumentLibrary } from '../components/documents';
 import SubjectQuestions from '../components/questions/SubjectQuestions';
+import TASPracticeTable from '../components/practice/TASPracticeTable';
 import type { AtplSubject, AtplSubjectCategory, AtplContentType } from '../types';
 
 const NotesPage: React.FC = () => {
@@ -193,7 +194,7 @@ const NotesPage: React.FC = () => {
             {/* Content Tabs */}
             <div className="bg-white border-b border-gray-200 px-6">
               <div className="flex space-x-8">
-                {(['notes', 'videos', 'questions'] as AtplContentType[]).map((tab) => (
+                {(['notes', 'videos', 'practice', 'questions'] as AtplContentType[]).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => handleTabChange(tab)}
@@ -205,7 +206,8 @@ const NotesPage: React.FC = () => {
                   >
                     {tab === 'notes' && '📄 Notes & Documents'}
                     {tab === 'videos' && '🎥 Video Lessons'}
-                    {tab === 'questions' && '❓ Practice Questions'}
+                    {tab === 'practice' && '✏️ Practice'}
+                    {tab === 'questions' && '❓ Questions'}
                   </button>
                 ))}
               </div>
@@ -233,6 +235,32 @@ const NotesPage: React.FC = () => {
                     title={`${currentSubject.title} - Video Lessons`}
                     autoplayNext={false}
                   />
+                </div>
+              )}
+
+              {activeTab === 'practice' && (
+                <div className="p-6">
+                  {currentSubject.id === 'tas_heading_ground_speed' ? (
+                    <div className="space-y-6">
+                      <div className="text-center">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                          TAS Practice Calculations
+                        </h3>
+                        <p className="text-gray-600">
+                          Practice your flight computer skills with these wind triangle calculations
+                        </p>
+                      </div>
+                      <TASPracticeTable />
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="text-gray-400 text-6xl mb-4">✏️</div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Practice Content Coming Soon</h3>
+                      <p className="text-gray-600">
+                        Practice exercises for {currentSubject.title} will be added soon.
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
 

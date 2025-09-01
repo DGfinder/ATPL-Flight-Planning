@@ -147,52 +147,43 @@ export type NoteTopicId =
   | 'equi_time_point'
   | 'point_no_return';
 
-// Comprehensive ATPL Curriculum Types
+// Flight Planning Textbook Topics
 export type AtplSubjectId =
-  | 'air_law'
-  | 'air_law_2'
-  | 'aircraft_general_airframes_systems'
-  | 'aircraft_general_airframes_systems_2'
-  | 'aircraft_general_electrics'
-  | 'aircraft_general_electrics_2'
-  | 'aircraft_general_emergency_equipment'
-  | 'aircraft_general_emergency_equipment_2'
-  | 'aircraft_general_instrumentation'
-  | 'aircraft_general_instrumentation_2'
-  | 'aircraft_general_power_plant'
-  | 'aircraft_general_power_plant_2'
-  | 'communication'
-  | 'communication_2'
-  | 'flight_performance_planning'
-  | 'flight_performance_planning_2'
-  | 'flight_performance_loading_center_gravity'
-  | 'human_performance_limitations'
-  | 'human_performance_limitations_2'
-  | 'ifr_communications'
-  | 'ifr_communications_2'
-  | 'meteorology_atpl'
-  | 'meteorology_2'
-  | 'navigation_general'
-  | 'navigation_general_2'
-  | 'navigation_radio'
-  | 'navigation_radio_2'
-  | 'operational_procedures'
-  | 'operational_procedures_2'
-  | 'principles_flight'
-  | 'principles_flight_2';
+  | 'tas_heading_ground_speed'
+  | 'speed_sound_mach_tat'
+  | 'route_sector_winds_temp'
+  | 'magnetic_variation'
+  | 'ins_data'
+  | 'climb_tables'
+  | 'descent_tables'
+  | 'altitude_capability'
+  | 'cruise_data'
+  | 'buffet_boundary_charts'
+  | 'flight_planning_basics'
+  | 'real_flight_plans'
+  | 'step_climbs'
+  | 'backwards_flight_plans'
+  | 'max_payload_min_fuel_abnormal'
+  | 'depressurised_flight'
+  | 'yaw_damper_inoperative'
+  | 'tailskid_extended'
+  | 'landing_gear_extended'
+  | 'one_engine_inoperative'
+  | 'fuel_dumping'
+  | 'holding_fuel'
+  | 'company_fuel_policy'
+  | 'minimum_fuel_requirements'
+  | 'minimum_aerodrome_standards'
+  | 'inflight_replanning'
+  | 'boeing_727_weight_limits'
+  | 'destination_alternate_fuel'
+  | 'equi_time_point'
+  | 'point_no_return';
 
 export type AtplSubjectCategory =
-  | 'air_law'
-  | 'aircraft_general'
-  | 'flight_performance'
-  | 'human_factors'
-  | 'communication'
-  | 'meteorology'
-  | 'navigation'
-  | 'operational_procedures'
-  | 'principles_flight';
+  | 'flight_performance';
 
-export type AtplContentType = 'notes' | 'questions' | 'videos';
+export type AtplContentType = 'notes' | 'videos' | 'practice' | 'questions';
 
 // ATPL Video content
 export interface AtplVideo {

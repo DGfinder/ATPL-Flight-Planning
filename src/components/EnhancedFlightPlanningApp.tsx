@@ -14,6 +14,7 @@ import { useTheme } from '../hooks/useTheme';
 import Calculator from './ui/Calculator';
 import LegendPopover from './ui/LegendPopover';
 import ExamTimer from './ui/ExamTimer';
+import E6B from './ui/E6B';
 import MenuScreen from './MenuScreen';
 
 const EnhancedFlightPlanningApp: React.FC = () => {
@@ -37,6 +38,7 @@ const EnhancedFlightPlanningApp: React.FC = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
+  const [showE6B, setShowE6B] = useState(false);
   const [currentView, setCurrentView] = useState<'menu' | 'questions' | 'flightplan' | 'notes'>('menu');
   const [loading, setLoading] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
@@ -421,6 +423,14 @@ const EnhancedFlightPlanningApp: React.FC = () => {
                   </button>
 
                   <button
+                    onClick={() => setShowE6B(true)}
+                    className="p-2 rounded-md text-blue-100 hover:text-white hover:bg-white/10 transition-all duration-200"
+                    title="Open E6B"
+                  >
+                    🧭
+                  </button>
+
+                  <button
                     onClick={() => setShowLegend(prev => !prev)}
                     className="p-2 rounded-md text-blue-100 hover:text-white hover:bg-white/10 transition-all duration-200"
                     title="Flight plan legend"
@@ -633,6 +643,10 @@ const EnhancedFlightPlanningApp: React.FC = () => {
 
       {showCalculator && (
         <Calculator onClose={() => setShowCalculator(false)} />
+      )}
+
+      {showE6B && (
+        <E6B onClose={() => setShowE6B(false)} />
       )}
     </div>
   );
