@@ -5,6 +5,7 @@ import { VideoPlaylist } from '../components/video';
 import { DocumentLibrary } from '../components/documents';
 import SubjectQuestions from '../components/questions/SubjectQuestions';
 import TASPracticeTable from '../components/practice/TASPracticeTable';
+import { Card } from '../design-system';
 import type { AtplSubject, AtplSubjectCategory, AtplContentType } from '../types';
 
 const NotesPage: React.FC = () => {
@@ -50,7 +51,7 @@ const NotesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/20">
+    <div className="min-h-screen bg-aviation-light">
       {currentSubject ? (
         // Topic Detail View
         <div>
@@ -269,9 +270,10 @@ const TopicCard: React.FC<{
   const hasPractice = subject.id === 'tas_heading_ground_speed';
 
   return (
-    <div
+    <Card
       onClick={onClick}
-      className="bg-white rounded-2xl border border-gray-200 hover:border-aviation-primary hover:shadow-2xl hover:shadow-aviation-primary/10 transition-all duration-500 cursor-pointer group overflow-hidden transform hover:-translate-y-2 hover:scale-[1.02] backdrop-blur-sm"
+      variant="interactive"
+      className="cursor-pointer group transform hover:-translate-y-2 hover:scale-[1.02] transition-all duration-500"
     >
       {/* Card Header */}
       <div className="p-6 pb-4">
@@ -305,7 +307,7 @@ const TopicCard: React.FC<{
       </div>
 
       {/* Card Footer */}
-      <div className="bg-gray-50 px-6 py-4 border-t border-gray-100">
+      <div className="bg-aviation-light px-6 py-4 border-t border-aviation-border">
         <div className="flex items-center justify-between text-xs text-gray-600 mb-3">
           <div className="flex space-x-4">
             <span className="flex items-center space-x-1">
@@ -334,7 +336,7 @@ const TopicCard: React.FC<{
           />
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 
