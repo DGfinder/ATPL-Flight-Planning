@@ -292,25 +292,25 @@ export const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPr
       ...style
     };
 
-    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleMouseEnter = (e: React.MouseEvent) => {
       setIsHovered(true);
-      onMouseEnter?.(e);
+      onMouseEnter?.(e as React.MouseEvent<HTMLButtonElement>);
     };
 
-    const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleMouseLeave = (e: React.MouseEvent) => {
       setIsHovered(false);
       setIsPressed(false);
-      onMouseLeave?.(e);
+      onMouseLeave?.(e as React.MouseEvent<HTMLButtonElement>);
     };
 
-    const handleMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleMouseDown = (e: React.MouseEvent) => {
       setIsPressed(true);
-      onMouseDown?.(e);
+      onMouseDown?.(e as React.MouseEvent<HTMLButtonElement>);
     };
 
-    const handleMouseUp = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleMouseUp = (e: React.MouseEvent) => {
       setIsPressed(false);
-      onMouseUp?.(e);
+      onMouseUp?.(e as React.MouseEvent<HTMLButtonElement>);
     };
 
     const content = (
