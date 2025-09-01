@@ -1,5 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
+import { 
+  LayoutDashboard, 
+  BookOpen, 
+  HelpCircle, 
+  Clock, 
+  Map, 
+  BarChart3,
+  Menu,
+  X,
+  ChevronLeft,
+  User,
+  LogOut,
+  Plane
+} from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import Breadcrumb from '../ui/Breadcrumb';
 
@@ -9,61 +23,55 @@ const Layout: React.FC = () => {
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Check for mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Close mobile menu on navigation
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const navigation = [
     {
       name: 'Dashboard',
       path: '/dashboard',
-      icon: (
-        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2v0a2 2 0 002 2z" />
-        </svg>
-      ),
+      icon: LayoutDashboard,
     },
     {
       name: 'Course Notes',
       path: '/notes',
-      icon: (
-        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-      ),
+      icon: BookOpen,
     },
     {
       name: 'Practice Questions',
       path: '/questions',
-      icon: (
-        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
+      icon: HelpCircle,
     },
     {
       name: 'Trial Exam',
       path: '/exam',
-      icon: (
-        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
+      icon: Clock,
     },
     {
       name: 'Flight Planning',
       path: '/flight-plan',
-      icon: (
-        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-        </svg>
-      ),
+      icon: Map,
     },
     {
       name: 'Analytics',
       path: '/analytics',
-      icon: (
-        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      ),
+      icon: BarChart3,
     },
   ];
 
@@ -79,145 +87,176 @@ const Layout: React.FC = () => {
     return location.pathname.startsWith(path);
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-aviation-light via-white to-aviation-accent flex">
-      {/* Sidebar */}
-      <aside className={`${sidebarCollapsed ? 'w-16' : 'w-72'} bg-white border-r border-slate-200 flex flex-col transition-all duration-300 shadow-sm z-30`}>
-        {/* Sidebar Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-100">
-          <div className="flex items-center space-x-3">
-            <img 
-              src="/favicon.png" 
-              alt="Aviation Theory Services"
-              className={`${sidebarCollapsed ? 'h-8' : 'h-10'} w-auto object-contain transition-all duration-300`}
-            />
-            {!sidebarCollapsed && (
-              <div>
-                <div className="font-bold text-aviation-text text-sm">Aviation Theory Services</div>
-                <div className="text-xs text-aviation-muted">ATPL Training Platform</div>
+  const SidebarContent = () => (
+    <>
+      {/* Logo and Brand */}
+      <div className="flex items-center gap-3 px-4 py-6 border-b border-slate-200">
+        <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-aviation-primary to-aviation-secondary rounded-lg">
+          <Plane className="w-4 h-4 text-white" />
+        </div>
+        {(!sidebarCollapsed || isMobile) && (
+          <div className="flex flex-col">
+            <span className="font-bold text-aviation-navy text-sm leading-tight">Aviation Theory Services</span>
+            <span className="text-xs text-aviation-muted leading-tight">ATPL Training Platform</span>
+          </div>
+        )}
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 px-3 py-4">
+        <div className="space-y-1">
+          {navigation.map((item) => {
+            const Icon = item.icon;
+            const isActive = isActivePath(item.path);
+            
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                  isActive
+                    ? 'bg-aviation-primary text-white shadow-md'
+                    : 'text-slate-700 hover:bg-slate-50 hover:text-aviation-primary'
+                }`}
+              >
+                <Icon className={`h-4 w-4 shrink-0 ${
+                  isActive ? 'text-white' : 'text-slate-400 group-hover:text-aviation-primary'
+                }`} />
+                {(!sidebarCollapsed || isMobile) && (
+                  <span className="truncate">{item.name}</span>
+                )}
+                {isActive && (
+                  <div className="ml-auto w-1.5 h-1.5 bg-white rounded-full" />
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+
+      {/* User Profile */}
+      <div className="border-t border-slate-200 p-3">
+        {user ? (
+          <div className="relative">
+            <button
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+            >
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-aviation-primary to-aviation-secondary text-xs font-semibold text-white">
+                {user.email?.charAt(0).toUpperCase()}
+              </div>
+              {(!sidebarCollapsed || isMobile) && (
+                <>
+                  <div className="flex flex-col items-start flex-1 min-w-0">
+                    <span className="text-xs font-medium text-slate-900 truncate">
+                      {user.email}
+                    </span>
+                    <span className="text-[10px] text-slate-500">Authenticated</span>
+                  </div>
+                  <ChevronLeft className={`h-4 w-4 text-slate-400 transition-transform ${showUserMenu ? 'rotate-90' : '-rotate-90'}`} />
+                </>
+              )}
+            </button>
+
+            {/* User Menu */}
+            {showUserMenu && (!sidebarCollapsed || isMobile) && (
+              <div className="absolute bottom-full left-0 right-0 mb-2 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-slate-200">
+                <div className="py-1">
+                  <button
+                    onClick={handleSignOut}
+                    className="group flex w-full items-center gap-3 px-4 py-2 text-sm text-slate-700 transition-colors hover:bg-slate-50"
+                  >
+                    <LogOut className="h-4 w-4 text-slate-400 group-hover:text-red-500" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
-          <button
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
+        ) : (
+          <Link
+            to="/login"
+            className="group flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-aviation-primary to-aviation-secondary px-3 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:from-aviation-navy hover:to-aviation-secondary hover:shadow-md"
           >
-            <svg 
-              className={`w-4 h-4 text-slate-600 transition-transform ${sidebarCollapsed ? 'rotate-180' : ''}`} 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-            </svg>
+            {sidebarCollapsed && !isMobile ? (
+              <User className="h-4 w-4" />
+            ) : (
+              'Sign In'
+            )}
+          </Link>
+        )}
+      </div>
+    </>
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-aviation-light via-white to-aviation-accent">
+      {/* Mobile Menu Button */}
+      {isMobile && (
+        <div className="fixed top-4 left-4 z-50">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="flex items-center justify-center w-10 h-10 bg-white rounded-lg shadow-lg border border-slate-200 text-slate-600 hover:text-aviation-primary transition-colors"
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
+      )}
 
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-2">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              to={item.path}
-              className={`sidebar-nav-item flex items-center space-x-3 p-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                isActivePath(item.path)
-                  ? 'text-aviation-primary bg-aviation-primary/5 border border-aviation-primary/10'
-                  : 'text-slate-700 hover:text-aviation-primary hover:bg-slate-50'
-              }`}
-            >
-              <div className={`flex-shrink-0 ${isActivePath(item.path) ? 'text-aviation-primary' : 'text-slate-400'}`}>
-                {item.icon}
-              </div>
-              {!sidebarCollapsed && (
-                <span className="truncate">{item.name}</span>
-              )}
-            </Link>
-          ))}
-        </nav>
+      {/* Desktop Sidebar */}
+      {!isMobile && (
+        <aside className={`${sidebarCollapsed ? 'w-16' : 'w-64'} fixed inset-y-0 left-0 z-40 flex flex-col bg-white border-r border-slate-200 transition-all duration-300`}>
+          {/* Collapse Button */}
+          <button
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className="absolute -right-3 top-9 flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 hover:text-aviation-primary transition-colors"
+          >
+            <ChevronLeft className={`h-4 w-4 transition-transform duration-200 ${sidebarCollapsed ? 'rotate-180' : ''}`} />
+          </button>
+          
+          <SidebarContent />
+        </aside>
+      )}
 
-        {/* User Section */}
-        <div className="p-4 border-t border-slate-100">
-          {user ? (
-            <div className="space-y-3">
-              <div className="relative">
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="w-full flex items-center space-x-2 p-2 rounded-lg hover:bg-slate-50 transition-colors"
-                >
-                  <div className="flex-shrink-0 w-6 h-6 bg-gradient-to-br from-aviation-primary to-aviation-secondary rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs font-semibold">
-                      {user.email?.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  {!sidebarCollapsed && (
-                    <>
-                      <div className="flex-1 text-left">
-                        <div className="text-xs font-medium text-slate-900 truncate">
-                          {user.email}
-                        </div>
-                        <div className="text-[10px] text-slate-500">Authenticated</div>
-                      </div>
-                      <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </>
-                  )}
-                </button>
-
-                {showUserMenu && !sidebarCollapsed && (
-                  <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-xl shadow-lg border border-slate-200 py-2">
-                    <button
-                      onClick={handleSignOut}
-                      className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                      </svg>
-                      Sign Out
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <Link
-              to="/login"
-              className="w-full bg-gradient-to-r from-aviation-primary to-aviation-secondary hover:from-aviation-navy hover:to-aviation-secondary text-white font-semibold py-2 px-3 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg text-center block text-sm"
-            >
-              {sidebarCollapsed ? (
-                <svg className="w-3 h-3 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              ) : (
-                'Sign In'
-              )}
-            </Link>
+      {/* Mobile Sidebar */}
+      {isMobile && (
+        <>
+          {/* Mobile Sidebar Overlay */}
+          {mobileMenuOpen && (
+            <div
+              className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm"
+              onClick={() => setMobileMenuOpen(false)}
+            />
           )}
-        </div>
-      </aside>
+          
+          {/* Mobile Sidebar */}
+          <aside className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-white transition-transform duration-300 ease-in-out ${
+            mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}>
+            <SidebarContent />
+          </aside>
+        </>
+      )}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className={`flex flex-1 flex-col ${isMobile ? '' : sidebarCollapsed ? 'ml-16' : 'ml-64'} transition-all duration-300`}>
         {/* Header */}
-        <header className="bg-gradient-to-r from-aviation-navy via-aviation-primary to-aviation-navy text-white shadow-lg z-20">
-          <div className="px-6 py-2">
+        <header className="bg-gradient-to-r from-aviation-navy via-aviation-primary to-aviation-navy text-white shadow-lg">
+          <div className={`px-6 py-3 ${isMobile ? 'ml-16' : ''}`}>
             <div className="flex items-center justify-between">
-              {/* Breadcrumb */}
               <div className="flex-1">
                 <Breadcrumb />
               </div>
-
-              {/* Header Actions */}
               <div className="flex items-center space-x-4">
-                {/* Quick Actions can go here */}
+                {/* Future: Quick actions or search */}
               </div>
             </div>
           </div>
         </header>
 
         {/* Main Content Area */}
-        <main className="flex-1 p-4 overflow-auto">
-          <div className="max-w-7xl mx-auto">
+        <main className="flex-1 overflow-auto">
+          <div className="container mx-auto max-w-7xl p-6">
             <Outlet />
           </div>
         </main>
@@ -226,7 +265,7 @@ const Layout: React.FC = () => {
       {/* Click outside to close user menu */}
       {showUserMenu && (
         <div
-          className="fixed inset-0 z-20"
+          className="fixed inset-0 z-30"
           onClick={() => setShowUserMenu(false)}
         />
       )}
