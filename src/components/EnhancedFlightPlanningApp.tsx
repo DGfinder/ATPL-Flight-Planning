@@ -184,7 +184,7 @@ const EnhancedFlightPlanningApp: React.FC = () => {
 
     const categoryPerformance: Record<QuestionCategory, { attempted: number; correct: number; accuracy: number }> = {} as Record<QuestionCategory, { attempted: number; correct: number; accuracy: number }>;
     
-    Object.keys(questionCategories).forEach(cat => {
+    Object.keys(questionCategories || {}).forEach(cat => {
       const category = cat as QuestionCategory;
       const categoryAnswers = userAnswers.filter(a => {
         const question = questions.find(q => q.id === a.questionId);
