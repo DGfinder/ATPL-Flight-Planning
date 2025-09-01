@@ -8,7 +8,7 @@ import NewDashboardPage from './pages/NewDashboardPage';
 
 // Import actual page components
 import QuestionsPage from './pages/QuestionsPage';
-const NotesPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Course Notes</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
+import NotesPage from './pages/NotesPage';
 const ExamPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Trial Exam</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
 const FlightPlanPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Flight Planning</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
 const AnalyticsPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Performance Analytics</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
@@ -41,6 +41,8 @@ function App() {
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<NewDashboardPage />} />
               <Route path="notes" element={<NotesPage />} />
+              <Route path="notes/:subjectId" element={<NotesPage />} />
+              <Route path="notes/:subjectId/:contentType" element={<NotesPage />} />
               <Route path="questions" element={<QuestionsPage />} />
               <Route path="exam" element={<ExamPage />} />
               <Route path="flight-plan" element={<FlightPlanPage />} />
