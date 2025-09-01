@@ -29,10 +29,14 @@ function App() {
               } 
             />
             
-            {/* Main app routes with layout - allow guest access */}
+            {/* Protected main app routes with authentication required */}
             <Route 
               path="/" 
-              element={<Layout />}
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <Layout />
+                </ProtectedRoute>
+              }
             >
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<NewDashboardPage />} />
@@ -43,8 +47,15 @@ function App() {
               <Route path="analytics" element={<AnalyticsPage />} />
             </Route>
             
-            {/* Fallback route */}
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            {/* Fallback route - redirect to login for unauthenticated users */}
+            <Route 
+              path="*" 
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <Navigate to="/dashboard" replace />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </Router>
       </AuthProvider>

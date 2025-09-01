@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { databaseService } from '../services/database';
 
@@ -37,10 +37,13 @@ const LoginPage: React.FC = () => {
   const validateForm = () => {
     if (!formData.email) return 'Email is required';
     if (mode !== 'forgot-password' && !formData.password) return 'Password is required';
+    
+    // Only validate password length for signup, not login
     if (mode === 'signup') {
       if (formData.password.length < 6) return 'Password must be at least 6 characters';
       if (formData.password !== formData.confirmPassword) return 'Passwords do not match';
     }
+    
     return null;
   };
 
@@ -60,7 +63,9 @@ const LoginPage: React.FC = () => {
     try {
       if (mode === 'login') {
         const { error } = await databaseService.signIn(formData.email, formData.password);
-        if (error) throw error;
+        if (error) {
+          throw error;
+        }
         
         const from = location.state?.from?.pathname || '/dashboard';
         navigate(from, { replace: true });
@@ -80,7 +85,21 @@ const LoginPage: React.FC = () => {
         setSuccess('If an account with this email exists, you will receive a password reset link.');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Authentication failed');
+      // Provide specific error messages based on error type
+      if (err instanceof Error) {
+        // Common Supabase auth error messages
+        if (err.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password. Please check your credentials and try again.');
+        } else if (err.message.includes('Email not confirmed')) {
+          setError('Please confirm your email address before signing in.');
+        } else if (err.message.includes('Password should be at least')) {
+          setError('Password does not meet requirements. Please try again or reset your password.');
+        } else {
+          setError(`Authentication failed: ${err.message}`);
+        }
+      } else {
+        setError('Authentication failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -330,21 +349,42 @@ const LoginPage: React.FC = () => {
             )}
           </div>
 
-          {/* Guest Access */}
-          <div className="mt-8 pt-6 border-t border-aviation-border">
-            <div className="text-center">
-              <p className="text-xs text-aviation-muted mb-3">
-                Want to try before signing up?
-              </p>
-              <Link
-                to="/dashboard"
-                className="aviation-button-ghost inline-flex items-center space-x-2 px-4 py-2 text-sm"
+          {/* Test Admin Login (Development Only) */}
+          {mode === 'login' && (
+            <div className="mt-6 pt-4 border-t border-aviation-border/30">
+              <button
+                type="button"
+                onClick={() => {
+                  // Pre-fill with admin credentials for testing
+                  setFormData(prev => ({
+                    ...prev,
+                    email: 'admin@example.com',
+                    password: 'admin'
+                  }));
+                  setError(null);
+                }}
+                className="w-full text-xs text-aviation-muted hover:text-aviation-primary transition-colors duration-200 py-2 px-3 border border-aviation-border/50 rounded-lg hover:border-aviation-primary/30"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                </svg>
-                <span>Continue as Guest</span>
-              </Link>
+                🔧 Fill Admin Credentials (Test)
+              </button>
+            </div>
+          )}
+
+          {/* Benefits and Security Notice */}
+          <div className="mt-8 pt-6 border-t border-aviation-border">
+            <div className="text-center space-y-3">
+              <div className="text-xs text-aviation-text">
+                <p className="font-medium mb-2">Access Your ATPL Study Platform:</p>
+                <div className="space-y-1 text-aviation-muted">
+                  <p>✈️ Comprehensive course notes</p>
+                  <p>📝 Practice questions & exams</p>
+                  <p>🗺️ Flight planning tools</p>
+                  <p>📊 Progress analytics</p>
+                </div>
+              </div>
+              <p className="text-xs text-aviation-muted pt-2 border-t border-aviation-border/50">
+                🔒 Secure authentication required
+              </p>
             </div>
           </div>
         </div>
