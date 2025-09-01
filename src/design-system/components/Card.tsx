@@ -41,13 +41,16 @@ function getCardStyles(
   };
 
   // Padding styles
-  const paddingStyles = {
-    none: {},
-    sm: { padding: spacing.component.card.sm },
-    md: { padding: spacing.component.card.md },
-    lg: { padding: spacing.component.card.lg },
-    xl: { padding: spacing.component.card.xl }
-  };
+  const paddingStyles = (() => {
+    switch (padding) {
+      case 'none': return {};
+      case 'sm': return { padding: spacing.component.card.sm };
+      case 'md': return { padding: spacing.component.card.md };
+      case 'lg': return { padding: spacing.component.card.lg };
+      case 'xl': return { padding: spacing.component.card.xl };
+      default: return {};
+    }
+  })();
 
   // Variant-specific styles
   const variantStyles = {
@@ -95,7 +98,7 @@ function getCardStyles(
 
   return {
     ...baseStyles,
-    ...paddingStyles[padding],
+    ...paddingStyles,
     ...variantStyles[variant],
     ...highlightStyles
   };

@@ -295,11 +295,12 @@ const TopicCard: React.FC<{
     <Card
       onClick={onClick}
       variant="interactive"
+      padding="none"
       className="cursor-pointer group p-8 text-center transform hover:-translate-y-1 transition-all duration-300 min-h-[280px] flex flex-col justify-between"
     >
       {/* Large Icon */}
       <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="w-16 h-16 bg-aviation-primary text-white rounded-xl flex items-center justify-center text-sm font-bold mb-6 group-hover:scale-110 transition-transform duration-300">
+        <div className="w-16 h-16 bg-aviation-primary text-white rounded-xl flex items-center justify-center text-lg font-bold tracking-wider mb-6 group-hover:scale-110 transition-transform duration-300">
           {getTopicIcon(subject.id)}
         </div>
         
