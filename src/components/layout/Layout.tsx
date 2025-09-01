@@ -257,10 +257,6 @@ const Layout: React.FC = () => {
         {/* Main Content Area */}
         <main className="flex-1 overflow-auto">
           <div className="container mx-auto max-w-7xl p-6">
-            {/* DEBUG: Layout is rendering */}
-            <div className="bg-blue-100 border border-blue-300 p-2 mb-4 text-xs">
-              🔍 Layout Debug: Current path = {location.pathname} | Time = {new Date().toISOString()}
-            </div>
             <Outlet />
           </div>
         </main>
