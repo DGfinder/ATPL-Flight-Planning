@@ -34,7 +34,8 @@ export default {
         },
         green: {
           50: '#f0fdf4',
-          500: '#22c55e'
+          500: '#22c55e',
+          600: '#16a34a'
         },
         red: {
           50: '#fef2f2',
@@ -42,10 +43,46 @@ export default {
           600: '#dc2626'
         },
         blue: {
-          200: '#bfdbfe'
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          500: '#3b82f6',
+          600: '#2563eb'
         },
         white: '#ffffff'
-      }
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'slide-in': 'slideIn 0.3s ease-out',
+        'bounce-subtle': 'bounceSubtle 0.6s ease-in-out',
+        'pulse-slow': 'pulse 3s infinite',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideIn: {
+          '0%': { transform: 'translateY(-10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        bounceSubtle: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-5px)' },
+        },
+      },
+      boxShadow: {
+        'aviation': '0 4px 6px -1px rgba(30, 58, 138, 0.1), 0 2px 4px -1px rgba(30, 58, 138, 0.06)',
+        'aviation-lg': '0 10px 15px -3px rgba(30, 58, 138, 0.1), 0 4px 6px -2px rgba(30, 58, 138, 0.05)',
+      },
+      fontFamily: {
+        'mono': ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '128': '32rem',
+      },
     },
   },
   plugins: [],
