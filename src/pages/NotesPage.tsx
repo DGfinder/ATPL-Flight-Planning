@@ -131,6 +131,7 @@ const NotesPage: React.FC = () => {
                   <DocumentLibrary
                     documents={currentSubject.documents}
                     title="Theory & Documentation"
+                    subjectId={currentSubject.id}
                     onDocumentOpen={(documentId) => {
                       console.log('Document opened:', documentId);
                     }}
@@ -234,7 +235,7 @@ const NotesPage: React.FC = () => {
                 <p className="text-gray-600">Try adjusting your search term</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
                 {filteredSubjects.map((subject) => (
                   <TopicCard
                     key={subject.id}
@@ -296,12 +297,15 @@ const TopicCard: React.FC<{
       onClick={onClick}
       variant="interactive"
       padding="none"
-      className="cursor-pointer group p-8 text-center transform hover:-translate-y-1 transition-all duration-300 min-h-[280px] flex flex-col justify-between"
+      className="cursor-pointer group p-8 text-center card-modern light-glow min-h-[320px] flex flex-col justify-between bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/20"
     >
       {/* Large Icon */}
       <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="w-16 h-16 bg-aviation-primary text-white rounded-xl flex items-center justify-center text-lg font-bold tracking-wider mb-6 group-hover:scale-110 transition-transform duration-300">
-          {getTopicIcon(subject.id)}
+        <div className="relative">
+          <div className="absolute inset-0 bg-aviation-primary rounded-xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
+          <div className="relative w-20 h-20 bg-gradient-to-br from-aviation-primary to-blue-600 text-white rounded-xl flex items-center justify-center text-xl font-bold tracking-wider mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+            {getTopicIcon(subject.id)}
+          </div>
         </div>
         
         {/* Title */}

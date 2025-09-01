@@ -84,9 +84,11 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
                       }
                     }}
                   />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center text-white">
-                      ▶️
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40 hover:bg-black/60 transition-colors cursor-pointer">
+                    <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-white shadow-xl hover:scale-110 transition-transform">
+                      <svg className="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                      </svg>
                     </div>
                   </div>
                 </div>
@@ -99,7 +101,11 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
           {error && (
             <div className="absolute inset-0 flex items-center justify-center bg-red-50">
               <div className="text-center">
-                <div className="text-red-400 text-4xl mb-2">⚠️</div>
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-2">
+                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
                 <p className="text-red-600 text-sm mb-2">{error}</p>
                 <button
                   onClick={() => {
@@ -134,9 +140,19 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
           <div className="text-white">
             <h3 className="font-semibold text-lg mb-1">{video.title}</h3>
             <div className="flex items-center space-x-4 text-sm text-gray-300">
-              <span>⏱️ {formatDuration(video.duration)}</span>
+              <span className="flex items-center space-x-1">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{formatDuration(video.duration)}</span>
+              </span>
               {video.subtopics && video.subtopics.length > 0 && (
-                <span>📚 {video.subtopics.length} topics</span>
+                <span className="flex items-center space-x-1">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                  <span>{video.subtopics.length} topics</span>
+                </span>
               )}
             </div>
           </div>
@@ -173,7 +189,9 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({
               onClick={() => window.open(`https://www.youtube.com/watch?v=${video.youtubeId}`, '_blank')}
               className="flex items-center space-x-2 text-sm text-gray-600 hover:text-blue-600 transition-colors"
             >
-              <span>🔗</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
               <span>Open in YouTube</span>
             </button>
           </div>
