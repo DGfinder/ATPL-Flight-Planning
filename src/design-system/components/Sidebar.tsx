@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { colors, colorTokens } from '../colors';
 import { spacing } from '../spacing';
+import { typography } from '../typography';
 
 // Icon components for proper typing and reliability
 interface IconProps {
@@ -241,26 +242,47 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, collapsed, onSignOut })
   const [isHovered, setIsHovered] = React.useState(false);
 
   if (!user) {
+    const [isHovered, setIsHovered] = React.useState(false);
+    
+    const signInButtonStyle: React.CSSProperties = {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: collapsed ? 0 : spacing.scale[2],
+      borderRadius: spacing.radius.lg,
+      background: colorTokens.gradients.primary,
+      padding: collapsed 
+        ? `${spacing.scale[2]} ${spacing.scale[2]}` // Square padding for collapsed
+        : `${spacing.scale[2.5]} ${spacing.scale[3]}`, // Normal padding for expanded
+      fontSize: collapsed ? '0' : '0.875rem', // Hide text in collapsed mode
+      fontWeight: 500,
+      color: colors.white,
+      textDecoration: 'none',
+      transition: 'all 200ms ease',
+      width: '100%',
+      maxWidth: '100%',
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      boxShadow: isHovered 
+        ? `0 8px 16px ${colors.withOpacity(colors.aviation.primary, 0.3)}` 
+        : `0 4px 8px ${colors.withOpacity(colors.aviation.primary, 0.2)}`,
+      transform: isHovered ? 'translateY(-1px)' : 'translateY(0)',
+      fontFamily: typography.fontFamilies.primary.join(', ')
+    };
+
     return (
       <Link
         to="/login"
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: spacing.scale[2],
-          borderRadius: spacing.radius.lg,
-          background: colorTokens.gradients.primary,
-          padding: `${spacing.scale[2.5]} ${spacing.scale[3]}`,
-          fontSize: '0.875rem',
-          fontWeight: 500,
-          color: colors.white,
-          textDecoration: 'none',
-          transition: 'all 200ms ease',
-          width: '100%'
-        }}
+        style={signInButtonStyle}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        {collapsed ? <UserIcon size={16} /> : 'Sign In'}
+        {collapsed ? (
+          <UserIcon size={16} />
+        ) : (
+          'Sign In'
+        )}
       </Link>
     );
   }
@@ -404,6 +426,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const sidebarStyle: React.CSSProperties = {
     width: collapsed ? '4rem' : '16rem',
+    minWidth: collapsed ? '4rem' : '16rem',
+    maxWidth: collapsed ? '4rem' : '16rem',
     height: '100vh',
     backgroundColor: colors.white,
     borderRight: `1px solid ${colors.gray[200]}`,
@@ -413,7 +437,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     left: 0,
     top: 0,
     zIndex: 40,
-    transition: 'width 300ms cubic-bezier(0.16, 1, 0.3, 1)'
+    transition: 'width 300ms cubic-bezier(0.16, 1, 0.3, 1)',
+    overflow: 'hidden',
+    boxSizing: 'border-box'
   };
 
   const headerStyle: React.CSSProperties = {

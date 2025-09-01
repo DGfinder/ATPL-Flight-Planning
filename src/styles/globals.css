@@ -75,61 +75,16 @@
   --gradient-card: linear-gradient(135deg, var(--color-white) 0%, #fefefe 100%);
 }
 
-/* Font Loading with Proper Fallbacks */
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: local('Inter Regular'), local('Inter-Regular');
+/* Professional Font Loading Strategy */
+/* Fonts are loaded via /fonts/fonts.css for better reliability */
+
+/* Font Loading Detection */
+.fonts-loading {
+  visibility: hidden;
 }
 
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: local('Inter Medium'), local('Inter-Medium');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local('Inter SemiBold'), local('Inter-SemiBold');
-}
-
-@font-face {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: local('Inter Bold'), local('Inter-Bold');
-}
-
-@font-face {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: local('Poppins Medium'), local('Poppins-Medium');
-}
-
-@font-face {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: local('Poppins SemiBold'), local('Poppins-SemiBold');
-}
-
-@font-face {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: local('Poppins Bold'), local('Poppins-Bold');
+.fonts-loaded {
+  visibility: visible;
 }
 
 /* Base Layer - Global Resets and Defaults */
@@ -148,20 +103,23 @@
   }
 
   body {
-    font-family: var(--font-primary);
-    font-weight: var(--font-weight-normal);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-weight: 400;
     line-height: 1.6;
     color: var(--color-aviation-navy);
     background: var(--gradient-background);
     min-height: 100vh;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   /* Typography Hierarchy */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-    font-weight: var(--font-weight-semibold);
+    font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    font-weight: 600;
     line-height: 1.25;
     letter-spacing: -0.025em;
     color: var(--color-aviation-navy);
@@ -494,16 +452,46 @@
   }
 
   .card-aviation {
-    @apply aviation-card;
+    background: var(--gradient-card);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
     padding: var(--spacing-6);
   }
 
   .button-aviation {
-    @apply aviation-button;
+    background: var(--gradient-primary);
+    color: var(--color-white);
+    font-weight: var(--font-weight-semibold);
+    font-size: 0.875rem;
+    padding: var(--spacing-3) var(--spacing-6);
+    border-radius: var(--radius-xl);
+    border: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-aviation);
+    transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
   }
 
   .input-aviation {
-    @apply aviation-input;
+    background: var(--gradient-card);
+    border: 1px solid var(--color-aviation-border);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: 0.875rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    width: 100%;
+    font-family: var(--font-primary);
   }
 }
 
