@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Question, UserAnswer, QuestionCategory, PerformanceMetrics } from '../types';
 import { questionCategories } from '../data/questions';
 
@@ -17,6 +17,8 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
   onNavigate,
   onShowAuthModal
 }) => {
+  const [showDetailedStats, setShowDetailedStats] = useState(false);
+
   // Calculate category performance
   const calculateCategoryPerformance = () => {
     const categoryStats: Record<QuestionCategory, { attempted: number; correct: number; accuracy: number }> = {} as Record<QuestionCategory, { attempted: number; correct: number; accuracy: number }>;
@@ -39,261 +41,312 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
   };
 
   const categoryPerformance = calculateCategoryPerformance();
+  const hasProgress = userAnswers.length > 0;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-aviation-primary/10 via-aviation-secondary/10 to-blue-600/10"></div>
-        <div className="absolute inset-0 opacity-30" style={{
-          backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
+    <div className="min-h-screen bg-gray-50">
+      {/* Modern Hero Section */}
+      <section className="relative bg-gradient-to-br from-white via-slate-50 to-blue-50/30 overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 opacity-[0.02]" style={{
+          backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
         }}></div>
         
-        <div className="relative max-w-7xl mx-auto px-6 py-16">
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-aviation-primary to-aviation-secondary rounded-2xl shadow-xl mb-8">
-              <span className="text-3xl">✈️</span>
+        <div className="relative max-w-6xl mx-auto px-6 py-24">
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Icon */}
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-aviation-primary to-aviation-secondary rounded-2xl shadow-lg mb-8">
+              <span className="text-2xl">✈️</span>
             </div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-6 tracking-tight">
-              Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-aviation-primary to-aviation-secondary">ATPL Flight Planning</span>
+            
+            {/* Main heading */}
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              ATPL Flight Planning
+              <span className="block text-2xl md:text-3xl font-medium text-gray-600 mt-2">
+                Study Platform
+              </span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Your comprehensive study tool for ATPL flight planning exams. Master the fundamentals with interactive practice, real-world calculations, and personalized learning.
+            
+            {/* Description */}
+            <p className="text-lg md:text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+              Master ATPL flight planning with comprehensive practice questions, interactive calculations, and personalized learning paths.
             </p>
             
-            {/* Quick Stats Banner */}
-            <div className="mt-12 inline-flex items-center space-x-8 bg-white/80 backdrop-blur-sm rounded-2xl px-8 py-4 shadow-lg border border-white/20">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-aviation-primary">{questions.length}</div>
-                <div className="text-sm text-gray-600">Total Questions</div>
-              </div>
-              <div className="w-px h-12 bg-gray-300"></div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{metrics.correctAnswers}</div>
-                <div className="text-sm text-gray-600">Correct Answers</div>
-              </div>
-              <div className="w-px h-12 bg-gray-300"></div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{metrics.accuracy.toFixed(1)}%</div>
-                <div className="text-sm text-gray-600">Accuracy</div>
-              </div>
-              <div className="w-px h-12 bg-gray-300"></div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">{Object.keys(questionCategories).length}</div>
-                <div className="text-sm text-gray-600">Categories</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Features Grid */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Practice Questions Card */}
-          <div className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-aviation-primary/20 to-aviation-secondary/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative bg-white rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl mb-6 shadow-lg">
-                <span className="text-2xl">📚</span>
-              </div>
-              
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Practice Questions</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                Test your knowledge with comprehensive multiple choice and short answer questions designed to mirror real exam conditions.
-              </p>
-              
-              <div className="space-y-3 mb-8">
-                <div className="flex items-center text-sm">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                  <span className="text-gray-700">Adaptive difficulty system</span>
+            {/* Stats overview */}
+            {hasProgress && (
+              <div className="flex flex-wrap justify-center gap-8 mb-12">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-aviation-primary mb-1">{metrics.correctAnswers}</div>
+                  <div className="text-sm font-medium text-gray-600">Correct</div>
                 </div>
-                <div className="flex items-center text-sm">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                  <span className="text-gray-700">Detailed explanations & working steps</span>
+                <div className="w-px h-12 bg-gray-200 hidden sm:block"></div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600 mb-1">{metrics.answeredQuestions}</div>
+                  <div className="text-sm font-medium text-gray-600">Answered</div>
                 </div>
-                <div className="flex items-center text-sm">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                  <span className="text-gray-700">Performance analytics & progress tracking</span>
+                <div className="w-px h-12 bg-gray-200 hidden sm:block"></div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-600 mb-1">{metrics.accuracy.toFixed(0)}%</div>
+                  <div className="text-sm font-medium text-gray-600">Accuracy</div>
                 </div>
               </div>
-              
+            )}
+            
+            {/* Primary CTA */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => onNavigate('questions')}
-                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                className="inline-flex items-center px-8 py-4 bg-aviation-primary hover:bg-aviation-primary/90 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-aviation-primary focus:ring-offset-2"
               >
-                Start Practicing
+                <span>Start Practicing</span>
+                <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
               </button>
-            </div>
-          </div>
-
-          {/* Flight Planning Card */}
-          <div className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-emerald-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative bg-white rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-6 shadow-lg">
-                <span className="text-2xl">🛩️</span>
-              </div>
               
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Flight Planning Sheet</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                Master real-world flight planning with interactive calculations, manual entry for learning, and professional-grade tools.
-              </p>
-              
-              <div className="space-y-3 mb-8">
-                <div className="flex items-center text-sm">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  <span className="text-gray-700">Manual GS & ETI calculations</span>
-                </div>
-                <div className="flex items-center text-sm">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  <span className="text-gray-700">Advanced weight & balance</span>
-                </div>
-                <div className="flex items-center text-sm">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                  <span className="text-gray-700">Export to professional formats</span>
-                </div>
-              </div>
-              
-              <button
-                onClick={() => onNavigate('flightplan')}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-              >
-                Open Flight Plan
-              </button>
-            </div>
-          </div>
-
-          {/* Course Notes Card */}
-          <div className="group relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-600/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative bg-white rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl mb-6 shadow-lg">
-                <span className="text-2xl">📝</span>
-              </div>
-              
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Course Notes</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                Access comprehensive course materials, import your own notes via OCR, and build your personal knowledge base.
-              </p>
-              
-              <div className="space-y-3 mb-8">
-                <div className="flex items-center text-sm">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3"></div>
-                  <span className="text-gray-700">PDF course materials</span>
-                </div>
-                <div className="flex items-center text-sm">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3"></div>
-                  <span className="text-gray-700">Advanced OCR text extraction</span>
-                </div>
-                <div className="flex items-center text-sm">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full mr-3"></div>
-                  <span className="text-gray-700">Personal note organization</span>
-                </div>
-              </div>
-              
-              <button
-                onClick={() => onNavigate('notes')}
-                className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-              >
-                View Notes
-              </button>
+              {!hasProgress && (
+                <button
+                  onClick={onShowAuthModal}
+                  className="inline-flex items-center px-8 py-4 bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                >
+                  Sign In
+                </button>
+              )}
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Category Performance Section */}
-      {userAnswers.length > 0 && (
-        <div className="max-w-7xl mx-auto px-6 pb-16">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Performance by Category</h2>
-            <p className="text-lg text-gray-600">Track your progress across different topic areas</p>
+      {/* Main Content */}
+      <section className="max-w-6xl mx-auto px-6 py-16">
+        {/* Feature Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+          {/* Questions Card */}
+          <div className="group relative bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all duration-300">
+            <div className="flex items-center justify-center w-12 h-12 bg-blue-50 rounded-xl mb-6 group-hover:bg-blue-100 transition-colors">
+              <span className="text-xl">📚</span>
+            </div>
+            
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Practice Questions</h3>
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              Test your knowledge with comprehensive questions designed to mirror real exam conditions.
+            </p>
+            
+            <div className="space-y-2 mb-8 text-sm text-gray-600">
+              <div className="flex items-center">
+                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-3"></div>
+                <span>{questions.length} practice questions</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-3"></div>
+                <span>Detailed explanations</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-3"></div>
+                <span>Progress tracking</span>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => onNavigate('questions')}
+              className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium py-3 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Start Questions
+            </button>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Object.entries(questionCategories).map(([categoryKey, categoryName]) => {
-              const category = categoryKey as QuestionCategory;
-              const stats = categoryPerformance[category];
-              const hasData = stats.attempted > 0;
-              
-              return (
-                <div key={categoryKey} className={`bg-white rounded-2xl p-6 shadow-lg border ${hasData ? 'border-gray-200 hover:shadow-xl' : 'border-gray-100 opacity-75'} transition-all duration-300`}>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-gray-900 text-lg">{categoryName}</h3>
-                    <div className={`w-3 h-3 rounded-full ${hasData ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                  </div>
-                  
-                  {hasData ? (
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Questions Attempted</span>
-                        <span className="font-semibold text-gray-900">{stats.attempted}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Correct Answers</span>
-                        <span className="font-semibold text-green-600">{stats.correct}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Accuracy</span>
-                        <span className={`font-semibold ${stats.accuracy >= 80 ? 'text-green-600' : stats.accuracy >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
-                          {stats.accuracy.toFixed(1)}%
-                        </span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
-                        <div 
-                          className={`h-2 rounded-full transition-all duration-300 ${stats.accuracy >= 80 ? 'bg-green-500' : stats.accuracy >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                          style={{ width: `${Math.min(stats.accuracy, 100)}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-4">
-                      <div className="text-gray-400 text-sm">No questions attempted yet</div>
-                      <button 
-                        onClick={() => onNavigate('questions')}
-                        className="mt-2 text-aviation-primary hover:text-aviation-secondary text-sm font-medium transition-colors duration-200"
-                      >
-                        Start practicing →
-                      </button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+
+          {/* Flight Plan Card */}
+          <div className="group relative bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all duration-300">
+            <div className="flex items-center justify-center w-12 h-12 bg-green-50 rounded-xl mb-6 group-hover:bg-green-100 transition-colors">
+              <span className="text-xl">🛩️</span>
+            </div>
+            
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Flight Planning</h3>
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              Practice real-world flight planning calculations with interactive tools.
+            </p>
+            
+            <div className="space-y-2 mb-8 text-sm text-gray-600">
+              <div className="flex items-center">
+                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-3"></div>
+                <span>Manual calculations</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-3"></div>
+                <span>Weight & balance</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-3"></div>
+                <span>Export capabilities</span>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => onNavigate('flightplan')}
+              className="w-full bg-green-50 hover:bg-green-100 text-green-700 font-medium py-3 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            >
+              Open Flight Plan
+            </button>
+          </div>
+
+          {/* Notes Card */}
+          <div className="group relative bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all duration-300">
+            <div className="flex items-center justify-center w-12 h-12 bg-purple-50 rounded-xl mb-6 group-hover:bg-purple-100 transition-colors">
+              <span className="text-xl">📝</span>
+            </div>
+            
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">Course Notes</h3>
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              Access course materials and build your personal knowledge base with OCR.
+            </p>
+            
+            <div className="space-y-2 mb-8 text-sm text-gray-600">
+              <div className="flex items-center">
+                <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-3"></div>
+                <span>PDF materials</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-3"></div>
+                <span>OCR text extraction</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-3"></div>
+                <span>Personal notes</span>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => onNavigate('notes')}
+              className="w-full bg-purple-50 hover:bg-purple-100 text-purple-700 font-medium py-3 px-4 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+            >
+              View Notes
+            </button>
           </div>
         </div>
-      )}
 
-      {/* Recent Activity Section */}
-      {userAnswers.length > 0 && (
-        <div className="max-w-7xl mx-auto px-6 pb-16">
-          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-8 py-6 border-b border-gray-200">
-              <h3 className="text-xl font-bold text-gray-900">Recent Activity</h3>
-              <p className="text-gray-600 mt-1">Your latest study sessions and progress</p>
+        {/* Progressive Disclosure: Detailed Stats */}
+        {hasProgress && (
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-16">
+            <div className="px-8 py-6 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Your Progress</h2>
+                  <p className="text-sm text-gray-600 mt-1">Detailed breakdown by topic area</p>
+                </div>
+                <button
+                  onClick={() => setShowDetailedStats(!showDetailedStats)}
+                  className="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 rounded-lg"
+                >
+                  {showDetailedStats ? 'Hide Details' : 'Show Details'}
+                  <svg 
+                    className={`ml-2 w-4 h-4 transition-transform ${showDetailedStats ? 'rotate-180' : ''}`}
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {showDetailedStats && (
+              <div className="p-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {Object.entries(questionCategories).map(([categoryKey, categoryName]) => {
+                    const category = categoryKey as QuestionCategory;
+                    const stats = categoryPerformance[category];
+                    const questionsInCategory = questions.filter(q => q.category === category).length;
+                    const hasData = stats.attempted > 0;
+                    
+                    return (
+                      <div key={categoryKey} className="p-6 bg-gray-50 rounded-xl">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="font-medium text-gray-900">{categoryName}</h3>
+                          <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded-md">
+                            {questionsInCategory} total
+                          </span>
+                        </div>
+                        
+                        {hasData ? (
+                          <div className="space-y-3">
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600">Attempted</span>
+                              <span className="font-medium">{stats.attempted}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600">Correct</span>
+                              <span className="font-medium text-green-600">{stats.correct}</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div 
+                                className={`h-2 rounded-full transition-all ${stats.accuracy >= 80 ? 'bg-green-500' : stats.accuracy >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                                style={{ width: `${Math.min(stats.accuracy, 100)}%` }}
+                              ></div>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600">Accuracy</span>
+                              <span className={`font-medium ${stats.accuracy >= 80 ? 'text-green-600' : stats.accuracy >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
+                                {stats.accuracy.toFixed(1)}%
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-center py-4">
+                            <div className="text-gray-400 text-sm mb-2">Not started yet</div>
+                            <button 
+                              onClick={() => onNavigate('questions')}
+                              className="text-xs text-aviation-primary hover:text-aviation-secondary font-medium transition-colors"
+                            >
+                              Start practicing →
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Recent Activity - Only show if there's activity */}
+        {userAnswers.length > 0 && (
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm">
+            <div className="px-8 py-6 border-b border-gray-100">
+              <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
+              <p className="text-sm text-gray-600 mt-1">Your latest practice sessions</p>
             </div>
             
             <div className="p-8">
               <div className="space-y-4">
-                {userAnswers.slice(-5).reverse().map((answer, index) => {
+                {userAnswers.slice(-3).reverse().map((answer, index) => {
                   const question = questions.find(q => q.id === answer.questionId);
-                  const categoryName = question?.category ? questionCategories[question.category] : 'Unknown Category';
+                  const categoryName = question?.category ? questionCategories[question.category] : 'Unknown';
+                  
                   return (
-                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-200">
+                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                       <div className="flex items-center space-x-4">
-                        <div className={`w-3 h-3 rounded-full ${answer.isCorrect ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                        <div className={`w-2 h-2 rounded-full ${answer.isCorrect ? 'bg-green-500' : 'bg-red-500'}`}></div>
                         <div>
-                          <div className="font-semibold text-gray-900">{question?.title || 'Unknown Question'}</div>
-                          <div className="text-sm text-gray-500 flex items-center space-x-4">
-                            <span>⏱️ {Math.round(answer.timeSpent)}s</span>
-                            <span>📊 {answer.isCorrect ? 'Correct' : 'Incorrect'}</span>
-                            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">
+                          <div className="font-medium text-gray-900 text-sm">
+                            {question?.title || 'Unknown Question'}
+                          </div>
+                          <div className="flex items-center space-x-3 mt-1">
+                            <span className="text-xs text-gray-500">
+                              {Math.round(answer.timeSpent)}s
+                            </span>
+                            <span className={`text-xs px-2 py-0.5 rounded-md ${
+                              answer.isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                            }`}>
+                              {answer.isCorrect ? 'Correct' : 'Incorrect'}
+                            </span>
+                            <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-md">
                               {categoryName}
                             </span>
                           </div>
                         </div>
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-xs text-gray-500">
                         {new Date(answer.timestamp).toLocaleTimeString()}
                       </div>
                     </div>
@@ -302,81 +355,8 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Category Quick Access Section */}
-      <div className="max-w-7xl mx-auto px-6 pb-16">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Study by Topic</h2>
-          <p className="text-gray-600">Focus your practice on specific areas of ATPL flight planning</p>
-        </div>
-        
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-16">
-          {Object.entries(questionCategories).map(([categoryKey, categoryName]) => {
-            const category = categoryKey as QuestionCategory;
-            const stats = categoryPerformance[category];
-            const questionsInCategory = questions.filter(q => q.category === category).length;
-            
-            return (
-              <button
-                key={categoryKey}
-                onClick={() => onNavigate('questions')}
-                className="bg-white hover:bg-gray-50 border border-gray-200 hover:border-aviation-primary rounded-xl p-4 transition-all duration-200 text-left group hover:shadow-md"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-semibold text-gray-900 text-sm group-hover:text-aviation-primary transition-colors">
-                    {categoryName}
-                  </h3>
-                  <div className="text-xs text-gray-500">
-                    {questionsInCategory} questions
-                  </div>
-                </div>
-                {stats.attempted > 0 && (
-                  <div className="flex items-center space-x-2">
-                    <div className="flex-1 bg-gray-200 rounded-full h-1.5">
-                      <div 
-                        className={`h-1.5 rounded-full transition-all duration-300 ${stats.accuracy >= 80 ? 'bg-green-500' : stats.accuracy >= 60 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                        style={{ width: `${Math.min(stats.accuracy, 100)}%` }}
-                      ></div>
-                    </div>
-                    <span className="text-xs text-gray-500">{stats.accuracy.toFixed(0)}%</span>
-                  </div>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Call to Action Section */}
-      <div className="max-w-7xl mx-auto px-6 pb-16">
-        <div className="bg-gradient-to-r from-aviation-primary to-aviation-secondary rounded-3xl p-12 text-center text-white relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10" style={{
-            backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
-          }}></div>
-          <div className="relative">
-            <h2 className="text-3xl font-bold mb-4">Ready to Excel in ATPL Flight Planning?</h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Join ATPL Theory Students across Australia who have successfully passed their ATPL exams using our comprehensive training platform.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => onNavigate('questions')}
-                className="bg-white text-aviation-primary font-semibold py-3 px-8 rounded-xl hover:bg-gray-100 transition-colors duration-300"
-              >
-                Begin Training
-              </button>
-              <button
-                onClick={onShowAuthModal}
-                className="border-2 border-white text-white font-semibold py-3 px-8 rounded-xl hover:bg-white hover:text-aviation-primary transition-colors duration-300"
-              >
-                Access Platform
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+        )}
+      </section>
     </div>
   );
 };
