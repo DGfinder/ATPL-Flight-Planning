@@ -4,6 +4,10 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  css: {
+    devSourcemap: true,
+    postcss: './postcss.config.js',
+  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -21,5 +25,10 @@ export default defineConfig({
   },
   define: {
     global: 'globalThis'
+  },
+  server: {
+    hmr: {
+      overlay: true,
+    }
   }
 })

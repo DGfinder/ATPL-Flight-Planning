@@ -6,6 +6,10 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 
+// Development debugging components
+import CSSDebug from './components/debug/CSSDebug';
+import BuildStatus from './components/debug/BuildStatus';
+
 // Import actual page components
 import QuestionsPage from './pages/QuestionsPage';
 const NotesPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Course Notes</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
@@ -46,6 +50,14 @@ function App() {
             {/* Fallback route */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
+          
+          {/* Development debugging tools */}
+          {import.meta.env.DEV && (
+            <>
+              <BuildStatus />
+              <CSSDebug />
+            </>
+          )}
         </Router>
       </AuthProvider>
     </ThemeProvider>
