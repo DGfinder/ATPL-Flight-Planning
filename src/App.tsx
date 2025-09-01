@@ -5,11 +5,13 @@ import Layout from './components/layout/Layout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import SimpleDashboard from './pages/SimpleDashboard';
 
 // Development debugging components
 import CSSDebug from './components/debug/CSSDebug';
 import BuildStatus from './components/debug/BuildStatus';
 import CSSLoadingDiagnostic from './components/debug/CSSLoadingDiagnostic';
+import ErrorBoundary from './components/debug/ErrorBoundary';
 
 // Import actual page components
 import QuestionsPage from './pages/QuestionsPage';
@@ -56,7 +58,14 @@ function App() {
                 <div className="p-8">
                   <h1 className="text-4xl font-bold text-green-500 mb-4">🚨 DASHBOARD DEBUG 🚨</h1>
                   <p className="text-black">This is a test dashboard. If you see this, routing works!</p>
-                  <DashboardPage />
+                  <ErrorBoundary>
+                    <SimpleDashboard />
+                  </ErrorBoundary>
+                  <hr className="my-8" />
+                  <h2 className="text-xl font-bold text-purple-600 mb-4">🔍 Testing Original Dashboard:</h2>
+                  <ErrorBoundary>
+                    <DashboardPage />
+                  </ErrorBoundary>
                 </div>
               } />
               <Route path="notes" element={<NotesPage />} />
