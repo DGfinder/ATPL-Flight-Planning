@@ -50,5 +50,54 @@ Note: ETAS will always be reduction - it will always slow you down.`,
       }
     ],
     lastUpdated: new Date().toISOString()
+  },
+  {
+    topicId: 'speed_sound_mach_tat',
+    theory: `The Speed of Sound and Mach Numbers
+
+Atmosphere is the medium in which an aircraft operates and the atmospheric properties help in the generation of lift for an aircraft to fly. The changes in temperature, pressure and humidity affect the aircraft's overall performance. A moving aircraft always experiences both static and dynamic pressure, however, all the aerodynamic forces acting on an aircraft are determined by dynamic pressure. Therefore, pilots must have a clear indication of the pressure in an appropriate manner and this is provided by the Air Speed Indicator (ASI).
+
+The ASI displays the Indicated Air Speed (IAS) to the pilots. However, there are other speeds including Calibrated Air Speed, Equivalent Air Speed and True Air Speed. TAS is the actual speed of an aircraft moving through air and is the only real speed as the rest are measurements of dynamic pressure (air entering a pitot tube). When talking about the modern Air Speed Indicators, the CAS and IAS are considered to be the same. However, at high speeds and high altitudes, it is essential for a pilot to remember your TAS will be significantly different than IAS or CAS. At these altitudes and speeds, it is also important for a pilot to know their aircraft's speed relative to the speed of sound, which is another speed for the pilots of jet aircrafts to be familiar with.
+
+This relationship is known as the Mach Number (M). As an aircraft reaches higher speeds, it greatly affects the air's compressibility and the aircraft can experience undesirable handling characteristics. In order to avoid this in flight, it is very important to analyse the aircraft's speed relative to the speed of sound.
+
+Mach numbers that are less than 1.0 represents subsonic speeds, while greater than 1.0 show supersonic speeds. When the aircraft's speed equals the speed of sound, the Mach number is equal to 1.0 (M=1.0). As aircraft approach speeds greater than Mach 1.01 there is potential for shock waves to form on the aircraft body which affects both lift and drag properties.
+
+Chuck Yeager, first man to fly faster than the speed of sound
+
+The speed of sound is not constant and varies with temperature, being proportional to the square root of air's absolute temperature. On a standard day at sea level, the value of the local speed of sound (LSS) is about 660 knots. Colder temperatures will result in a lower speed of sound and hotter days will result in a higher speed of sound. It is approximately 1kt higher of lower for every 1 degree warmer or cooler than ISA.
+
+The Speed of Sound in knots can be found using the following formula:
+TAS=39xvK
+
+The Kelvin Scale {K) commences at absolute zero which is -273° C.
+Therefore O C = 273K. On an ISA day at MSL (15°C) we can say the temp is 288K
+
+You will be familiar from your previous study that temperature drops at about 2 degrees per thousand feet in altitude. We use 2 degrees per thousand in PPL and CPL for simplicity, but to be precise temperature decreases 1.98 degrees per one thousand feet increase in altitude. You may think the 0.02 degrees wouldn't make a difference but when you are talking in the tens of thousands of feet, it can.
+
+Because we can calculate temperature drop with altitude, we can fairly accurately estimate the actual temperature at a given height.
+
+As the International Standard Atmosphere (ISA) is a hypothetical model based on a hypothetical standard day, the actual everyday conditions differ from the standard ISA conditions of temperature, pressure and density. This difference in the actual conditions as compared to the ISA standard conditions is expressed in the form of ISA deviation.
+
+For example, if the MSL temperature at a given time is 32°C we say this is hotter than ISA (15° C) by 17° C and we would write this temperature as ISA+17.
+
+This methodology of expressing temperature relative to ISA can be used at any altitude and later in this course we will see that our high altitude forecast temperatures for flight planning are converted to ISA deviations, as the Boeing 727 Handbook uses an ISA deviation format.`,
+    videos: [
+      {
+        id: 'mach_video_1',
+        title: 'Speed of Sound and Mach Numbers Explained',
+        youtubeId: 'dQw4w9WgXcQ',
+        description: 'Comprehensive explanation of the speed of sound, Mach numbers, and their relationship to aircraft performance at high altitudes.'
+      }
+    ],
+    practice: [
+      {
+        id: 'mach_practice_1',
+        title: 'Mach Number Calculations',
+        content: 'Practice calculating Mach numbers and understanding the relationship between TAS and the speed of sound.',
+        type: 'exercise'
+      }
+    ],
+    lastUpdated: new Date().toISOString()
   }
 ];

@@ -6,6 +6,126 @@ import { initialTopics } from '../../data/initialTopics';
 import TASPracticeTable from '../practice/TASPracticeTable';
 import { InteractiveCard, CardHeader, CardContent, Card, Button, useDesignSystem } from '../../design-system';
 
+interface EditModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (content: string) => void;
+  initialContent: string;
+  topicTitle: string;
+}
+
+const EditModal: React.FC<EditModalProps> = ({ isOpen, onClose, onSave, initialContent, topicTitle }) => {
+  const { colors, spacing, styles } = useDesignSystem();
+  const [content, setContent] = useState(initialContent);
+
+  useEffect(() => {
+    setContent(initialContent);
+  }, [initialContent]);
+
+  const handleSave = () => {
+    onSave(content);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000
+    }}>
+      <Card style={{
+        padding: spacing.scale[4],
+        maxWidth: '90vw',
+        maxHeight: '90vh',
+        width: '800px',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.scale[3] }}>
+          <h3 style={{ 
+            ...styles.heading, 
+            fontSize: '1.25rem',
+            fontWeight: 600,
+            color: colors.aviation.primary
+          }}>
+            Edit Theory Content: {topicTitle}
+          </h3>
+          <Button
+            onClick={onClose}
+            style={{ 
+              background: colors.gray[200], 
+              color: colors.gray[700],
+              border: 'none',
+              padding: '8px 12px',
+              borderRadius: spacing.radius.sm,
+              cursor: 'pointer'
+            }}
+          >
+            ✕
+          </Button>
+        </div>
+        
+        <div style={{ flex: 1, marginBottom: spacing.scale[3] }}>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            style={{
+              width: '100%',
+              height: '400px',
+              padding: spacing.scale[3],
+              border: `1px solid ${colors.gray[300]}`,
+              borderRadius: spacing.radius.md,
+              fontSize: '0.875rem',
+              lineHeight: '1.6',
+              fontFamily: 'monospace',
+              resize: 'vertical'
+            }}
+            placeholder="Enter theory content here..."
+          />
+        </div>
+        
+        <div style={{ display: 'flex', gap: spacing.scale[2], justifyContent: 'flex-end' }}>
+          <Button
+            onClick={onClose}
+            style={{ 
+              background: colors.gray[200], 
+              color: colors.gray[700],
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: spacing.radius.md,
+              cursor: 'pointer'
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            style={{ 
+              background: colors.aviation.primary, 
+              color: colors.white,
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: spacing.radius.md,
+              cursor: 'pointer'
+            }}
+          >
+            Save Changes
+          </Button>
+        </div>
+      </Card>
+    </div>
+  );
+};
 
 const TOPICS: { id: NoteTopicId; label: string }[] = [
   { id: 'tas_heading_ground_speed', label: 'TAS, Heading and Ground Speed determinations using the flight computer' },
@@ -37,7 +157,13 @@ const TOPICS: { id: NoteTopicId; label: string }[] = [
   { id: 'boeing_727_weight_limits', label: 'Boeing 727 maximum weight limitations' },
   { id: 'destination_alternate_fuel', label: 'Destination -Alternate Fuel Policy' },
   { id: 'equi_time_point', label: 'Equi-Time Point (Critical Point)' },
-  { id: 'point_no_return', label: 'Point of No Return (PNR)' },
+  { id: 'point_of_no_return', label: 'Point of No Return' },
+  { id: 'fuel_planning_basics', label: 'Fuel Planning Basics' },
+  { id: 'weight_balance_basics', label: 'Weight and Balance Basics' },
+  { id: 'performance_basics', label: 'Performance Basics' },
+  { id: 'meteorology_basics', label: 'Meteorology Basics' },
+  { id: 'navigation_basics', label: 'Navigation Basics' },
+  { id: 'flight_planning_procedures', label: 'Flight Planning Procedures' },
 ];
 
 type TopicTab = 'theory' | 'videos' | 'practice' | 'imported';
@@ -47,6 +173,8 @@ const NotesHub: React.FC = () => {
   const data = notesStorage.load();
   const [selectedTopic, setSelectedTopic] = useState<NoteTopicId | null>(null);
   const [topicTab, setTopicTab] = useState<TopicTab>('theory');
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [currentTopicContent, setCurrentTopicContent] = useState('');
   
   useEffect(() => {
     const existingData = topicStorage.load();
@@ -64,6 +192,32 @@ const NotesHub: React.FC = () => {
     return groups;
   }, [data.sections]);
 
+  const topicContent = useMemo(() => {
+    if (!selectedTopic) return null;
+    const existingData = topicStorage.load();
+    return existingData.topics.find(topic => topic.topicId === selectedTopic);
+  }, [selectedTopic]);
+
+  const handleEditTheory = () => {
+    if (topicContent) {
+      setCurrentTopicContent(topicContent.theory);
+      setIsEditModalOpen(true);
+    }
+  };
+
+  const handleSaveTheory = (newContent: string) => {
+    if (selectedTopic && topicContent) {
+      const updatedTopic = {
+        ...topicContent,
+        theory: newContent,
+        lastUpdated: new Date().toISOString()
+      };
+      topicStorage.saveTopicContent(updatedTopic);
+      // Force re-render
+      setSelectedTopic(null);
+      setTimeout(() => setSelectedTopic(selectedTopic), 100);
+    }
+  };
 
   return (
     <div>
@@ -75,243 +229,102 @@ const NotesHub: React.FC = () => {
             gap: spacing.scale[4]
           }}
         >
-          {TOPICS.map(topic => {
-            const hasContent = topicStorage.getTopicContent(topic.id);
-            const hasImportedNotes = groupedSections[topic.id]?.length > 0;
-            const topicContent = hasContent ? topicStorage.getTopicContent(topic.id) : null;
-            
-            // Calculate progress indicators
-            const hasTheory = topicContent?.theory && topicContent.theory.length > 0;
-            const hasVideos = topicContent?.videos && topicContent.videos.length > 0;
-            const hasPractice = topicContent?.practice && topicContent.practice.length > 0;
-            
-            const completedSections = [hasTheory, hasVideos, hasPractice].filter(Boolean).length;
-            const totalSections = 3;
-            const progressPercentage = Math.round((completedSections / totalSections) * 100);
-            
-            return (
-              <InteractiveCard
-                key={topic.id}
-                padding="none"
-                onClick={() => setSelectedTopic(topic.id)}
-                style={{
-                  minHeight: '140px',
-                  transition: 'all 0.2s ease-in-out',
-                  border: `1px solid ${colors.gray[200]}`,
-                  cursor: 'pointer'
-                }}
-              >
-                <CardHeader
-                  style={{
-                    padding: spacing.scale[4],
-                    borderBottom: `1px solid ${colors.gray[100]}`
-                  }}
-                >
-                  <div>
-                    <h3 style={{
-                      ...styles.heading,
-                      fontSize: '0.875rem',
-                      fontWeight: 600,
-                      color: colors.aviation.navy,
-                      margin: 0,
-                      marginBottom: spacing.scale[1],
-                      lineHeight: '1.3'
-                    }}>
-                      {topic.label}
-                    </h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[1] }}>
-                      <div style={{
-                        fontSize: '0.75rem',
-                        color: colors.aviation.muted,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: spacing.scale[2]
-                      }}>
-                        {progressPercentage > 0 ? (
-                          <>
-                            <span style={{ 
-                              backgroundColor: colors.aviation.primary,
-                              color: colors.white,
-                              padding: `${spacing.scale[1]} ${spacing.scale[2]}`,
-                              borderRadius: spacing.radius.sm,
-                              fontSize: '0.6875rem',
-                              fontWeight: 500
-                            }}>
-                              {progressPercentage}% Complete
-                            </span>
-                          </>
-                        ) : (
-                          <span style={{ color: colors.gray[400] }}>
-                            Not started
-                          </span>
-                        )}
-                      </div>
-                      
-                      {/* Progress bar */}
-                      <div style={{
-                        width: '100%',
-                        height: '3px',
-                        backgroundColor: colors.gray[200],
-                        borderRadius: spacing.radius.sm,
-                        overflow: 'hidden'
-                      }}>
-                        <div style={{
-                          width: `${progressPercentage}%`,
-                          height: '100%',
-                          backgroundColor: progressPercentage > 0 ? colors.aviation.primary : 'transparent',
-                          borderRadius: spacing.radius.sm,
-                          transition: 'width 0.3s ease-in-out'
-                        }} />
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-                
-                <CardContent style={{ padding: spacing.scale[4] }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[2] }}>
-                    {/* Content indicators */}
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.scale[1] }}>
-                      <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: spacing.scale[1],
-                        fontSize: '0.6875rem',
-                        color: hasTheory ? colors.aviation.primary : colors.gray[400]
-                      }}>
-                        <span>{hasTheory ? '✓' : '○'}</span>
-                        <span>Theory</span>
-                      </div>
-                      
-                      <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: spacing.scale[1],
-                        fontSize: '0.6875rem',
-                        color: hasVideos ? colors.aviation.primary : colors.gray[400]
-                      }}>
-                        <span>{hasVideos ? '✓' : '○'}</span>
-                        <span>Videos</span>
-                      </div>
-                      
-                      <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: spacing.scale[1],
-                        fontSize: '0.6875rem',
-                        color: hasPractice ? colors.aviation.primary : colors.gray[400]
-                      }}>
-                        <span>{hasPractice ? '✓' : '○'}</span>
-                        <span>Practice</span>
-                      </div>
-                    </div>
-                    
-                    {hasImportedNotes && (
-                      <div style={{
-                        fontSize: '0.6875rem',
-                        color: colors.aviation.muted,
-                        fontStyle: 'italic'
-                      }}>
-                        📄 {groupedSections[topic.id].length} imported note{groupedSections[topic.id].length > 1 ? 's' : ''}
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </InteractiveCard>
-            );
-          })}
+          {TOPICS.map((topic) => (
+            <InteractiveCard
+              key={topic.id}
+              onClick={() => setSelectedTopic(topic.id)}
+              style={{ cursor: 'pointer' }}
+            >
+              <CardHeader>
+                <h3 style={{ ...styles.heading, fontSize: '1rem', margin: 0 }}>
+                  {topic.label}
+                </h3>
+              </CardHeader>
+            </InteractiveCard>
+          ))}
         </div>
       )}
 
-      {selectedTopic && (
-        <>
-          <div style={{ marginBottom: '1rem' }}>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setSelectedTopic(null)}
-            >
-              ← Back to Topics
-            </Button>
+      {selectedTopic && topicContent && (
+        <div>
+          {/* Header with back button and edit button */}
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: spacing.scale[4]
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.scale[2] }}>
+              <Button
+                onClick={() => setSelectedTopic(null)}
+                style={{ 
+                  background: colors.gray[200], 
+                  color: colors.gray[700],
+                  border: 'none',
+                  padding: '8px 12px',
+                  borderRadius: spacing.radius.sm,
+                  cursor: 'pointer'
+                }}
+              >
+                ← Back to Topics
+              </Button>
+              <h2 style={{ ...styles.heading, fontSize: '1.5rem', margin: 0 }}>
+                {TOPICS.find(t => t.id === selectedTopic)?.label}
+              </h2>
+            </div>
+            
+            {/* Admin Edit Button - Only show for TAS topic */}
+            {selectedTopic === 'tas_heading_ground_speed' && (
+              <Button
+                onClick={handleEditTheory}
+                style={{ 
+                  background: colors.aviation.secondary, 
+                  color: colors.white,
+                  border: 'none',
+                  padding: '8px 16px',
+                  borderRadius: spacing.radius.sm,
+                  cursor: 'pointer',
+                  fontSize: '0.875rem'
+                }}
+              >
+                ✏️ Edit Content
+              </Button>
+            )}
           </div>
-          <TopicDetailView 
-            topicId={selectedTopic} 
-            topicTab={topicTab} 
-            setTopicTab={setTopicTab}
-            importedSections={groupedSections[selectedTopic] || []}
-          />
-        </>
-      )}
-    </div>
-  );
-};
 
+          {/* Tab Navigation */}
+          <div style={{ 
+            display: 'flex', 
+            gap: spacing.scale[1], 
+            marginBottom: spacing.scale[4],
+            borderBottom: `1px solid ${colors.gray[200]}`
+          }}>
+            {(['theory', 'videos', 'practice', 'imported'] as TopicTab[]).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setTopicTab(tab)}
+                style={{
+                  padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
+                  border: 'none',
+                  background: topicTab === tab ? colors.aviation.primary : colors.gray[100],
+                  color: topicTab === tab ? colors.white : colors.gray[700],
+                  borderRadius: `${spacing.radius.md} ${spacing.radius.md} 0 0`,
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                  fontWeight: topicTab === tab ? 600 : 400
+                }}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            ))}
+          </div>
 
-const TopicDetailView: React.FC<{
-  topicId: NoteTopicId;
-  topicTab: TopicTab;
-  setTopicTab: (tab: TopicTab) => void;
-  importedSections: NoteSection[];
-}> = ({ topicId, topicTab, setTopicTab, importedSections }) => {
-  const { colors, spacing, styles } = useDesignSystem();
-  const topicContent = topicStorage.getTopicContent(topicId);
-  const topicInfo = TOPICS.find(t => t.id === topicId)!;
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[4] }}>
-      <h3 style={{ ...styles.heading, fontSize: '1.125rem', color: colors.aviation.navy }}>{topicInfo.label}</h3>
-      
-      <div style={{ display: 'flex', gap: spacing.scale[2], borderBottom: `1px solid ${colors.gray[200]}` }}>
-        <Button
-          variant={topicTab === 'theory' ? 'primary' : 'ghost'}
-          size="sm"
-          style={{
-            borderBottom: topicTab === 'theory' ? `2px solid ${colors.aviation.primary}` : 'none'
-          }}
-          onClick={() => setTopicTab('theory')}
-        >
-          Theory
-        </Button>
-        <Button
-          variant={topicTab === 'videos' ? 'primary' : 'ghost'}
-          size="sm"
-          style={{
-            borderBottom: topicTab === 'videos' ? `2px solid ${colors.aviation.primary}` : 'none'
-          }}
-          onClick={() => setTopicTab('videos')}
-        >
-          Videos
-        </Button>
-        <Button
-          variant={topicTab === 'practice' ? 'primary' : 'ghost'}
-          size="sm"
-          style={{
-            borderBottom: topicTab === 'practice' ? `2px solid ${colors.aviation.primary}` : 'none'
-          }}
-          onClick={() => setTopicTab('practice')}
-        >
-          Practice
-        </Button>
-        {importedSections.length > 0 && (
-          <Button
-            variant={topicTab === 'imported' ? 'primary' : 'ghost'}
-            size="sm"
-            style={{
-              borderBottom: topicTab === 'imported' ? `2px solid ${colors.aviation.primary}` : 'none'
-            }}
-            onClick={() => setTopicTab('imported' as TopicTab)}
-          >
-            Imported ({importedSections.length})
-          </Button>
-        )}
-      </div>
-
-      <div style={{ marginTop: spacing.scale[4] }}>
-        {topicTab === 'theory' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[6] }}>
-            {topicContent?.theory ? (
+          {/* Content Area */}
+          <div>
+            {topicTab === 'theory' && (
               <Card style={{ padding: spacing.scale[6] }}>
-                <div style={{ 
-                  color: colors.aviation.navy, 
+                <div style={{
+                  color: colors.aviation.navy,
                   lineHeight: '1.7',
                   fontSize: '0.875rem'
                 }}>
@@ -319,7 +332,7 @@ const TopicDetailView: React.FC<{
                   {topicContent.theory.split('\n').map((paragraph, index) => {
                     const trimmedParagraph = paragraph.trim();
                     if (!trimmedParagraph) return null;
-                    
+
                     // Detect different content types
                     if (trimmedParagraph.startsWith('Example Calculation:')) {
                       return (
@@ -336,8 +349,8 @@ const TopicDetailView: React.FC<{
                         </div>
                       );
                     }
-                    
-                    if (trimmedParagraph.startsWith('Given Data:') || trimmedParagraph.startsWith('Prompt:') || trimmedParagraph.startsWith('Step')) {
+
+                    if (trimmedParagraph.startsWith('Given:') || trimmedParagraph.startsWith('Prompt:') || trimmedParagraph.startsWith('Step')) {
                       return (
                         <div key={index} style={{ marginTop: spacing.scale[3] }}>
                           <h5 style={{
@@ -352,7 +365,7 @@ const TopicDetailView: React.FC<{
                         </div>
                       );
                     }
-                    
+
                     if (trimmedParagraph.match(/^[A-Z][A-Z\s]+$/)) {
                       // All caps line - likely a heading
                       return (
@@ -369,7 +382,7 @@ const TopicDetailView: React.FC<{
                         </div>
                       );
                     }
-                    
+
                     // Regular paragraph
                     return (
                       <p key={index} style={{
@@ -384,192 +397,93 @@ const TopicDetailView: React.FC<{
                   })}
                 </div>
               </Card>
-            ) : (
-              <Card style={{ padding: spacing.scale[6], textAlign: 'center' }}>
-                <div style={{ 
-                  fontSize: '0.875rem', 
-                  color: colors.aviation.muted, 
-                  fontStyle: 'italic',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: spacing.scale[2]
-                }}>
-                  <span>📚</span>
-                  No theory content available for this topic yet.
-                </div>
-              </Card>
             )}
-          </div>
-        )}
 
-        {topicTab === 'videos' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
-            {topicContent?.videos.length ? (
-              topicContent.videos.map(video => (
-                <div key={video.id} style={{ 
-                  padding: spacing.scale[3], 
-                  border: `1px solid ${colors.gray[200]}`, 
-                  borderRadius: spacing.radius.lg 
-                }}>
-                  <h4 style={{ fontWeight: 500, color: colors.aviation.navy, marginBottom: spacing.scale[2] }}>{video.title}</h4>
-                                      {video.description && (
-                      <p style={{ fontSize: '0.875rem', color: colors.aviation.muted, marginBottom: spacing.scale[3] }}>{video.description}</p>
-                    )}
-                  <div style={{
-                    position: 'relative',
-                    width: '100%',
-                    paddingTop: '56.25%', // 16:9 aspect ratio
-                    borderRadius: spacing.radius.lg,
-                    overflow: 'hidden'
-                  }}>
-                    <iframe
-                      src={`https://www.youtube.com/embed/${video.youtubeId}`}
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        border: 'none',
-                        borderRadius: spacing.radius.lg
-                      }}
-                      allowFullScreen
-                      title={video.title}
-                    />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <Card style={{ padding: spacing.scale[6], textAlign: 'center' }}>
-                <div style={{ 
-                  fontSize: '0.875rem', 
-                  color: colors.aviation.muted, 
-                  fontStyle: 'italic',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: spacing.scale[2]
-                }}>
-                  <span>🎥</span>
-                  No videos available for this topic yet.
-                </div>
-              </Card>
-            )}
-          </div>
-        )}
-
-        {topicTab === 'practice' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
-            {topicContent?.practice.length ? (
-              topicContent.practice.map(item => (
-                <Card key={item.id} style={{ padding: 0 }}>
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: spacing.scale[3],
-                    borderBottom: `1px solid ${colors.gray[200]}`
-                  }}>
-                    <h4 style={{
-                      ...styles.heading,
-                      fontSize: '0.875rem',
-                      fontWeight: 500,
-                      color: colors.aviation.navy,
-                      margin: 0
-                    }}>
-                      {item.title}
-                    </h4>
-                    <span style={{
-                      fontSize: '0.75rem',
-                      padding: `${spacing.scale[1]} ${spacing.scale[2]}`,
-                      backgroundColor: colors.gray[100],
-                      borderRadius: spacing.radius.sm,
-                      color: colors.aviation.muted
-                    }}>
-                      {item.type}
-                    </span>
-                  </div>
-                  <div style={{ padding: spacing.scale[3] }}>
-                    {item.content === 'INTERACTIVE_TABLE:TAS' ? (
-                      <TASPracticeTable />
-                    ) : (
+            {topicTab === 'videos' && (
+              <div>
+                {topicContent.videos?.map((video) => (
+                  <Card key={video.id} style={{ marginBottom: spacing.scale[4] }}>
+                    <CardHeader>
+                      <h4 style={{ ...styles.heading, fontSize: '1.125rem', margin: 0 }}>
+                        {video.title}
+                      </h4>
+                    </CardHeader>
+                    <CardContent>
+                      <p style={{ color: colors.aviation.muted, marginBottom: spacing.scale[3] }}>
+                        {video.description}
+                      </p>
                       <div style={{
-                        whiteSpace: 'pre-wrap',
-                        fontSize: '0.875rem',
-                        color: colors.aviation.navy,
-                        lineHeight: '1.6'
+                        position: 'relative',
+                        paddingBottom: '56.25%',
+                        height: 0,
+                        overflow: 'hidden'
                       }}>
-                        {item.content}
+                        <iframe
+                          src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            border: 'none'
+                          }}
+                          allowFullScreen
+                        />
                       </div>
-                    )}
-                  </div>
-                </Card>
-              ))
-            ) : (
-              <Card style={{ padding: spacing.scale[6], textAlign: 'center' }}>
-                <div style={{ 
-                  fontSize: '0.875rem', 
-                  color: colors.aviation.muted, 
-                  fontStyle: 'italic',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: spacing.scale[2]
-                }}>
-                  <span>✏️</span>
-                  No practice content available for this topic yet.
-                </div>
-              </Card>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {topicTab === 'practice' && (
+              <div>
+                {topicContent.practice?.map((item) => (
+                  <Card key={item.id} style={{ marginBottom: spacing.scale[4] }}>
+                    <CardHeader>
+                      <h4 style={{ ...styles.heading, fontSize: '1.125rem', margin: 0 }}>
+                        {item.title}
+                      </h4>
+                    </CardHeader>
+                    <CardContent>
+                      {item.content === 'INTERACTIVE_TABLE:TAS' && <TASPracticeTable />}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {topicTab === 'imported' && (
+              <div>
+                {groupedSections[selectedTopic]?.map((section) => (
+                  <Card key={section.id} style={{ marginBottom: spacing.scale[4] }}>
+                    <CardHeader>
+                      <h4 style={{ ...styles.heading, fontSize: '1.125rem', margin: 0 }}>
+                        {section.title}
+                      </h4>
+                    </CardHeader>
+                    <CardContent>
+                      <p style={{ color: colors.aviation.muted }}>
+                        {section.content}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             )}
           </div>
-        )}
+        </div>
+      )}
 
-        {topicTab === 'imported' && importedSections.length > 0 && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
-            {importedSections.map(sec => (
-              <Card key={sec.id} style={{ padding: spacing.scale[3] }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginBottom: spacing.scale[1]
-                }}>
-                  <h4 style={{
-                    ...styles.heading,
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                    color: colors.aviation.navy,
-                    margin: 0,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    flex: 1
-                  }}>
-                    {sec.title}
-                  </h4>
-                  <span style={{
-                    fontSize: '0.75rem',
-                    color: colors.aviation.muted,
-                    marginLeft: spacing.scale[3],
-                    whiteSpace: 'nowrap'
-                  }}>
-                    {new Date(sec.createdAt).toLocaleString()}
-                  </span>
-                </div>
-                <div style={{
-                  fontSize: '0.8125rem',
-                  whiteSpace: 'pre-wrap',
-                  color: colors.aviation.navy,
-                  lineHeight: '1.5'
-                }}>
-                  {sec.content}
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Edit Modal */}
+      <EditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={handleSaveTheory}
+        initialContent={currentTopicContent}
+        topicTitle={TOPICS.find(t => t.id === selectedTopic)?.label || ''}
+      />
     </div>
   );
 };
