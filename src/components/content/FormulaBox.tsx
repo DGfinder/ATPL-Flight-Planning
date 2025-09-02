@@ -12,7 +12,7 @@ const FormulaBox: React.FC<FormulaBoxProps> = ({ formula, description, variables
 
   return (
     <div style={{
-      background: `linear-gradient(90deg, ${colors.withOpacity(colors.aviation.primary, 0.1)} 0%, ${colors.withOpacity(colors.blue[50], 1)} 50%, ${colors.withOpacity(colors.indigo[50], 1)} 100%)`,
+      background: `linear-gradient(90deg, ${colors.withOpacity(colors.aviation.primary, 0.1)} 0%, ${colors.withOpacity(colors.aviation.light, 0.8)} 50%, ${colors.withOpacity(colors.aviation.accent, 0.9)} 100%)`,
       borderRadius: spacing.radius['2xl'],
       padding: spacing.scale[6],
       border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.2)}`,

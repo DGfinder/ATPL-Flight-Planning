@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, useDesignSystem } from '../../design-system';
 
 const Calculator: React.FC = () => {
-  const { colors, spacing, styles } = useDesignSystem();
+  const { colors, spacing } = useDesignSystem();
   const [display, setDisplay] = useState('0');
   const [previousValue, setPreviousValue] = useState<number | null>(null);
   const [operation, setOperation] = useState<string | null>(null);

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import NotesHub from './NotesHub';
-import { Card, PrimaryButton, SecondaryButton, useDesignSystem } from '../../design-system';
+import { Card, SecondaryButton, useDesignSystem } from '../../design-system';
 
 // Import PDF assets. Vite will transform these into served URLs
 // Paths go up to project root where the PDFs currently reside
@@ -31,17 +31,7 @@ const CourseNotes: React.FC = () => {
 
   if (!active) return null;
 
-  const sidebarStyle: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: spacing.scale[4]
-  };
-
-  const mainContentStyle: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: spacing.scale[4]
-  };
+  // Removed unused styles - mainContentStyle and sidebarStyle
 
   const noteButtonStyle = (isActive: boolean): React.CSSProperties => ({
     width: '100%',

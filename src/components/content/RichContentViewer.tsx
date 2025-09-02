@@ -21,7 +21,7 @@ const RichContentViewer: React.FC<RichContentViewerProps> = ({
       {/* Header */}
       <div style={{
         position: 'relative',
-        background: `linear-gradient(135deg, ${colors.aviation.primary} 0%, ${colors.blue[600]} 50%, ${colors.aviation.secondary} 100%)`,
+        background: `linear-gradient(135deg, ${colors.aviation.primary} 0%, ${colors.aviation.navy} 50%, ${colors.aviation.secondary} 100%)`,
         borderRadius: spacing.radius['2xl'],
         padding: spacing.scale[8],
         marginBottom: spacing.scale[8],

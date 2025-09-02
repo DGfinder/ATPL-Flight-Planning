@@ -12,7 +12,7 @@ const NotesPage: React.FC = () => {
     }}>
       {/* Header */}
       <div style={{
-        background: `linear-gradient(90deg, ${colors.aviation.primary} 0%, ${colors.blue[600]} 100%)`,
+        background: `linear-gradient(90deg, ${colors.aviation.primary} 0%, ${colors.aviation.navy} 100%)`,
         color: colors.white,
         padding: spacing.scale[6]
       }}>

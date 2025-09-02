@@ -48,7 +48,7 @@ type Tab = 'topics' | 'import';
 type TopicTab = 'theory' | 'videos' | 'practice' | 'imported';
 
 const NotesHub: React.FC = () => {
-  const { colors, spacing, styles } = useDesignSystem();
+  const { } = useDesignSystem();
   const [tab, setTab] = useState<Tab>('topics');
   const [data, setData] = useState(notesStorage.load());
   const [selectedTopic, setSelectedTopic] = useState<NoteTopicId | null>(null);

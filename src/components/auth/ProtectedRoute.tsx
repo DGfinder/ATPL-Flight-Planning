@@ -1,17 +1,25 @@
 import React from 'react';
 import { Card, useDesignSystem } from '../../design-system';
+import { useAuth } from '../../hooks/useAuth';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  isAuthenticated: boolean;
+  requireAuth?: boolean;
+  isAuthenticated?: boolean;
   isLoading?: boolean;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
   children, 
-  isAuthenticated, 
-  isLoading = false 
+  requireAuth = false,
+  isAuthenticated: providedAuth, 
+  isLoading: providedLoading 
 }) => {
+  const { user, loading } = useAuth();
+  
+  // Use provided props or derive from auth context
+  const isAuthenticated = providedAuth ?? !!user;
+  const isLoading = providedLoading ?? loading;
   const { colors, spacing, styles } = useDesignSystem();
 
   if (isLoading) {
@@ -45,7 +53,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  if (!isAuthenticated) {
+  if (requireAuth && !isAuthenticated) {
     return (
       <div style={{
         minHeight: '100vh',
