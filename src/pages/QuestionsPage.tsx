@@ -20,7 +20,7 @@ const QuestionsPage: React.FC = () => {
   const { colors, spacing, styles } = useDesignSystem();
   const { user } = useAuth();
   const [categoryFilter, setCategoryFilter] = useState<QuestionCategory | 'all'>('all');
-  const { questions, filteredQuestions, loading } = useQuestions(categoryFilter);
+  const { filteredQuestions, loading } = useQuestions(categoryFilter);
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
@@ -356,7 +356,8 @@ const QuestionsPage: React.FC = () => {
     ).length,
     correctAnswers: userAnswers.filter(answer => 
       filteredQuestions.some(q => q.id === answer.questionId) && answer.isCorrect
-    ).length
+    ).length,
+    accuracy: 0
   };
   stats.accuracy = stats.attemptedQuestions > 0 ? (stats.correctAnswers / stats.attemptedQuestions) * 100 : 0;
 
