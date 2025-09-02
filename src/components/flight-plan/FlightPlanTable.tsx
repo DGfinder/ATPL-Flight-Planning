@@ -195,9 +195,16 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
       type={type}
       value={value}
       onChange={(e) => updateSegment(segmentId, field, type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value)}
-      className={`w-full px-2 py-1 text-xs border rounded ${
-        disabled ? 'bg-gray-100 cursor-not-allowed' : 'border-gray-300 focus:border-aviation-primary'
-      }`}
+      style={{
+        width: '100%',
+        padding: `${spacing.scale[1]} ${spacing.scale[2]}`,
+        fontSize: '0.75rem',
+        border: `1px solid ${disabled ? colors.gray[300] : colors.aviation.border}`,
+        borderRadius: spacing.radius.md,
+        background: disabled ? colors.gray[100] : colors.white,
+        cursor: disabled ? 'not-allowed' : 'text',
+        outline: 'none'
+      }}
       disabled={disabled}
     />
   );
@@ -296,15 +303,34 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
     };
 
     return (
-      <FlightPlanVisualization 
-        flightPlan={visualizationData}
-      />
+      <div style={{ padding: spacing.scale[4] }}>
+        <div style={{ maxWidth: '100%', margin: '0 auto' }}>
+          {/* Back Button */}
+          <div style={{ marginBottom: spacing.scale[4] }}>
+            <SecondaryButton
+              onClick={() => setShowVisualization(false)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: spacing.scale[2],
+                marginBottom: spacing.scale[4]
+              }}
+            >
+              ← Back to Flight Plan
+            </SecondaryButton>
+          </div>
+          
+          <FlightPlanVisualization 
+            flightPlan={visualizationData}
+          />
+        </div>
+      </div>
     );
   }
 
   return (
-    <div style={{ padding: spacing.scale[6] }}>
-      <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+    <div style={{ padding: spacing.scale[4] }}>
+      <div style={{ maxWidth: '100%', margin: '0 auto' }}>
         {/* Header */}
         <Card variant="elevated" padding="lg" style={{ marginBottom: spacing.scale[6] }}>
           <div style={headerStyle}>
@@ -435,8 +461,14 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
           </div>
         </Card>
 
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="text-sm text-blue-800">
+        <div style={{
+          marginBottom: spacing.scale[4],
+          padding: spacing.scale[3],
+          background: colors.withOpacity(colors.aviation.primary, 0.05),
+          border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.2)}`,
+          borderRadius: spacing.radius.lg
+        }}>
+          <div style={{ fontSize: '0.875rem', color: colors.aviation.primary }}>
             <strong>Learning Mode:</strong> GS (Ground Speed), ETI (Time), EMZW (Mid-Zone Weight), and END ZONE WT are manually editable. 
             Practice your calculations and learn from mistakes!
           </div>
@@ -731,8 +763,13 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                         fontSize: '0.875rem',
                         borderBottom: `1px solid ${colors.gray[200]}`
                       }}>
-                        <div className={`flex items-center gap-2 ${altitudeWarnings[segment.id] ? 'bg-red-100' : ''}`}>
-                          <div className="flex-1" onDoubleClick={() => {
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: spacing.scale[2],
+                          background: altitudeWarnings[segment.id] ? colors.withOpacity(colors.aviation.secondary, 0.1) : 'transparent'
+                        }}>
+                          <div style={{ flex: 1 }} onDoubleClick={() => {
                             // Double click toggles through trend options: undefined -> climb -> level -> descent -> undefined
                             setSegments(prev => prev.map(s => s.id === segment.id ? {
                               ...s,
@@ -748,16 +785,16 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                             {renderEditableCell(segment.id, 'flightLevel', segment.flightLevel)}
                           </div>
                           <span
-                            className={
-                              segment.altitudeTrend === 'climb' ? 'text-green-600' :
-                              segment.altitudeTrend === 'descent' ? 'text-amber-600' : 'text-gray-400'
-                            }
+                            style={{
+                              color: segment.altitudeTrend === 'climb' ? colors.aviation.secondary :
+                                     segment.altitudeTrend === 'descent' ? colors.aviation.navy : colors.aviation.muted
+                            }}
                             title={segment.altitudeTrend ? (segment.altitudeTrend.charAt(0).toUpperCase() + segment.altitudeTrend.slice(1)) : 'No trend'}
                           >
                             {segment.altitudeTrend === 'climb' ? '↗' : segment.altitudeTrend === 'descent' ? '↘' : '→'}
                           </span>
                         {altitudeWarnings[segment.id] && (
-                          <div className="text-xs text-red-600 mt-1" title={altitudeWarnings[segment.id]}>
+                          <div style={{ fontSize: '0.75rem', color: colors.aviation.secondary, marginTop: spacing.scale[1] }} title={altitudeWarnings[segment.id]}>
                             ⚠️
                           </div>
                         )}
@@ -904,7 +941,11 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                         {segments.length > 1 && (
                           <button
                             onClick={() => removeSegment(segment.id)}
-                            className="text-red-500 hover:text-red-700 text-xs"
+                            style={{
+                              color: colors.aviation.secondary,
+                              fontSize: '0.75rem',
+                              cursor: 'pointer'
+                            }}
                             title="Remove segment"
                           >
                             ✕
@@ -969,7 +1010,15 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
       </div>
 
       {showFlHint && (
-        <div className="mt-3 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded p-2">
+        <div style={{
+          marginTop: spacing.scale[3],
+          fontSize: '0.75rem',
+          color: colors.aviation.primary,
+          background: colors.withOpacity(colors.aviation.primary, 0.05),
+          border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.2)}`,
+          borderRadius: spacing.radius.md,
+          padding: spacing.scale[2]
+        }}>
           Double‑click FL to set climb/descent arrow. <button className="underline" onClick={() => { 
             try { 
               window.localStorage.setItem('fp_hint_fl_trend_seen', '1'); 
@@ -977,7 +1026,7 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
               console.warn('Could not save hint state:', storageError);
             }
             setShowFlHint(false); 
-          }}>Got it</button>
+          }} style={{ textDecoration: 'underline', cursor: 'pointer' }}>Got it</button>
         </div>
       )}
     </div>

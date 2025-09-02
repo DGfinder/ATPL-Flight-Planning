@@ -1,293 +1,187 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import type { Question, UserAnswer, StudyMode, QuestionCategory } from '../types';
-import { sampleQuestions, questionCategories } from '../data/questions';
-import { storageService } from '../utils/localStorage';
-import { databaseService } from '../services/database';
-import { useAuth } from '../hooks/useAuth';
-import QuestionDisplay from '../components/questions/QuestionDisplay';
+import React, { useState, useEffect } from 'react';
+import { Card, PrimaryButton, SecondaryButton, useDesignSystem } from '../design-system';
+import type { Question } from '../types';
 
 const QuestionsPage: React.FC = () => {
-  const { user } = useAuth();
-  
-  // Core state
-  const [questions, setQuestions] = useState<Question[]>(sampleQuestions);
+  const { colors, spacing, styles } = useDesignSystem();
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [studyMode, setStudyMode] = useState<StudyMode>('practice');
-  const [categoryFilter, setCategoryFilter] = useState<QuestionCategory | 'all'>('all');
-  const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
-  const [currentSessionId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
+  const [showResults, setShowResults] = useState(false);
 
-  const filteredQuestions = useMemo(() => {
-    if (categoryFilter === 'all') return questions;
-    return questions.filter(q => q.category === categoryFilter);
-  }, [questions, categoryFilter]);
-
-  const currentQuestion = filteredQuestions[currentQuestionIndex];
-
-  // Load data on component mount
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        if (user) {
-          // Load from Supabase
-          const progress = await databaseService.getUserProgress();
-          if (progress) {
-            setUserAnswers(progress);
-          }
-
-          try {
-            const dbQuestions = await databaseService.getAllQuestions();
-            if (dbQuestions && dbQuestions.length > 0) {
-              setQuestions(dbQuestions);
-            }
-          } catch (dbError) {
-            console.warn('Could not load questions from database, using sample questions:', dbError);
-          }
-        } else {
-          // Load from localStorage for guest users
-          const localProgress = storageService.loadUserAnswers();
-          setUserAnswers(localProgress);
+    // Simulate loading questions
+    setTimeout(() => {
+      setQuestions([
+        {
+          id: '1',
+          title: 'What is the primary purpose of flight planning?',
+          options: ['Navigation', 'Safety', 'Efficiency', 'All of the above'],
+          correctAnswer: 'All of the above',
+          category: 'flight_planning_basics',
+          marks: 1
+        },
+        {
+          id: '2',
+          title: 'Which factor affects aircraft performance most significantly?',
+          options: ['Wind', 'Temperature', 'Altitude', 'Humidity'],
+          correctAnswer: 'Altitude',
+          category: 'performance',
+          marks: 1
         }
-      } catch (error) {
-        console.error('Failed to load data:', error);
-        // Fallback to localStorage
-        const localProgress = storageService.loadUserAnswers();
-        setUserAnswers(localProgress);
-      } finally {
-        setLoading(false);
-      }
-    };
+      ]);
+      setLoading(false);
+    }, 1000);
+  }, []);
 
-    loadData();
-  }, [user]);
-
-  // Handle answer submission
-  const handleAnswerSubmit = async (answer: UserAnswer) => {
-    const updatedAnswers = [
-      ...userAnswers.filter(a => a.questionId !== answer.questionId),
-      answer
-    ];
-    
-    setUserAnswers(updatedAnswers);
-    
-    try {
-      if (user) {
-        // Save to Supabase
-        await databaseService.saveUserAnswer(answer);
-        
-        // Update current study session
-        if (currentSessionId) {
-          const correctCount = updatedAnswers.filter(a => a.isCorrect).length;
-          await databaseService.updateStudySession(currentSessionId, updatedAnswers.length, correctCount);
-        }
-      } else {
-        // Fallback to localStorage
-        storageService.saveUserAnswers(updatedAnswers);
-      }
-    } catch (error) {
-      console.error('Failed to save answer:', error);
-      // Always save to localStorage as backup
-      storageService.saveUserAnswers(updatedAnswers);
-    }
-    
-    // Auto advance if setting is enabled and answer is correct
-    if (studyMode === 'practice' && storageService.loadSettings().autoAdvanceOnCorrect && answer.isCorrect) {
-      setTimeout(() => {
-        if (currentQuestionIndex < filteredQuestions.length - 1) {
-          setCurrentQuestionIndex(prev => prev + 1);
-        }
-      }, 1500);
-    }
+  const handleAnswerSelect = (questionId: string, answer: string) => {
+    setUserAnswers(prev => ({ ...prev, [questionId]: answer }));
   };
 
-  const goToNextQuestion = () => {
-    if (currentQuestionIndex < filteredQuestions.length - 1) {
+  const handleNext = () => {
+    if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
+    } else {
+      setShowResults(true);
     }
   };
 
-  const goToPreviousQuestion = () => {
+  const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(prev => prev - 1);
     }
   };
 
-  const resetQuestionIndex = () => {
-    setCurrentQuestionIndex(0);
-  };
-
-  // Reset question index when category filter changes
-  useEffect(() => {
-    resetQuestionIndex();
-  }, [categoryFilter]);
-
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="aviation-card p-4 text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-aviation-primary border-t-transparent mx-auto mb-3"></div>
-          <p className="text-aviation-text">Loading questions...</p>
-        </div>
+      <div style={{ padding: spacing.scale[6] }}>
+        <Card style={{ padding: spacing.scale[4], textAlign: 'center' }}>
+          <div style={{
+            animation: 'spin 1s linear infinite',
+            borderRadius: '50%',
+            height: '2rem',
+            width: '2rem',
+            border: `2px solid ${colors.aviation.primary}`,
+            borderTop: '2px solid transparent',
+            margin: '0 auto',
+            marginBottom: spacing.scale[3]
+          }} />
+          <p style={{ color: colors.aviation.text }}>
+            Loading questions...
+          </p>
+        </Card>
       </div>
     );
   }
 
-  if (!currentQuestion) {
+  if (showResults) {
+    const correctAnswers = questions.filter(q => userAnswers[q.id] === q.correctAnswer).length;
+    const totalQuestions = questions.length;
+    const percentage = (correctAnswers / totalQuestions) * 100;
+
     return (
-      <div className="p-4">
-        <div className="aviation-card p-4 text-center">
-          <div className="w-8 h-8 bg-aviation-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-            <svg className="w-4 h-4 text-aviation-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+      <div style={{ padding: spacing.scale[6] }}>
+        <Card style={{ padding: spacing.scale[4], textAlign: 'center' }}>
+          <h2 style={{ ...styles.heading, fontSize: '1.5rem', marginBottom: spacing.scale[4] }}>
+            Quiz Results
+          </h2>
+          <div style={{ fontSize: '2rem', fontWeight: 700, color: colors.aviation.primary, marginBottom: spacing.scale[2] }}>
+            {correctAnswers}/{totalQuestions}
           </div>
-          <h3 className="text-lg font-semibold text-aviation-navy mb-2">No Questions Available</h3>
-          <p className="text-aviation-muted">
-            {categoryFilter === 'all' 
-              ? 'No questions found in the database.'
-              : `No questions found for category: ${categoryFilter.replace('_', ' ')}`
-            }
-          </p>
-          {categoryFilter !== 'all' && (
-            <button
-              onClick={() => setCategoryFilter('all')}
-              className="aviation-button-secondary mt-4"
-            >
-              Show All Categories
-            </button>
-          )}
-        </div>
+          <div style={{ fontSize: '1.125rem', color: colors.aviation.muted, marginBottom: spacing.scale[4] }}>
+            {percentage.toFixed(1)}% Correct
+          </div>
+          <SecondaryButton
+            onClick={() => {
+              setShowResults(false);
+              setCurrentQuestionIndex(0);
+              setUserAnswers({});
+            }}
+            style={{ marginTop: spacing.scale[4] }}
+          >
+            Retake Quiz
+          </SecondaryButton>
+        </Card>
       </div>
     );
   }
+
+  const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <div className="space-y-4">
-      {/* Question Controls */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          {/* Category Filter */}
-          <div className="flex items-center space-x-4">
-            <div>
-              <label className="block text-sm font-medium text-aviation-text mb-2">
-                Category Filter
-              </label>
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value as QuestionCategory | 'all')}
-                className="aviation-input text-sm"
-              >
-                <option value="all">All Categories ({questions.length})</option>
-                {Object.entries(questionCategories).map(([key, label]) => {
-                  const count = questions.filter(q => q.category === key).length;
-                  return (
-                    <option key={key} value={key}>
-                      {label} ({count})
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-aviation-text mb-2">
-                Study Mode
-              </label>
-              <select
-                value={studyMode}
-                onChange={(e) => setStudyMode(e.target.value as StudyMode)}
-                className="aviation-input text-sm"
-              >
-                <option value="practice">Practice Mode</option>
-                <option value="exam">Exam Mode</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Progress Info */}
-          <div className="flex items-center space-x-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-aviation-primary">
-                {currentQuestionIndex + 1}
-              </div>
-              <div className="text-sm text-aviation-muted">of {filteredQuestions.length}</div>
-            </div>
-            
-            {userAnswers.length > 0 && (
-              <div className="text-center">
-                <div className="text-2xl font-bold text-aviation-secondary">
-                  {userAnswers.filter(a => a.isCorrect).length}
-                </div>
-                <div className="text-sm text-aviation-muted">Correct</div>
-              </div>
-            )}
+    <div style={{ padding: spacing.scale[6] }}>
+      <Card style={{ padding: spacing.scale[6] }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.scale[4] }}>
+          <h2 style={{ ...styles.heading, fontSize: '1.5rem' }}>
+            Question {currentQuestionIndex + 1} of {questions.length}
+          </h2>
+          <div style={{ fontSize: '0.875rem', color: colors.aviation.muted }}>
+            {currentQuestion.category.replace('_', ' ').toUpperCase()}
           </div>
         </div>
 
-        {/* Navigation Controls */}
-        <div className="flex items-center justify-between mt-6 pt-6 border-t border-slate-100">
-          <button
-            onClick={goToPreviousQuestion}
+        <div style={{ marginBottom: spacing.scale[6] }}>
+          <p style={{ ...styles.body, fontSize: '1.125rem', lineHeight: '1.6' }}>
+            {currentQuestion.title}
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3], marginBottom: spacing.scale[6] }}>
+          {currentQuestion.options?.map((option, index) => (
+            <button
+              key={index}
+              onClick={() => handleAnswerSelect(currentQuestion.id, option)}
+              style={{
+                padding: spacing.scale[4],
+                border: `2px solid ${userAnswers[currentQuestion.id] === option ? colors.aviation.primary : colors.gray[200]}`,
+                borderRadius: spacing.radius.lg,
+                background: userAnswers[currentQuestion.id] === option ? colors.withOpacity(colors.aviation.primary, 0.05) : colors.white,
+                textAlign: 'left',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                fontSize: '0.875rem',
+                color: colors.aviation.navy
+              }}
+            >
+              <span style={{ fontWeight: 600, marginRight: spacing.scale[2] }}>
+                {String.fromCharCode(65 + index)}.
+              </span>
+              {option}
+            </button>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <SecondaryButton
+            onClick={handlePrevious}
             disabled={currentQuestionIndex === 0}
-            className="aviation-button-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: spacing.scale[2],
+              opacity: currentQuestionIndex === 0 ? 0.5 : 1,
+              cursor: currentQuestionIndex === 0 ? 'not-allowed' : 'pointer'
+            }}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span>Previous</span>
-          </button>
-
-          <div className="flex items-center space-x-2">
-            <div className="w-32 bg-slate-200 rounded-full h-2">
-              <div 
-                className="bg-aviation-primary h-2 rounded-full transition-all duration-300"
-                style={{ width: `${((currentQuestionIndex + 1) / filteredQuestions.length) * 100}%` }}
-              />
-            </div>
-            <span className="text-sm text-aviation-muted whitespace-nowrap">
-              {Math.round(((currentQuestionIndex + 1) / filteredQuestions.length) * 100)}%
-            </span>
-          </div>
-
-          <button
-            onClick={goToNextQuestion}
-            disabled={currentQuestionIndex === filteredQuestions.length - 1}
-            className="aviation-button-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            ← Previous
+          </SecondaryButton>
+          
+          <PrimaryButton
+            onClick={handleNext}
+            disabled={!userAnswers[currentQuestion.id]}
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: spacing.scale[2],
+              opacity: userAnswers[currentQuestion.id] ? 1 : 0.5,
+              cursor: userAnswers[currentQuestion.id] ? 'pointer' : 'not-allowed'
+            }}
           >
-            <span>Next</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+            {currentQuestionIndex === questions.length - 1 ? 'Finish' : 'Next →'}
+          </PrimaryButton>
         </div>
-      </div>
-
-      {/* Question Display */}
-      <QuestionDisplay
-        question={currentQuestion}
-        studyMode={studyMode}
-        userAnswer={userAnswers.find(a => a.questionId === currentQuestion.id)}
-        onAnswerSubmit={handleAnswerSubmit}
-        showWorkingSteps={storageService.loadSettings().showWorkingSteps}
-      />
-
-      {/* Question Navigation Footer */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
-        <div className="flex items-center justify-between text-sm">
-          <div className="text-aviation-muted">
-            Question ID: {currentQuestion.id}
-          </div>
-          <div className="flex items-center space-x-4 text-aviation-muted">
-            <span>Category: {questionCategories[currentQuestion.category]}</span>
-            <span>•</span>
-            <span>Type: {currentQuestion.type.replace('_', ' ')}</span>
-            <span>•</span>
-            <span>Marks: {currentQuestion.marks}</span>
-          </div>
-        </div>
-      </div>
+      </Card>
     </div>
   );
 };

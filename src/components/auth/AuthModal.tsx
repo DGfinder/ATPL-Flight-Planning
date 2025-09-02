@@ -1,168 +1,131 @@
 import React, { useState } from 'react';
-import { databaseService } from '../../services/database';
+import { Card, PrimaryButton, SecondaryButton, useDesignSystem } from '../../design-system';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onLogin: (email: string, password: string) => void;
+  onRegister: (email: string, password: string) => void;
 }
 
-const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
-  const [mode, setMode] = useState<'login' | 'signup'>('login');
+const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin, onRegister }) => {
+  const { colors, spacing, styles } = useDesignSystem();
+  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [studentId, setStudentId] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      if (mode === 'login') {
-        const { error } = await databaseService.signIn(email, password);
-        if (error) throw error;
-      } else {
-        const { error } = await databaseService.signUp(email, password, {
-          full_name: fullName,
-          student_id: studentId
-        });
-        if (error) throw error;
-        
-        // Create profile after signup
-        if (fullName || studentId) {
-          await databaseService.createOrUpdateProfile({
-            full_name: fullName,
-            student_id: studentId
-          });
-        }
-      }
-      
-      onSuccess();
-      onClose();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Authentication failed');
-    } finally {
-      setLoading(false);
+    if (isLogin) {
+      onLogin(email, password);
+    } else {
+      onRegister(email, password);
     }
   };
 
-  const resetForm = () => {
-    setEmail('');
-    setPassword('');
-    setFullName('');
-    setStudentId('');
-    setError(null);
-  };
-
-  const switchMode = (newMode: 'login' | 'signup') => {
-    setMode(newMode);
-    resetForm();
-  };
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in">
-      <div className="aviation-card p-6 w-full max-w-md scale-in">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-800" style={{ fontFamily: 'Poppins, Inter, sans-serif' }}>
-            {mode === 'login' ? 'Sign In' : 'Create Account'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-xl"
-          >
-            ×
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000
+    }}>
+      <Card style={{
+        padding: spacing.scale[6],
+        width: '100%',
+        maxWidth: '28rem',
+        transform: 'scale(1)',
+        animation: 'scaleIn 0.3s ease-out'
+      }}>
+        <h2 style={{ ...styles.heading, fontSize: '1.5rem', marginBottom: spacing.scale[4] }}>
+          {isLogin ? 'Login' : 'Register'}
+        </h2>
+        
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[4] }}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label style={{ display: 'block', marginBottom: spacing.scale[1], fontSize: '0.875rem', fontWeight: 500 }}>
               Email
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="aviation-input w-full"
               required
+              style={{
+                width: '100%',
+                padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
+                border: `1px solid ${colors.gray[300]}`,
+                borderRadius: spacing.radius.md,
+                fontSize: '0.875rem',
+                outline: 'none',
+                transition: 'border-color 0.2s'
+              }}
             />
           </div>
-
+          
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label style={{ display: 'block', marginBottom: spacing.scale[1], fontSize: '0.875rem', fontWeight: 500 }}>
               Password
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="aviation-input w-full"
               required
-              minLength={6}
+              style={{
+                width: '100%',
+                padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
+                border: `1px solid ${colors.gray[300]}`,
+                borderRadius: spacing.radius.md,
+                fontSize: '0.875rem',
+                outline: 'none',
+                transition: 'border-color 0.2s'
+              }}
             />
           </div>
-
-          {mode === 'signup' && (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="aviation-input w-full"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Student ID (Optional)
-                </label>
-                <input
-                  type="text"
-                  value={studentId}
-                  onChange={(e) => setStudentId(e.target.value)}
-                  className="aviation-input w-full"
-                />
-              </div>
-            </>
-          )}
-
-          {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`aviation-button w-full ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-          >
-            {loading ? 'Please wait...' : (mode === 'login' ? 'Sign In' : 'Create Account')}
-          </button>
+          
+          <div style={{ display: 'flex', gap: spacing.scale[3] }}>
+            <PrimaryButton
+              type="submit"
+              style={{ flex: 1 }}
+            >
+              {isLogin ? 'Login' : 'Register'}
+            </PrimaryButton>
+            <SecondaryButton
+              type="button"
+              onClick={onClose}
+              style={{ flex: 1 }}
+            >
+              Cancel
+            </SecondaryButton>
+          </div>
         </form>
-
-        <div className="mt-4 text-center">
+        
+        <div style={{ marginTop: spacing.scale[4], textAlign: 'center' }}>
           <button
-            onClick={() => switchMode(mode === 'login' ? 'signup' : 'login')}
-            className="text-aviation-primary hover:underline text-sm"
+            type="button"
+            onClick={() => setIsLogin(!isLogin)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: colors.aviation.primary,
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              fontSize: '0.875rem'
+            }}
           >
-            {mode === 'login' 
-              ? "Don't have an account? Sign up" 
-              : "Already have an account? Sign in"
-            }
+            {isLogin ? 'Need an account? Register' : 'Have an account? Login'}
           </button>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

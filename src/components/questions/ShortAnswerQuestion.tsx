@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { Question, UserAnswer } from '../../types';
 import { AviationCalculations } from '../../utils/aviationCalculations';
+import { Button, useDesignSystem } from '../../design-system';
 
 interface ShortAnswerQuestionProps {
   question: Question;
@@ -23,6 +24,7 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
   showFeedback = false,
   userAnswer
 }) => {
+  const { colors, spacing } = useDesignSystem();
   const [answers, setAnswers] = useState<Record<string, string>>(
     userAnswer?.shortAnswers 
       ? Object.fromEntries(
@@ -108,66 +110,121 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
     onAnswerSubmit(answer);
   };
 
-  const getInputClassName = (field: string) => {
-    let className = 'aviation-input w-full';
+  const getInputStyle = (field: string) => {
+    const baseStyle: React.CSSProperties = {
+      width: '100%',
+      padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
+      border: `1px solid ${colors.gray[300]}`,
+      borderRadius: spacing.radius.md,
+      fontSize: '0.875rem',
+      outline: 'none',
+      backgroundColor: colors.white,
+      transition: 'border-color 0.2s ease'
+    };
     
     if (showFeedback && isSubmitted) {
       const validation = validationResults[field];
       if (validation) {
-        className += validation.isCorrect ? ' correct' : ' incorrect';
+        if (validation.isCorrect) {
+          baseStyle.borderColor = colors.semantic.success;
+          baseStyle.backgroundColor = colors.withOpacity(colors.semantic.success, 0.05);
+        } else {
+          baseStyle.borderColor = colors.semantic.error;
+          baseStyle.backgroundColor = colors.withOpacity(colors.semantic.error, 0.05);
+        }
       }
     }
     
-    return className;
+    if (isSubmitted) {
+      baseStyle.cursor = 'not-allowed';
+      baseStyle.opacity = 0.7;
+    }
+    
+    return baseStyle;
   };
 
   if (!question.expectedAnswers || question.expectedAnswers.length === 0) {
-    return <div className="text-red-500">Error: No expected answers defined for short answer question</div>;
+    return <div style={{ color: colors.semantic.error }}>Error: No expected answers defined for short answer question</div>;
   }
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[4] }}>
       {question.expectedAnswers.map((expected) => (
-        <div key={expected.field} className="space-y-2">
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700 mb-1 block">
+        <div key={expected.field} style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[2] }}>
+          <label style={{ display: 'block' }}>
+            <span style={{
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              color: colors.gray[700],
+              marginBottom: spacing.scale[1],
+              display: 'block'
+            }}>
               {expected.description}
             </span>
             
-            <div className="flex items-center space-x-2">
+            <div style={{ display: 'flex', alignItems: 'center', gap: spacing.scale[2] }}>
               <input
                 type="text"
                 value={answers[expected.field] || ''}
                 onChange={(e) => handleInputChange(expected.field, e.target.value)}
-                className={getInputClassName(expected.field)}
+                style={getInputStyle(expected.field)}
                 placeholder={`Enter value`}
                 disabled={isSubmitted}
               />
               
-              <span className="text-sm text-gray-500 min-w-0 flex-shrink-0">
+              <span style={{
+                fontSize: '0.875rem',
+                color: colors.gray[500],
+                minWidth: 0,
+                flexShrink: 0
+              }}>
                 {expected.unit}
               </span>
             </div>
           </label>
           
           {showFeedback && isSubmitted && validationResults[expected.field] && (
-            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-800">
+            <div style={{
+              padding: spacing.scale[3],
+              backgroundColor: colors.gray[50],
+              borderRadius: spacing.radius.lg,
+              border: `1px solid ${colors.gray[200]}`
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: spacing.scale[2]
+              }}>
+                <span style={{ fontSize: '0.875rem', fontWeight: 500, color: colors.gray[800] }}>
                   Expected: {AviationCalculations.formatNumber(expected.value)} {expected.unit} 
-                  <span className="text-gray-500 font-normal"> (±{expected.tolerance})</span>
+                  <span style={{ color: colors.gray[500], fontWeight: 'normal' }}> (±{expected.tolerance})</span>
                 </span>
-                <span className={`px-2 py-1 rounded text-xs font-medium ${
-                  validationResults[expected.field].isCorrect 
-                    ? 'bg-green-100 text-green-800' 
-                    : 'bg-red-100 text-red-800'
-                }`}>
+                <span style={{
+                  padding: `${spacing.scale[1]} ${spacing.scale[2]}`,
+                  borderRadius: spacing.radius.sm,
+                  fontSize: '0.75rem',
+                  fontWeight: 500,
+                  backgroundColor: validationResults[expected.field].isCorrect 
+                    ? colors.withOpacity(colors.semantic.success, 0.1)
+                    : colors.withOpacity(colors.semantic.error, 0.1),
+                  color: validationResults[expected.field].isCorrect 
+                    ? colors.semantic.success
+                    : colors.semantic.error
+                }}>
                   {validationResults[expected.field].isCorrect ? '✓ Correct' : '✗ Incorrect'}
                 </span>
               </div>
               
               {!validationResults[expected.field].isCorrect && (
-                <div className="text-sm text-red-700 bg-red-50 p-2 rounded border border-red-200">
+                <div style={{
+                  fontSize: '0.875rem',
+                  color: colors.semantic.error,
+                  backgroundColor: colors.withOpacity(colors.semantic.error, 0.05),
+                  padding: spacing.scale[2],
+                  borderRadius: spacing.radius.sm,
+                  border: `1px solid ${colors.withOpacity(colors.semantic.error, 0.2)}`
+                }}>
                   Your answer: {AviationCalculations.formatNumber(validationResults[expected.field].actual)} {expected.unit}
                 </div>
               )}
@@ -176,39 +233,69 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
         </div>
       ))}
       
-      <div className="flex justify-between items-center mt-6 pt-4 border-t">
-        <div className="text-sm text-gray-600">
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: spacing.scale[6],
+        paddingTop: spacing.scale[4],
+        borderTop: `1px solid ${colors.gray[200]}`
+      }}>
+        <div style={{ fontSize: '0.875rem', color: colors.gray[600] }}>
           {question.expectedAnswers.length > 1 
             ? `Complete all ${question.expectedAnswers.length} fields and submit`
             : 'Enter your answer and submit'
           }
         </div>
         
-        <button
-          className={`aviation-button ${
-            isSubmitted ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+        <Button
+          variant="primary"
           onClick={handleSubmit}
           disabled={isSubmitted}
         >
           {isSubmitted ? 'Submitted' : 'Submit Answer'}
-        </button>
+        </Button>
       </div>
       
       {showFeedback && isSubmitted && (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <div className="flex items-center justify-between mb-3">
-            <span className="font-medium text-gray-800">Overall Result</span>
-            <span className={`px-3 py-1 rounded text-sm font-medium ${
-              Object.values(validationResults).every(v => v.isCorrect) 
-                ? 'bg-green-100 text-green-800' 
-                : 'bg-red-100 text-red-800'
-            }`}>
+        <div style={{
+          marginTop: spacing.scale[6],
+          padding: spacing.scale[4],
+          backgroundColor: colors.gray[50],
+          borderRadius: spacing.radius.lg,
+          border: `1px solid ${colors.gray[200]}`
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: spacing.scale[3]
+          }}>
+            <span style={{ fontWeight: 500, color: colors.gray[800] }}>Overall Result</span>
+            <span style={{
+              padding: `${spacing.scale[1]} ${spacing.scale[3]}`,
+              borderRadius: spacing.radius.sm,
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              backgroundColor: Object.values(validationResults).every(v => v.isCorrect) 
+                ? colors.withOpacity(colors.semantic.success, 0.1)
+                : colors.withOpacity(colors.semantic.error, 0.1),
+              color: Object.values(validationResults).every(v => v.isCorrect) 
+                ? colors.semantic.success
+                : colors.semantic.error
+            }}>
               {Object.values(validationResults).every(v => v.isCorrect) ? '✓ Correct' : '✗ Incorrect'}
             </span>
           </div>
           
-          <div className="text-sm text-gray-600 bg-white p-3 rounded border border-gray-200">
+          <div style={{
+            fontSize: '0.875rem',
+            color: colors.gray[600],
+            backgroundColor: colors.white,
+            padding: spacing.scale[3],
+            borderRadius: spacing.radius.sm,
+            border: `1px solid ${colors.gray[200]}`
+          }}>
             Fields correct: {Object.values(validationResults).filter(v => v.isCorrect).length} / {Object.values(validationResults).length}
           </div>
         </div>

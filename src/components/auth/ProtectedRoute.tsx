@@ -1,45 +1,72 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { Card, useDesignSystem } from '../../design-system';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requireAuth?: boolean;
+  isAuthenticated: boolean;
+  isLoading?: boolean;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
   children, 
-  requireAuth = false 
+  isAuthenticated, 
+  isLoading = false 
 }) => {
-  const { user, loading } = useAuth();
-  const location = useLocation();
+  const { colors, spacing, styles } = useDesignSystem();
 
-  // Show loading while checking authentication
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-aviation-light via-white to-aviation-accent flex items-center justify-center">
-        <div className="aviation-card p-8 text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-2 border-aviation-primary border-t-transparent mx-auto mb-4"></div>
-          <p className="text-aviation-text">Loading...</p>
-        </div>
+      <div style={{
+        minHeight: '100vh',
+        background: `linear-gradient(135deg, ${colors.aviation.light} 0%, ${colors.white} 50%, ${colors.aviation.accent} 100%)`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <Card style={{
+          padding: spacing.scale[8],
+          textAlign: 'center'
+        }}>
+          <div style={{
+            animation: 'spin 1s linear infinite',
+            borderRadius: '50%',
+            height: '3rem',
+            width: '3rem',
+            border: `2px solid ${colors.aviation.primary}`,
+            borderTop: '2px solid transparent',
+            margin: '0 auto',
+            marginBottom: spacing.scale[4]
+          }} />
+          <p style={{ ...styles.body, color: colors.aviation.muted }}>
+            Loading...
+          </p>
+        </Card>
       </div>
     );
   }
 
-  // If authentication is required but user is not authenticated
-  if (requireAuth && !user) {
+  if (!isAuthenticated) {
     return (
-      <Navigate 
-        to="/login" 
-        state={{ from: location }} 
-        replace 
-      />
+      <div style={{
+        minHeight: '100vh',
+        background: `linear-gradient(135deg, ${colors.aviation.light} 0%, ${colors.white} 50%, ${colors.aviation.accent} 100%)`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <Card style={{
+          padding: spacing.scale[8],
+          textAlign: 'center'
+        }}>
+          <h2 style={{ ...styles.heading, fontSize: '1.5rem', marginBottom: spacing.scale[4] }}>
+            Authentication Required
+          </h2>
+          <p style={{ ...styles.body, color: colors.aviation.muted }}>
+            Please log in to access this page.
+          </p>
+        </Card>
+      </div>
     );
-  }
-
-  // If user is authenticated and trying to access login page
-  if (user && location.pathname === '/login') {
-    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;

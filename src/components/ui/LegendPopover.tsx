@@ -1,41 +1,66 @@
 import React from 'react';
+import { Card, useDesignSystem } from '../../design-system';
 
 interface LegendPopoverProps {
+  isOpen: boolean;
   onClose: () => void;
+  children: React.ReactNode;
 }
 
-const LegendPopover: React.FC<LegendPopoverProps> = ({ onClose }) => {
+const LegendPopover: React.FC<LegendPopoverProps> = ({ isOpen, onClose, children }) => {
+  const { colors, spacing, styles } = useDesignSystem();
+
+  if (!isOpen) return null;
+
   return (
-    <div className="absolute right-0 mt-2 w-[34rem] z-50">
-      <div className="aviation-card p-4 text-sm shadow-xl">
-        <div className="flex items-center justify-between mb-2">
-          <div className="font-semibold text-aviation-primary">Flight Plan Legend</div>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">✕</button>
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000
+    }}>
+      <Card style={{
+        padding: spacing.scale[4],
+        fontSize: '0.875rem',
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+        maxWidth: '90vw',
+        maxHeight: '90vh',
+        overflow: 'auto'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.scale[3] }}>
+          <h3 style={{ 
+            ...styles.heading, 
+            fontSize: '1rem',
+            fontWeight: 600,
+            color: colors.aviation.primary
+          }}>
+            Legend
+          </h3>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '1.25rem',
+              cursor: 'pointer',
+              color: colors.gray[500],
+              padding: spacing.scale[1]
+            }}
+          >
+            ×
+          </button>
         </div>
-        <div className="grid grid-cols-2 gap-3 text-gray-700">
-          <div>
-            <div className="font-medium mb-1">Basic</div>
-            SEG=Segment, FL=Flight Level, TEMP T/DEV=Temperature Deviation, MACH NO=Mach Number
-          </div>
-          <div>
-            <div className="font-medium mb-1">Speed/Track</div>
-            TAS=True Airspeed (kt), TR=Track (°), WIND=Wind Vector, WC=Wind Component (kt)
-          </div>
-          <div>
-            <div className="font-medium mb-1">Navigation</div>
-            GS=Ground Speed (kt), DIST=Distance (nm), ETI=Est Time Interval (min), AIR DIST=Air Distance
-          </div>
-          <div>
-            <div className="font-medium mb-1">Fuel/Weight</div>
-            EMZW=Est Mid Zone Weight, PLAN EST=Planned Estimate, ATA=Actual Time Arrival
-          </div>
+        
+        <div style={{ color: colors.aviation.navy }}>
+          {children}
         </div>
-        <div className="mt-3 text-xs text-gray-500">
-          * Manual entry for learning: GS, ETI, EMZW, END ZONE WT<br/>
-          * Students can practice calculations and learn from mistakes<br/>
-          * E6B calculations use proper trigonometry (sin/cos) for wind triangles
-        </div>
-      </div>
+      </Card>
     </div>
   );
 };

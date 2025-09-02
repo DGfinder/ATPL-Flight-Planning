@@ -533,8 +533,8 @@ const FlightPlanVisualization: React.FC<FlightPlanVisualizationProps> = ({
   });
 
   return (
-    <div style={{ padding: spacing.scale[6] }}>
-      <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+    <div style={{ padding: spacing.scale[4] }}>
+      <div style={{ maxWidth: '100%', margin: '0 auto' }}>
         {/* Header */}
         <Card variant="elevated" padding="lg" style={{ marginBottom: spacing.scale[6] }}>
           <div style={headerStyle}>

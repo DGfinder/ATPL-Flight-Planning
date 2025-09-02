@@ -1,73 +1,77 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDesignSystem } from '../../design-system';
 
 interface CSSDebugProps {
-  isVisible?: boolean;
+  showDebug?: boolean;
 }
 
-export const CSSDebug: React.FC<CSSDebugProps> = ({ isVisible = true }) => {
-  const [testClass, setTestClass] = useState('bg-blue-500 text-white');
-  
-  if (!isVisible || process.env.NODE_ENV === 'production') {
-    return null;
-  }
+const CSSDebug: React.FC<CSSDebugProps> = ({ showDebug = false }) => {
+  const { colors, spacing, styles } = useDesignSystem();
 
-  const testClasses = [
-    'bg-red-500 text-white',
-    'bg-green-500 text-white', 
-    'bg-blue-500 text-white',
-    'bg-aviation-primary text-white',
-    'bg-aviation-secondary text-aviation-accent',
-    'text-aviation-navy',
-    'shadow-aviation',
-    'aviation-card',
-    'aviation-button',
-  ];
+  if (!showDebug) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 p-4 bg-white border border-gray-300 rounded-lg shadow-lg max-w-sm">
-      <h3 className="text-sm font-bold mb-2 text-gray-800">🎨 CSS Debug Panel</h3>
+    <div style={{
+      position: 'fixed',
+      top: spacing.scale[4],
+      left: spacing.scale[4],
+      background: colors.white,
+      border: `1px solid ${colors.gray[300]}`,
+      borderRadius: spacing.radius.lg,
+      padding: spacing.scale[4],
+      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+      zIndex: 1000,
+      maxWidth: '20rem'
+    }}>
+      <h3 style={{ ...styles.heading, fontSize: '1rem', marginBottom: spacing.scale[3] }}>
+        CSS Debug Panel
+      </h3>
       
-      {/* Test if basic Tailwind is working */}
-      <div className="mb-3">
-        <div className="w-4 h-4 bg-red-500 inline-block mr-2"></div>
-        <span className="text-xs">Red square = Basic Tailwind ✓</span>
-      </div>
-      
-      {/* Test if custom Aviation colors are working */}
-      <div className="mb-3">
-        <div className="w-4 h-4 bg-aviation-primary inline-block mr-2"></div>
-        <span className="text-xs">Blue square = Custom colors ✓</span>
-      </div>
-      
-      {/* Interactive test area */}
-      <div className="mb-3">
-        <label className="block text-xs font-medium mb-1">Test Class:</label>
-        <select 
-          value={testClass}
-          onChange={(e) => setTestClass(e.target.value)}
-          className="w-full text-xs p-1 border rounded"
-        >
-          {testClasses.map(cls => (
-            <option key={cls} value={cls}>{cls}</option>
-          ))}
-        </select>
-      </div>
-      
-      {/* Live test area */}
-      <div className={`p-3 rounded text-center text-xs transition-all duration-300 ${testClass}`}>
-        Live Test: {testClass}
-      </div>
-      
-      {/* CSS Status indicators */}
-      <div className="mt-3 space-y-1">
-        <div className="flex items-center text-xs">
-          <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-          <span>CSS Debug Active</span>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[2] }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.scale[2] }}>
+          <div style={{
+            width: '1rem',
+            height: '1rem',
+            background: colors.aviation.primary,
+            display: 'inline-block',
+            marginRight: spacing.scale[2]
+          }} />
+          <span style={{ fontSize: '0.875rem', color: colors.aviation.muted }}>
+            Primary Color
+          </span>
         </div>
-        <div className="flex items-center text-xs">
-          <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-          <span>Tailwind Processing: {document.querySelector('[data-tailwind]') ? '✓' : '?'}</span>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.scale[2] }}>
+          <div style={{
+            width: '1rem',
+            height: '1rem',
+            background: colors.aviation.secondary,
+            display: 'inline-block',
+            marginRight: spacing.scale[2]
+          }} />
+          <span style={{ fontSize: '0.875rem', color: colors.aviation.muted }}>
+            Secondary Color
+          </span>
         </div>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.scale[2] }}>
+          <div style={{
+            width: '1rem',
+            height: '1rem',
+            background: colors.aviation.navy,
+            display: 'inline-block',
+            marginRight: spacing.scale[2]
+          }} />
+          <span style={{ fontSize: '0.875rem', color: colors.aviation.muted }}>
+            Navy Color
+          </span>
+        </div>
+      </div>
+      
+      <div style={{ marginTop: spacing.scale[3], paddingTop: spacing.scale[3], borderTop: `1px solid ${colors.gray[200]}` }}>
+        <p style={{ fontSize: '0.75rem', color: colors.aviation.muted }}>
+          Design System Active
+        </p>
       </div>
     </div>
   );

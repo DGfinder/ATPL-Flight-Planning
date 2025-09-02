@@ -6,7 +6,7 @@ import { GlobalWorkerOptions, getDocument, version } from 'pdfjs-dist';
 import { extractTextFromImage, renderPdfPageToImageDataUrl } from '../../utils/ocr';
 import { initialTopics } from '../../data/initialTopics';
 import TASPracticeTable from '../practice/TASPracticeTable';
-import { Card, Button } from '../../design-system';
+import { Card, Button, useDesignSystem } from '../../design-system';
 
 // Configure worker (CDN fallback)
 GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
@@ -48,6 +48,7 @@ type Tab = 'topics' | 'import';
 type TopicTab = 'theory' | 'videos' | 'practice' | 'imported';
 
 const NotesHub: React.FC = () => {
+  const { colors, spacing, styles } = useDesignSystem();
   const [tab, setTab] = useState<Tab>('topics');
   const [data, setData] = useState(notesStorage.load());
   const [selectedTopic, setSelectedTopic] = useState<NoteTopicId | null>(null);
@@ -194,15 +195,22 @@ const NotesHub: React.FC = () => {
 
 const ImportForm: React.FC<{ onImport: (file: File, topic: NoteTopicId) => void; isImporting: boolean; progress: string }>
   = ({ onImport, isImporting, progress }) => {
+  const { colors, spacing } = useDesignSystem();
   const [file, setFile] = useState<File | null>(null);
   const [topic, setTopic] = useState<NoteTopicId>('tas_heading_ground_speed');
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center gap-3">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.scale[3] }}>
         <input type="file" accept="application/pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
         <select 
-          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          style={{
+            padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
+            border: `1px solid ${colors.gray[300]}`,
+            borderRadius: spacing.radius.md,
+            fontSize: '0.875rem',
+            outline: 'none'
+          }}
           value={topic} 
           onChange={(e) => setTopic(e.target.value as NoteTopicId)}
         >
@@ -219,7 +227,7 @@ const ImportForm: React.FC<{ onImport: (file: File, topic: NoteTopicId) => void;
           {isImporting ? 'Importing…' : 'Import'}
         </Button>
       </div>
-      {progress && <div className="text-xs text-gray-600">{progress}</div>}
+      {progress && <div style={{ fontSize: '0.75rem', color: colors.aviation.muted }}>{progress}</div>}
     </div>
   );
 };
@@ -230,18 +238,21 @@ const TopicDetailView: React.FC<{
   setTopicTab: (tab: TopicTab) => void;
   importedSections: NoteSection[];
 }> = ({ topicId, topicTab, setTopicTab, importedSections }) => {
+  const { colors, spacing, styles } = useDesignSystem();
   const topicContent = topicStorage.getTopicContent(topicId);
   const topicInfo = TOPICS.find(t => t.id === topicId)!;
 
   return (
-    <div className="space-y-4">
-      <h3 className="font-semibold text-gray-800">{topicInfo.label}</h3>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[4] }}>
+      <h3 style={{ ...styles.heading, fontSize: '1.125rem', color: colors.aviation.navy }}>{topicInfo.label}</h3>
       
-      <div className="flex space-x-2 border-b">
+      <div style={{ display: 'flex', gap: spacing.scale[2], borderBottom: `1px solid ${colors.gray[200]}` }}>
         <Button
           variant={topicTab === 'theory' ? 'primary' : 'ghost'}
           size="sm"
-          className={`${topicTab === 'theory' ? 'border-b-2 border-blue-600' : ''}`}
+          style={{
+            borderBottom: topicTab === 'theory' ? `2px solid ${colors.aviation.primary}` : 'none'
+          }}
           onClick={() => setTopicTab('theory')}
         >
           Theory
@@ -249,7 +260,9 @@ const TopicDetailView: React.FC<{
         <Button
           variant={topicTab === 'videos' ? 'primary' : 'ghost'}
           size="sm"
-          className={`${topicTab === 'videos' ? 'border-b-2 border-blue-600' : ''}`}
+          style={{
+            borderBottom: topicTab === 'videos' ? `2px solid ${colors.aviation.primary}` : 'none'
+          }}
           onClick={() => setTopicTab('videos')}
         >
           Videos
@@ -257,7 +270,9 @@ const TopicDetailView: React.FC<{
         <Button
           variant={topicTab === 'practice' ? 'primary' : 'ghost'}
           size="sm"
-          className={`${topicTab === 'practice' ? 'border-b-2 border-blue-600' : ''}`}
+          style={{
+            borderBottom: topicTab === 'practice' ? `2px solid ${colors.aviation.primary}` : 'none'
+          }}
           onClick={() => setTopicTab('practice')}
         >
           Practice
@@ -266,7 +281,9 @@ const TopicDetailView: React.FC<{
           <Button
             variant={topicTab === 'imported' ? 'primary' : 'ghost'}
             size="sm"
-            className={`${topicTab === 'imported' ? 'border-b-2 border-blue-600' : ''}`}
+            style={{
+              borderBottom: topicTab === 'imported' ? `2px solid ${colors.aviation.primary}` : 'none'
+            }}
             onClick={() => setTopicTab('imported' as TopicTab)}
           >
             Imported ({importedSections.length})
@@ -274,17 +291,22 @@ const TopicDetailView: React.FC<{
         )}
       </div>
 
-      <div className="mt-4">
+      <div style={{ marginTop: spacing.scale[4] }}>
         {topicTab === 'theory' && (
-          <div className="space-y-4">
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[4] }}>
             {topicContent?.theory ? (
-              <div className="prose prose-sm max-w-none">
-                <div className="whitespace-pre-wrap text-gray-800 leading-relaxed">
+              <div style={{ maxWidth: 'none' }}>
+                <div style={{ 
+                  whiteSpace: 'pre-wrap', 
+                  color: colors.aviation.navy, 
+                  lineHeight: '1.6',
+                  fontSize: '0.875rem'
+                }}>
                   {topicContent.theory}
                 </div>
               </div>
             ) : (
-              <div className="text-sm text-gray-600 italic">
+              <div style={{ fontSize: '0.875rem', color: colors.aviation.muted, fontStyle: 'italic' }}>
                 No theory content available for this topic yet.
               </div>
             )}
@@ -292,14 +314,18 @@ const TopicDetailView: React.FC<{
         )}
 
         {topicTab === 'videos' && (
-          <div className="space-y-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
             {topicContent?.videos.length ? (
               topicContent.videos.map(video => (
-                <div key={video.id} className="p-3 border rounded-lg">
-                  <h4 className="font-medium text-gray-800 mb-2">{video.title}</h4>
-                  {video.description && (
-                    <p className="text-sm text-gray-600 mb-3">{video.description}</p>
-                  )}
+                <div key={video.id} style={{ 
+                  padding: spacing.scale[3], 
+                  border: `1px solid ${colors.gray[200]}`, 
+                  borderRadius: spacing.radius.lg 
+                }}>
+                  <h4 style={{ fontWeight: 500, color: colors.aviation.navy, marginBottom: spacing.scale[2] }}>{video.title}</h4>
+                                      {video.description && (
+                      <p style={{ fontSize: '0.875rem', color: colors.aviation.muted, marginBottom: spacing.scale[3] }}>{video.description}</p>
+                    )}
                   <div className="aspect-video">
                     <iframe
                       src={`https://www.youtube.com/embed/${video.youtubeId}`}

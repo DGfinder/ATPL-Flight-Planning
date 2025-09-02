@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import NotesHub from './NotesHub';
+import { Card, PrimaryButton, SecondaryButton, useDesignSystem } from '../../design-system';
 
 // Import PDF assets. Vite will transform these into served URLs
 // Paths go up to project root where the PDFs currently reside
@@ -17,6 +18,8 @@ interface CourseNoteItem {
 }
 
 const CourseNotes: React.FC = () => {
+  const { colors, spacing, styles } = useDesignSystem();
+  
   const notes = useMemo<CourseNoteItem[]>(() => [
     { id: 'scan-120048', title: 'Course Notes (Scan 12:00:48)', url: noteA },
     { id: 'scan-115625', title: 'Course Notes (Scan 11:56:25)', url: noteB },
@@ -28,20 +31,54 @@ const CourseNotes: React.FC = () => {
 
   if (!active) return null;
 
+  const sidebarStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: '1fr',
+    gap: spacing.scale[4]
+  };
+
+  const mainContentStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: '1fr',
+    gap: spacing.scale[4]
+  };
+
+  const noteButtonStyle = (isActive: boolean): React.CSSProperties => ({
+    width: '100%',
+    textAlign: 'left',
+    padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
+    borderRadius: spacing.radius.md,
+    transition: 'all 0.2s ease',
+    fontSize: '0.875rem',
+    background: isActive ? colors.withOpacity(colors.aviation.primary, 0.1) : 'transparent',
+    color: isActive ? colors.aviation.primary : colors.aviation.navy,
+    fontWeight: isActive ? 500 : 400,
+    border: 'none',
+    cursor: 'pointer'
+  });
+
+  const noteButtonHoverStyle = (isActive: boolean): React.CSSProperties => ({
+    background: isActive ? colors.withOpacity(colors.aviation.primary, 0.15) : colors.gray[100]
+  });
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-      <aside className="lg:col-span-1">
-        <div className="aviation-card p-4">
-          <h3 className="font-semibold text-gray-800 mb-3">Course Notes</h3>
-          <ul className="space-y-2">
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: spacing.scale[4] }}>
+      <aside>
+        <Card variant="default" padding="md">
+          <h3 style={{ ...styles.heading, fontSize: '1rem', marginBottom: spacing.scale[3], color: colors.aviation.navy }}>
+            Course Notes
+          </h3>
+          <ul style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[2] }}>
             {notes.map((n) => (
               <li key={n.id}>
                 <button
-                  className={`w-full text-left px-3 py-2 rounded transition-colors text-sm ${
-                    n.id === activeNoteId
-                      ? 'bg-aviation-light text-aviation-primary font-medium'
-                      : 'hover:bg-gray-100'
-                  }`}
+                  style={noteButtonStyle(n.id === activeNoteId)}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = noteButtonHoverStyle(n.id === activeNoteId).background!;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = noteButtonStyle(n.id === activeNoteId).background!;
+                  }}
                   onClick={() => setActiveNoteId(n.id)}
                 >
                   {n.title}
@@ -49,38 +86,61 @@ const CourseNotes: React.FC = () => {
               </li>
             ))}
           </ul>
-          <div className="mt-4 text-xs text-gray-600">
+          <div style={{ marginTop: spacing.scale[4], fontSize: '0.75rem', color: colors.aviation.muted }}>
             Having trouble viewing?{' '}
-            <a className="text-aviation-primary hover:underline" href={active.url} target="_blank" rel="noreferrer">
+            <a 
+              style={{ color: colors.aviation.primary, textDecoration: 'underline', cursor: 'pointer' }} 
+              href={active.url} 
+              target="_blank" 
+              rel="noreferrer"
+            >
               Open in new tab
             </a>
           </div>
-        </div>
+        </Card>
       </aside>
 
-      <section className="lg:col-span-3 space-y-4">
+      <section style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[4] }}>
         <NotesHub />
-        <div className="aviation-card p-2">
-          <div className="text-sm font-semibold text-gray-700 mb-2">Original PDFs</div>
-          <div className="text-xs text-gray-600 mb-2">View the original scans below for reference.</div>
-        </div>
-        <div className="aviation-card p-2 h-[70vh]">
-          <div className="flex items-center justify-between px-3 py-2 border-b">
-            <div className="font-medium text-gray-800 text-sm truncate">
+        <Card variant="default" padding="sm">
+          <div style={{ fontSize: '0.875rem', fontWeight: 600, color: colors.aviation.navy, marginBottom: spacing.scale[2] }}>
+            Original PDFs
+          </div>
+          <div style={{ fontSize: '0.75rem', color: colors.aviation.muted, marginBottom: spacing.scale[2] }}>
+            View the original scans below for reference.
+          </div>
+        </Card>
+        <Card variant="default" padding="none" style={{ height: '70vh' }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
+            borderBottom: `1px solid ${colors.gray[200]}`
+          }}>
+            <div style={{ fontWeight: 500, color: colors.aviation.navy, fontSize: '0.875rem' }}>
               {active.title}
             </div>
-            <a className="aviation-button-secondary text-xs" href={active.url} download>
+            <SecondaryButton
+              size="sm"
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = active.url;
+                link.download = active.title + '.pdf';
+                link.click();
+              }}
+            >
               Download PDF
-            </a>
+            </SecondaryButton>
           </div>
-          <div className="h-[calc(70vh-44px)]">
+          <div style={{ height: 'calc(70vh - 44px)' }}>
             <iframe
               title={active.title}
               src={active.url}
-              className="w-full h-full rounded"
+              style={{ width: '100%', height: '100%', borderRadius: spacing.radius.md }}
             />
           </div>
-        </div>
+        </Card>
       </section>
     </div>
   );

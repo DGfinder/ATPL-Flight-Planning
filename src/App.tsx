@@ -5,13 +5,48 @@ import Layout from './components/layout/Layout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import NewDashboardPage from './pages/NewDashboardPage';
+import { useDesignSystem } from './design-system';
 
 // Import actual page components
 import QuestionsPage from './pages/QuestionsPage';
 import NotesPage from './pages/NotesPage';
-const ExamPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Trial Exam</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
-const FlightPlanPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Flight Planning</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
-const AnalyticsPage = () => <div className="p-8"><h1 className="text-2xl font-bold text-aviation-navy">Performance Analytics</h1><p className="text-aviation-muted mt-2">Coming soon...</p></div>;
+
+// Placeholder components using design system
+const ExamPage = () => {
+  const { colors, spacing } = useDesignSystem();
+  return (
+    <div style={{ padding: spacing.scale[6] }}>
+      <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: colors.aviation.navy, marginBottom: spacing.scale[2] }}>
+        Trial Exam
+      </h1>
+      <p style={{ color: colors.aviation.muted }}>Coming soon...</p>
+    </div>
+  );
+};
+
+const FlightPlanPage = () => {
+  const { colors, spacing } = useDesignSystem();
+  return (
+    <div style={{ padding: spacing.scale[6] }}>
+      <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: colors.aviation.navy, marginBottom: spacing.scale[2] }}>
+        Flight Planning
+      </h1>
+      <p style={{ color: colors.aviation.muted }}>Coming soon...</p>
+    </div>
+  );
+};
+
+const AnalyticsPage = () => {
+  const { colors, spacing } = useDesignSystem();
+  return (
+    <div style={{ padding: spacing.scale[6] }}>
+      <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: colors.aviation.navy, marginBottom: spacing.scale[2] }}>
+        Performance Analytics
+      </h1>
+      <p style={{ color: colors.aviation.muted }}>Coming soon...</p>
+    </div>
+  );
+};
 
 function App() {
   return (

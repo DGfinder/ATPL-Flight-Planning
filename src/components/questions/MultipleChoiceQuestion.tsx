@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { Question, UserAnswer } from '../../types';
+import { Button, useDesignSystem } from '../../design-system';
 
 interface MultipleChoiceQuestionProps {
   question: Question;
@@ -14,6 +15,7 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
   showFeedback = false,
   userAnswer
 }) => {
+  const { colors, spacing } = useDesignSystem();
   const [selectedOption, setSelectedOption] = useState<number | null>(
     userAnswer?.multipleChoiceAnswer ?? null
   );
@@ -44,66 +46,86 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
     onAnswerSubmit(answer);
   };
 
-  const getOptionClassName = (optionIndex: number) => {
-    let className = 'question-option';
+  const getOptionStyle = (optionIndex: number) => {
+    const baseStyle: React.CSSProperties = {
+      padding: spacing.scale[4],
+      borderRadius: spacing.radius.lg,
+      cursor: isSubmitted ? 'default' : 'pointer',
+      transition: 'all 0.2s ease',
+      border: `2px solid ${selectedOption === optionIndex ? colors.aviation.primary : colors.gray[200]}`,
+      backgroundColor: colors.white,
+      marginBottom: spacing.scale[3]
+    };
     
     if (selectedOption === optionIndex) {
-      className += ' selected';
+      baseStyle.backgroundColor = colors.withOpacity(colors.aviation.primary, 0.05);
+      baseStyle.borderColor = colors.aviation.primary;
     }
     
     if (showFeedback && isSubmitted) {
       if (optionIndex === question.correctAnswer) {
-        className += ' correct';
+        baseStyle.backgroundColor = colors.withOpacity(colors.semantic.success, 0.05);
+        baseStyle.borderColor = colors.semantic.success;
       } else if (selectedOption === optionIndex && optionIndex !== question.correctAnswer) {
-        className += ' incorrect';
+        baseStyle.backgroundColor = colors.withOpacity(colors.semantic.error, 0.05);
+        baseStyle.borderColor = colors.semantic.error;
       }
     }
     
-    return className;
+    return baseStyle;
   };
 
   if (!question.options) {
-    return <div className="text-red-500">Error: No options provided for multiple choice question</div>;
+    return <div style={{ color: colors.semantic.error }}>Error: No options provided for multiple choice question</div>;
   }
 
   return (
-    <div className="space-y-3">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
       {question.options.map((option, index) => (
         <div
           key={index}
-          className={getOptionClassName(index)}
+          style={getOptionStyle(index)}
           onClick={() => handleOptionSelect(index)}
         >
-          <div className="flex items-start">
-            <div className="flex-shrink-0 mr-3 mt-0.5">
-              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                selectedOption === index 
-                  ? 'border-aviation-primary bg-aviation-primary' 
-                  : 'border-gray-300'
-              }`}>
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <div style={{ flexShrink: 0, marginRight: spacing.scale[3], marginTop: '0.125rem' }}>
+              <div style={{
+                width: '1rem',
+                height: '1rem',
+                borderRadius: '50%',
+                border: `2px solid ${
+                  selectedOption === index 
+                    ? colors.aviation.primary 
+                    : colors.gray[300]
+                }`,
+                backgroundColor: selectedOption === index ? colors.aviation.primary : colors.white,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
                 {selectedOption === index && (
-                  <div className="w-2 h-2 rounded-full bg-white"></div>
+                  <div style={{ width: '0.5rem', height: '0.5rem', borderRadius: '50%', backgroundColor: colors.white }}></div>
                 )}
               </div>
             </div>
-            <div className="flex-grow">
-              <span className="font-medium text-sm text-gray-600 mr-2">
+            <div style={{ flexGrow: 1 }}>
+              <span style={{ fontWeight: 500, fontSize: '0.875rem', color: colors.gray[600], marginRight: spacing.scale[2] }}>
                 {String.fromCharCode(65 + index)}.
               </span>
-              <span className="text-gray-900">{option}</span>
+              <span style={{ color: colors.gray[900] }}>{option}</span>
               
               {showFeedback && isSubmitted && (
-                <div className="mt-2">
+                <div style={{ marginTop: spacing.scale[2] }}>
                   {index === question.correctAnswer && (
-                    <div className="flex items-center text-green-700 text-sm">
-                      <span className="mr-1">✓</span>
-                      <span className="font-medium">Correct Answer</span>
+                    <div style={{ display: 'flex', alignItems: 'center', color: colors.semantic.success, fontSize: '0.875rem' }}>
+                      <span style={{ marginRight: spacing.scale[1] }}>✓</span>
+                      <span style={{ fontWeight: 500 }}>Correct Answer</span>
                     </div>
                   )}
                   {selectedOption === index && index !== question.correctAnswer && (
-                    <div className="flex items-center text-red-700 text-sm">
-                      <span className="mr-1">✗</span>
-                      <span className="font-medium">Your Answer</span>
+                    <div style={{ display: 'flex', alignItems: 'center', color: colors.semantic.error, fontSize: '0.875rem' }}>
+                      <span style={{ marginRight: spacing.scale[1] }}>✗</span>
+                      <span style={{ fontWeight: 500 }}>Your Answer</span>
                     </div>
                   )}
                 </div>
@@ -113,38 +135,40 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
         </div>
       ))}
       
-      <div className="flex justify-between items-center mt-6">
-        <div className="text-sm text-gray-600">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.scale[6] }}>
+        <div style={{ fontSize: '0.875rem', color: colors.gray[600] }}>
           Select your answer and click submit
         </div>
         
-        <button
-          className={`aviation-button ${
-            selectedOption === null || isSubmitted 
-              ? 'opacity-50 cursor-not-allowed' 
-              : ''
-          }`}
+        <Button
+          variant="primary"
           onClick={handleSubmit}
           disabled={selectedOption === null || isSubmitted}
         >
           {isSubmitted ? 'Submitted' : 'Submit Answer'}
-        </button>
+        </Button>
       </div>
       
       {showFeedback && isSubmitted && (
-        <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-          <div className="text-sm">
-            <div className="flex items-center mb-2">
-              <span className="font-medium">Result:</span>
-              <span className={`ml-2 ${
-                userAnswer?.isCorrect ? 'text-green-700' : 'text-red-700'
-              }`}>
+        <div style={{ 
+          marginTop: spacing.scale[4], 
+          padding: spacing.scale[4], 
+          backgroundColor: colors.gray[50], 
+          borderRadius: spacing.radius.lg 
+        }}>
+          <div style={{ fontSize: '0.875rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: spacing.scale[2] }}>
+              <span style={{ fontWeight: 500 }}>Result:</span>
+              <span style={{
+                marginLeft: spacing.scale[2],
+                color: userAnswer?.isCorrect ? colors.semantic.success : colors.semantic.error
+              }}>
                 {userAnswer?.isCorrect ? 'Correct' : 'Incorrect'}
               </span>
             </div>
             
             {!userAnswer?.isCorrect && (
-              <div className="text-gray-700">
+              <div style={{ color: colors.gray[700] }}>
                 The correct answer is <strong>{String.fromCharCode(65 + (question.correctAnswer ?? 0))}</strong>: {question.options?.[question.correctAnswer ?? 0]}
               </div>
             )}
