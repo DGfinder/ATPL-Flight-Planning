@@ -14,9 +14,23 @@ interface PracticeRow {
   wc: number;
 }
 
+interface StudentAnswers {
+  [key: number]: {
+    crosswind: string;
+    driftAngle: string;
+    headTailwind: string;
+    etas: string;
+    groundSpeed: string;
+    wc: string;
+  };
+}
+
+type AnswerField = 'crosswind' | 'driftAngle' | 'headTailwind' | 'etas' | 'groundSpeed' | 'wc';
+
 const TASPracticeTable: React.FC = () => {
   const { colors, spacing, styles } = useDesignSystem();
   const [showAnswers, setShowAnswers] = useState(false);
+  const [studentAnswers, setStudentAnswers] = useState<StudentAnswers>({});
   
   const practiceData: PracticeRow[] = [
     { id: 1, tas: 410, fpt: 210, windVelocity: '150/100', crosswind: 84, driftAngle: '12°', headTailwind: -58, etas: 402, groundSpeed: 352, wc: -58 },
@@ -43,6 +57,38 @@ const TASPracticeTable: React.FC = () => {
 
   const handleReset = () => {
     setShowAnswers(false);
+    setStudentAnswers({});
+  };
+
+  const handleInputChange = (rowId: number, field: AnswerField, value: string) => {
+    setStudentAnswers(prev => ({
+      ...prev,
+      [rowId]: {
+        ...prev[rowId],
+        [field]: value
+      }
+    }));
+  };
+
+  const getStudentAnswer = (rowId: number, field: AnswerField) => {
+    return studentAnswers[rowId]?.[field] || '';
+  };
+
+  const isAnswerCorrect = (rowId: number, field: AnswerField, studentValue: string) => {
+    if (!showAnswers || !studentValue) return null;
+    const row = practiceData.find(row => row.id === rowId);
+    if (!row) return null;
+    
+    const correctValue = row[field];
+    if (correctValue === undefined) return null;
+    
+    const studentNum = parseFloat(studentValue);
+    const correctNum = typeof correctValue === 'string' ? parseFloat(correctValue.replace('°', '')) : correctValue;
+    
+    if (isNaN(studentNum) || isNaN(correctNum)) return null;
+    
+    // Allow for small rounding differences
+    return Math.abs(studentNum - correctNum) <= 2;
   };
 
   return (
@@ -131,23 +177,155 @@ const TASPracticeTable: React.FC = () => {
                 <td style={{ padding: spacing.scale[2], fontSize: '0.75rem', textAlign: 'center' }}>
                   {row.windVelocity}
                 </td>
-                <td style={{ padding: spacing.scale[2], fontSize: '0.75rem', textAlign: 'center', fontWeight: 600, color: showAnswers ? colors.aviation.primary : colors.gray[400] }}>
-                  {showAnswers ? row.crosswind : '-'}
+                <td style={{ padding: spacing.scale[2], textAlign: 'center' }}>
+                  <input
+                    type="number"
+                    value={getStudentAnswer(row.id, 'crosswind')}
+                    onChange={(e) => handleInputChange(row.id, 'crosswind', e.target.value)}
+                    style={{
+                      width: '60px',
+                      padding: '4px',
+                      fontSize: '0.75rem',
+                      textAlign: 'center',
+                      border: `1px solid ${colors.gray[300]}`,
+                      borderRadius: spacing.radius.sm,
+                      background: isAnswerCorrect(row.id, 'crosswind', getStudentAnswer(row.id, 'crosswind')) === true ? colors.withOpacity(colors.semantic.success, 0.1) : 
+                                isAnswerCorrect(row.id, 'crosswind', getStudentAnswer(row.id, 'crosswind')) === false ? colors.withOpacity(colors.semantic.error, 0.1) : 'white',
+                      borderColor: isAnswerCorrect(row.id, 'crosswind', getStudentAnswer(row.id, 'crosswind')) === true ? colors.semantic.success : 
+                                  isAnswerCorrect(row.id, 'crosswind', getStudentAnswer(row.id, 'crosswind')) === false ? colors.semantic.error : colors.gray[300]
+                    }}
+                    placeholder="---"
+                  />
+                  {showAnswers && (
+                    <div style={{ fontSize: '0.7rem', color: colors.gray[600], marginTop: '2px' }}>
+                      Ans: {row.crosswind}
+                    </div>
+                  )}
                 </td>
-                <td style={{ padding: spacing.scale[2], fontSize: '0.75rem', textAlign: 'center', fontWeight: 600, color: showAnswers ? colors.aviation.primary : colors.gray[400] }}>
-                  {showAnswers ? row.driftAngle : '-'}
+                <td style={{ padding: spacing.scale[2], textAlign: 'center' }}>
+                  <input
+                    type="text"
+                    value={getStudentAnswer(row.id, 'driftAngle')}
+                    onChange={(e) => handleInputChange(row.id, 'driftAngle', e.target.value)}
+                    style={{
+                      width: '50px',
+                      padding: '4px',
+                      fontSize: '0.75rem',
+                      textAlign: 'center',
+                      border: `1px solid ${colors.gray[300]}`,
+                      borderRadius: spacing.radius.sm,
+                      background: isAnswerCorrect(row.id, 'driftAngle', getStudentAnswer(row.id, 'driftAngle')) === true ? colors.withOpacity(colors.semantic.success, 0.1) : 
+                                isAnswerCorrect(row.id, 'driftAngle', getStudentAnswer(row.id, 'driftAngle')) === false ? colors.withOpacity(colors.semantic.error, 0.1) : 'white',
+                      borderColor: isAnswerCorrect(row.id, 'driftAngle', getStudentAnswer(row.id, 'driftAngle')) === true ? colors.semantic.success : 
+                                  isAnswerCorrect(row.id, 'driftAngle', getStudentAnswer(row.id, 'driftAngle')) === false ? colors.semantic.error : colors.gray[300]
+                    }}
+                    placeholder="---"
+                  />
+                  {showAnswers && (
+                    <div style={{ fontSize: '0.7rem', color: colors.gray[600], marginTop: '2px' }}>
+                      Ans: {row.driftAngle}
+                    </div>
+                  )}
                 </td>
-                <td style={{ padding: spacing.scale[2], fontSize: '0.75rem', textAlign: 'center', fontWeight: 600, color: showAnswers ? colors.aviation.secondary : colors.gray[400] }}>
-                  {showAnswers ? row.headTailwind : '-'}
+                <td style={{ padding: spacing.scale[2], textAlign: 'center' }}>
+                  <input
+                    type="number"
+                    value={getStudentAnswer(row.id, 'headTailwind')}
+                    onChange={(e) => handleInputChange(row.id, 'headTailwind', e.target.value)}
+                    style={{
+                      width: '60px',
+                      padding: '4px',
+                      fontSize: '0.75rem',
+                      textAlign: 'center',
+                      border: `1px solid ${colors.gray[300]}`,
+                      borderRadius: spacing.radius.sm,
+                      background: isAnswerCorrect(row.id, 'headTailwind', getStudentAnswer(row.id, 'headTailwind')) === true ? colors.withOpacity(colors.semantic.success, 0.1) : 
+                                isAnswerCorrect(row.id, 'headTailwind', getStudentAnswer(row.id, 'headTailwind')) === false ? colors.withOpacity(colors.semantic.error, 0.1) : 'white',
+                      borderColor: isAnswerCorrect(row.id, 'headTailwind', getStudentAnswer(row.id, 'headTailwind')) === true ? colors.semantic.success : 
+                                  isAnswerCorrect(row.id, 'headTailwind', getStudentAnswer(row.id, 'headTailwind')) === false ? colors.semantic.error : colors.gray[300]
+                    }}
+                    placeholder="---"
+                  />
+                  {showAnswers && (
+                    <div style={{ fontSize: '0.7rem', color: colors.gray[600], marginTop: '2px' }}>
+                      Ans: {row.headTailwind}
+                    </div>
+                  )}
                 </td>
-                <td style={{ padding: spacing.scale[2], fontSize: '0.75rem', textAlign: 'center', fontWeight: 600, color: showAnswers ? colors.aviation.primary : colors.gray[400] }}>
-                  {showAnswers ? row.etas : '-'}
+                <td style={{ padding: spacing.scale[2], textAlign: 'center' }}>
+                  <input
+                    type="number"
+                    value={getStudentAnswer(row.id, 'etas')}
+                    onChange={(e) => handleInputChange(row.id, 'etas', e.target.value)}
+                    style={{
+                      width: '60px',
+                      padding: '4px',
+                      fontSize: '0.75rem',
+                      textAlign: 'center',
+                      border: `1px solid ${colors.gray[300]}`,
+                      borderRadius: spacing.radius.sm,
+                      background: isAnswerCorrect(row.id, 'etas', getStudentAnswer(row.id, 'etas')) === true ? colors.withOpacity(colors.semantic.success, 0.1) : 
+                                isAnswerCorrect(row.id, 'etas', getStudentAnswer(row.id, 'etas')) === false ? colors.withOpacity(colors.semantic.error, 0.1) : 'white',
+                      borderColor: isAnswerCorrect(row.id, 'etas', getStudentAnswer(row.id, 'etas')) === true ? colors.semantic.success : 
+                                  isAnswerCorrect(row.id, 'etas', getStudentAnswer(row.id, 'etas')) === false ? colors.semantic.error : colors.gray[300]
+                    }}
+                    placeholder="---"
+                  />
+                  {showAnswers && (
+                    <div style={{ fontSize: '0.7rem', color: colors.gray[600], marginTop: '2px' }}>
+                      Ans: {row.etas}
+                    </div>
+                  )}
                 </td>
-                <td style={{ padding: spacing.scale[2], fontSize: '0.75rem', textAlign: 'center', fontWeight: 600, color: showAnswers ? colors.aviation.secondary : colors.gray[400] }}>
-                  {showAnswers ? row.groundSpeed : '-'}
+                <td style={{ padding: spacing.scale[2], textAlign: 'center' }}>
+                  <input
+                    type="number"
+                    value={getStudentAnswer(row.id, 'groundSpeed')}
+                    onChange={(e) => handleInputChange(row.id, 'groundSpeed', e.target.value)}
+                    style={{
+                      width: '60px',
+                      padding: '4px',
+                      fontSize: '0.75rem',
+                      textAlign: 'center',
+                      border: `1px solid ${colors.gray[300]}`,
+                      borderRadius: spacing.radius.sm,
+                      background: isAnswerCorrect(row.id, 'groundSpeed', getStudentAnswer(row.id, 'groundSpeed')) === true ? colors.withOpacity(colors.semantic.success, 0.1) : 
+                                isAnswerCorrect(row.id, 'groundSpeed', getStudentAnswer(row.id, 'groundSpeed')) === false ? colors.withOpacity(colors.semantic.error, 0.1) : 'white',
+                      borderColor: isAnswerCorrect(row.id, 'groundSpeed', getStudentAnswer(row.id, 'groundSpeed')) === true ? colors.semantic.success : 
+                                  isAnswerCorrect(row.id, 'groundSpeed', getStudentAnswer(row.id, 'groundSpeed')) === false ? colors.semantic.error : colors.gray[300]
+                    }}
+                    placeholder="---"
+                  />
+                  {showAnswers && (
+                    <div style={{ fontSize: '0.7rem', color: colors.gray[600], marginTop: '2px' }}>
+                      Ans: {row.groundSpeed}
+                    </div>
+                  )}
                 </td>
-                <td style={{ padding: spacing.scale[2], fontSize: '0.75rem', textAlign: 'center', fontWeight: 600, color: showAnswers ? colors.aviation.secondary : colors.gray[400] }}>
-                  {showAnswers ? row.wc : '-'}
+                <td style={{ padding: spacing.scale[2], textAlign: 'center' }}>
+                  <input
+                    type="number"
+                    value={getStudentAnswer(row.id, 'wc')}
+                    onChange={(e) => handleInputChange(row.id, 'wc', e.target.value)}
+                    style={{
+                      width: '60px',
+                      padding: '4px',
+                      fontSize: '0.75rem',
+                      textAlign: 'center',
+                      border: `1px solid ${colors.gray[300]}`,
+                      borderRadius: spacing.radius.sm,
+                      background: isAnswerCorrect(row.id, 'wc', getStudentAnswer(row.id, 'wc')) === true ? colors.withOpacity(colors.semantic.success, 0.1) : 
+                                isAnswerCorrect(row.id, 'wc', getStudentAnswer(row.id, 'wc')) === false ? colors.withOpacity(colors.semantic.error, 0.1) : 'white',
+                      borderColor: isAnswerCorrect(row.id, 'wc', getStudentAnswer(row.id, 'wc')) === true ? colors.semantic.success : 
+                                  isAnswerCorrect(row.id, 'wc', getStudentAnswer(row.id, 'wc')) === false ? colors.semantic.error : colors.gray[300]
+                    }}
+                    placeholder="---"
+                  />
+                  {showAnswers && (
+                    <div style={{ fontSize: '0.7rem', color: colors.gray[600], marginTop: '2px' }}>
+                      Ans: {row.wc}
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}
@@ -168,8 +346,8 @@ const TASPracticeTable: React.FC = () => {
           margin: 0,
           lineHeight: '1.5'
         }}>
-          <strong>Instructions:</strong> Use your flight computer (whiz wheel) to calculate Crosswind, Drift Angle, Head/Tailwind, ETAS, Ground Speed, and Wind Component (WC) for each example. 
-          Click "Show Answer Key" to check your calculations, then "Reset Table" to practice again.
+          <strong>Instructions:</strong> Enter your calculations in the input fields. When you click "Show Answer Key", correct answers will be highlighted in green, incorrect in red. 
+          Use your flight computer (whiz wheel) to calculate Crosswind, Drift Angle, Head/Tailwind, ETAS, Ground Speed, and Wind Component (WC) for each example.
         </p>
       </div>
     </div>
