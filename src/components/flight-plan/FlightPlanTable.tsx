@@ -418,299 +418,336 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
         <Card variant="default" padding="none">
           <CardHeader title="Flight Plan Segments" />
           <CardContent>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div style={{ 
+              overflowX: 'auto',
+              border: `1px solid ${colors.gray[200]}`,
+              borderRadius: spacing.radius.md,
+              background: colors.white
+            }}>
+              <table style={{ 
+                width: '100%', 
+                borderCollapse: 'collapse',
+                fontSize: '0.75rem',
+                fontFamily: 'monospace'
+              }}>
                 <thead>
-                  <tr style={{ background: colors.gray[50] }}>
+                  <tr style={{ 
+                    background: colors.gray[50],
+                    borderBottom: `2px solid ${colors.gray[300]}`
+                  }}>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
+                      padding: '6px 8px',
                       textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '80px',
+                      maxWidth: '100px'
                     }}>
                       Segment
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '40px',
+                      maxWidth: '50px'
                     }}>
                       FL
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '60px',
+                      maxWidth: '70px'
                     }}>
-                      TEMP T/DEV
+                      T/DEV
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '50px',
+                      maxWidth: '60px'
                     }}>
-                      MACH NO
+                      Mach
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '50px',
+                      maxWidth: '60px'
                     }}>
                       TAS
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '40px',
+                      maxWidth: '50px'
                     }}>
                       TR
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '60px',
+                      maxWidth: '70px'
                     }}>
-                      WIND
+                      Wind
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '40px',
+                      maxWidth: '50px'
                     }}>
                       WC
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '50px',
+                      maxWidth: '60px'
                     }}>
                       GS
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '50px',
+                      maxWidth: '60px'
                     }}>
-                      DIST
+                      Dist
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '50px',
+                      maxWidth: '60px'
                     }}>
                       ETI
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '60px',
+                      maxWidth: '70px'
                     }}>
-                      AIR DIST
+                      Air Dist
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '60px',
+                      maxWidth: '70px'
                     }}>
-                      FUEL FLOW
+                      Fuel Flow
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '60px',
+                      maxWidth: '70px'
                     }}>
-                      ZONE FUEL
+                      Zone Fuel
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '80px',
+                      maxWidth: '90px'
                     }}>
-                      START ZONE WT
+                      Start WT
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '60px',
+                      maxWidth: '70px'
                     }}>
                       EMZW
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '80px',
+                      maxWidth: '90px'
                     }}>
-                      END ZONE WT
+                      End WT
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '80px',
+                      maxWidth: '90px'
                     }}>
-                      PLAN FUEL REM
+                      Plan Rem
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '80px',
+                      maxWidth: '90px'
                     }}>
-                      ACT FUEL REM
+                      Act Rem
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '60px',
+                      maxWidth: '70px'
                     }}>
-                      PLAN EST
+                      Plan Est
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
-                      textAlign: 'left',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      padding: '6px 4px',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      borderRight: `1px solid ${colors.gray[200]}`,
+                      minWidth: '60px',
+                      maxWidth: '70px'
                     }}>
                       ATA
                     </th>
                     <th style={{
-                      padding: `${spacing.scale[3]} ${spacing.scale[6]}`,
+                      padding: '6px 4px',
                       textAlign: 'center',
-                      fontSize: '0.75rem',
-                      fontWeight: 500,
-                      color: colors.aviation.muted,
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
-                      borderBottom: `1px solid ${colors.gray[200]}`
+                      minWidth: '30px',
+                      maxWidth: '40px'
                     }}>
                       ✕
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                                     {segments.map((segment) => (
-                     <tr key={segment.id} style={{ background: 'transparent' }}>
+                  {segments.map((segment, index) => (
+                    <tr key={segment.id} style={{ 
+                      background: index % 2 === 0 ? colors.white : colors.gray[50],
+                      borderBottom: `1px solid ${colors.gray[200]}`
+                    }}>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px 8px',
+                        borderRight: `1px solid ${colors.gray[200]}`,
+                        fontWeight: 500
                       }}>
                         {renderEditableCell(segment.id, 'segment', segment.segment, 'text')}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`,
+                        background: altitudeWarnings[segment.id] ? colors.withOpacity(colors.aviation.secondary, 0.1) : 'transparent'
                       }}>
                         <div style={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: spacing.scale[2],
-                          background: altitudeWarnings[segment.id] ? colors.withOpacity(colors.aviation.secondary, 0.1) : 'transparent'
+                          justifyContent: 'center',
+                          gap: '2px'
                         }}>
-                          <div style={{ flex: 1 }} onDoubleClick={() => {
-                            // Double click toggles through trend options: undefined -> climb -> level -> descent -> undefined
+                          <div onDoubleClick={() => {
                             setSegments(prev => prev.map(s => s.id === segment.id ? {
                               ...s,
                               altitudeTrend: s.altitudeTrend === undefined ? 'climb' : s.altitudeTrend === 'climb' ? 'level' : s.altitudeTrend === 'level' ? 'descent' : undefined
@@ -727,170 +764,172 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                           <span
                             style={{
                               color: segment.altitudeTrend === 'climb' ? colors.aviation.secondary :
-                                     segment.altitudeTrend === 'descent' ? colors.aviation.navy : colors.aviation.muted
+                                     segment.altitudeTrend === 'descent' ? colors.aviation.navy : colors.aviation.muted,
+                              fontSize: '0.7rem'
                             }}
                             title={segment.altitudeTrend ? (segment.altitudeTrend.charAt(0).toUpperCase() + segment.altitudeTrend.slice(1)) : 'No trend'}
                           >
                             {segment.altitudeTrend === 'climb' ? '↗' : segment.altitudeTrend === 'descent' ? '↘' : '→'}
                           </span>
-                        {altitudeWarnings[segment.id] && (
-                          <div style={{ fontSize: '0.75rem', color: colors.aviation.secondary, marginTop: spacing.scale[1] }} title={altitudeWarnings[segment.id]}>
-                            ⚠️
-                          </div>
-                        )}
+                          {altitudeWarnings[segment.id] && (
+                            <span style={{ fontSize: '0.6rem', color: colors.aviation.secondary }} title={altitudeWarnings[segment.id]}>
+                              ⚠️
+                            </span>
+                          )}
                         </div>
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'tempDeviation', segment.tempDeviation)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'machNo', segment.machNo)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'tas', segment.tas)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'track', segment.track)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'wind', segment.wind, 'text')}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'windComponent', segment.windComponent)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'groundSpeed', segment.groundSpeed)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'distance', segment.distance)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'estimatedTimeInterval', Math.round(segment.estimatedTimeInterval))}
+                        {renderEditableCell(segment.id, 'estimatedTimeInterval', segment.estimatedTimeInterval)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'airDistance', segment.airDistance)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'fuelFlow', segment.fuelFlow)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'zoneFuel', segment.zoneFuel)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'startZoneWeight', segment.startZoneWeight)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'emzw', segment.emzw)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'endZoneWeight', segment.endZoneWeight)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'planFuelRemaining', segment.planFuelRemaining)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'actualFuelRemaining', segment.actualFuelRemaining)}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'planEstimate', segment.planEstimate, 'text')}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center',
+                        borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'actualTimeArrival', segment.actualTimeArrival, 'text')}
                       </td>
                       <td style={{
-                        padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
-                        fontSize: '0.875rem',
-                        borderBottom: `1px solid ${colors.gray[200]}`
+                        padding: '4px',
+                        textAlign: 'center'
                       }}>
-                        {segments.length > 1 && (
-                          <button
-                            onClick={() => removeSegment(segment.id)}
-                            style={{
-                              color: colors.aviation.secondary,
-                              fontSize: '0.75rem',
-                              cursor: 'pointer'
-                            }}
-                            title="Remove segment"
-                          >
-                            ✕
-                          </button>
-                        )}
+                        <button
+                          onClick={() => removeSegment(segment.id)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: colors.aviation.secondary,
+                            cursor: 'pointer',
+                            fontSize: '0.7rem',
+                            padding: '2px',
+                            borderRadius: '2px'
+                          }}
+                          title="Remove segment"
+                        >
+                          ✕
+                        </button>
                       </td>
                     </tr>
                   ))}

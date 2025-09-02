@@ -29,8 +29,9 @@ const ExamPage = () => {
 };
 
 const FlightPlanPage = () => {
-  const { spacing } = useDesignSystem();
+  const { spacing, colors } = useDesignSystem();
   const [flightPlanSegments, setFlightPlanSegments] = useState<FlightPlanSegment[]>([]);
+  const [showVisualization, setShowVisualization] = useState(false);
 
   const handleFlightPlanUpdate = useCallback((segments: FlightPlanSegment[]) => {
     setFlightPlanSegments(segments);
@@ -70,14 +71,48 @@ const FlightPlanPage = () => {
   return (
     <div style={{ padding: spacing.scale[4] }}>
       <div style={{ maxWidth: '100%', margin: '0 auto' }}>
-        {/* Flight Visualization at the top */}
+        {/* Visualization Toggle Button */}
         {visualizationData && (
-          <div style={{ marginBottom: spacing.scale[6] }}>
+          <div style={{ 
+            marginBottom: spacing.scale[4],
+            display: 'flex',
+            justifyContent: 'center'
+          }}>
+            <button
+              onClick={() => setShowVisualization(!showVisualization)}
+              style={{
+                padding: `${spacing.scale[2]} ${spacing.scale[4]}`,
+                background: showVisualization ? colors.aviation.primary : colors.white,
+                color: showVisualization ? colors.white : colors.aviation.primary,
+                border: `2px solid ${colors.aviation.primary}`,
+                borderRadius: spacing.radius.md,
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: spacing.scale[2]
+              }}
+            >
+              {showVisualization ? 'Hide Route Visualization' : 'Show Route Visualization'}
+            </button>
+          </div>
+        )}
+
+        {/* Flight Visualization (conditionally shown) */}
+        {showVisualization && visualizationData && (
+          <div style={{ 
+            marginBottom: spacing.scale[6],
+            border: `1px solid ${colors.gray[200]}`,
+            borderRadius: spacing.radius.lg,
+            overflow: 'hidden'
+          }}>
             <FlightPlanVisualization flightPlan={visualizationData} />
           </div>
         )}
         
-        {/* Interactive Flight Plan Table */}
+        {/* Interactive Flight Plan Table - Now the primary focus */}
         <FlightPlanTable 
           onFlightPlanUpdate={handleFlightPlanUpdate}
           initialSegments={flightPlanSegments}
