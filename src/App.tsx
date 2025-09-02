@@ -1,3 +1,4 @@
+import React, { useState, useCallback, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -6,6 +7,9 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import NewDashboardPage from './pages/NewDashboardPage';
 import { useDesignSystem } from './design-system';
+import FlightPlanTable from './components/flight-plan/FlightPlanTable';
+import FlightPlanVisualization from './components/flight-plan/FlightPlanVisualization';
+import type { FlightPlanSegment } from './types';
 
 // Import actual page components
 import QuestionsPage from './pages/QuestionsPage';
@@ -26,12 +30,59 @@ const ExamPage = () => {
 
 const FlightPlanPage = () => {
   const { colors, spacing } = useDesignSystem();
+  const [flightPlanSegments, setFlightPlanSegments] = useState<FlightPlanSegment[]>([]);
+
+  const handleFlightPlanUpdate = useCallback((segments: FlightPlanSegment[]) => {
+    setFlightPlanSegments(segments);
+  }, []);
+
+  // Convert segments to flight plan data format for visualization
+  const visualizationData = useMemo(() => {
+    if (flightPlanSegments.length === 0) return undefined;
+
+    const totals = {
+      distance: flightPlanSegments.reduce((sum, seg) => sum + seg.distance, 0),
+      time: flightPlanSegments.reduce((sum, seg) => sum + seg.estimatedTimeInterval, 0),
+      fuel: flightPlanSegments.reduce((sum, seg) => sum + seg.zoneFuel, 0)
+    };
+
+    return {
+      departure: { code: 'YSSY', name: 'Sydney', lat: -33.9461, lon: 151.1772, elevation: 21 },
+      arrival: { code: 'YPPH', name: 'Perth', lat: -31.9403, lon: 115.9672, elevation: 67 },
+      waypoints: flightPlanSegments.map((segment, index) => ({
+        id: index + 1,
+        code: segment.segment,
+        lat: -33 + (index * 0.5),
+        lon: 151 - (index * 2),
+        altitude: segment.flightLevel * 100,
+        time: `${Math.floor(segment.estimatedTimeInterval / 60)}:${(segment.estimatedTimeInterval % 60).toString().padStart(2, '0')}`,
+        fuel: segment.zoneFuel
+      })),
+      alternates: [],
+      plannedAltitude: flightPlanSegments[0]?.flightLevel * 100 || 37000,
+      distance: totals.distance,
+      estimatedTime: `${Math.floor(totals.time / 60)}:${(totals.time % 60).toString().padStart(2, '0')}`,
+      fuelRequired: totals.fuel,
+      winds: { direction: 270, speed: 45 }
+    };
+  }, [flightPlanSegments]);
+
   return (
-    <div style={{ padding: spacing.scale[6] }}>
-      <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: colors.aviation.navy, marginBottom: spacing.scale[2] }}>
-        Flight Planning
-      </h1>
-      <p style={{ color: colors.aviation.muted }}>Coming soon...</p>
+    <div style={{ padding: spacing.scale[4] }}>
+      <div style={{ maxWidth: '100%', margin: '0 auto' }}>
+        {/* Flight Visualization at the top */}
+        {visualizationData && (
+          <div style={{ marginBottom: spacing.scale[6] }}>
+            <FlightPlanVisualization flightPlan={visualizationData} />
+          </div>
+        )}
+        
+        {/* Interactive Flight Plan Table */}
+        <FlightPlanTable 
+          onFlightPlanUpdate={handleFlightPlanUpdate}
+          initialSegments={flightPlanSegments}
+        />
+      </div>
     </div>
   );
 };

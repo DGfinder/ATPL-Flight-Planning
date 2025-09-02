@@ -10,8 +10,7 @@ import {
   SecondaryButton,
   useDesignSystem 
 } from '../../design-system';
-import { Eye, MapPin, Clock, Navigation } from 'lucide-react';
-import FlightPlanVisualization from './FlightPlanVisualization';
+import { MapPin, Clock, Navigation } from 'lucide-react';
 
 interface FlightPlanTableProps {
   onFlightPlanUpdate?: (segments: FlightPlanSegment[]) => void;
@@ -62,7 +61,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
       return true;
     }
   });
-  const [showVisualization, setShowVisualization] = useState(false);
 
   const validateAltitudeCapability = useCallback(async (segment: FlightPlanSegment) => {
     try {
@@ -280,53 +278,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
     color: colors.aviation.navy
   };
 
-  if (showVisualization) {
-    // Convert segments to flight plan data format
-    const visualizationData = {
-      departure: { code: 'YSSY', name: 'Sydney', lat: -33.9461, lon: 151.1772, elevation: 21 },
-      arrival: { code: 'YPPH', name: 'Perth', lat: -31.9403, lon: 115.9672, elevation: 67 },
-      waypoints: segments.map((segment, index) => ({
-        id: index + 1,
-        code: segment.segment,
-        lat: -33 + (index * 0.5),
-        lon: 151 - (index * 2),
-        altitude: segment.flightLevel * 100,
-        time: `${Math.floor(segment.estimatedTimeInterval / 60)}:${(segment.estimatedTimeInterval % 60).toString().padStart(2, '0')}`,
-        fuel: segment.zoneFuel
-      })),
-      alternates: [],
-      plannedAltitude: segments[0]?.flightLevel * 100 || 37000,
-      distance: totals.distance,
-      estimatedTime: `${Math.floor(totals.time / 60)}:${(totals.time % 60).toString().padStart(2, '0')}`,
-      fuelRequired: totals.fuel,
-      winds: { direction: 270, speed: 45 }
-    };
-
-    return (
-      <div style={{ padding: spacing.scale[4] }}>
-        <div style={{ maxWidth: '100%', margin: '0 auto' }}>
-          {/* Back Button */}
-          <div style={{ marginBottom: spacing.scale[4] }}>
-            <SecondaryButton
-              onClick={() => setShowVisualization(false)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: spacing.scale[2],
-                marginBottom: spacing.scale[4]
-              }}
-            >
-              ← Back to Flight Plan
-            </SecondaryButton>
-          </div>
-          
-          <FlightPlanVisualization 
-            flightPlan={visualizationData}
-          />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div style={{ padding: spacing.scale[4] }}>
@@ -406,17 +357,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
               >
                 Export CSV
               </SecondaryButton>
-              <PrimaryButton
-                onClick={() => setShowVisualization(true)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: spacing.scale[2]
-                }}
-              >
-                <Eye style={{ width: '1rem', height: '1rem' }} />
-                Visualize Route
-              </PrimaryButton>
             </div>
           </div>
 
