@@ -100,8 +100,8 @@ const FuelPolicyModal: React.FC<FuelPolicyModalProps> = ({ isOpen, onClose, tota
       justifyContent: 'center',
       zIndex: 1000
     }}>
-      <Card style={{
-        maxWidth: '600px',
+                        <Card style={{
+        maxWidth: showAbnormalOps ? '900px' : '600px',
         width: '90vw',
         maxHeight: '90vh',
         overflow: 'hidden',
@@ -126,58 +126,33 @@ const FuelPolicyModal: React.FC<FuelPolicyModalProps> = ({ isOpen, onClose, tota
          </CardHeader>
         
                  <CardContent style={{ flex: 1, overflow: 'auto' }}>
-           <div style={{ marginBottom: spacing.scale[4] }}>
-             <p style={{ color: colors.aviation.muted, fontSize: '0.875rem' }}>
-               <strong>Exam Practice:</strong> Calculate total fuel requirements using your knowledge of fuel policy. 
-               Enter values manually - no automated calculations provided.
-             </p>
-           </div>
+           
 
-                     <div style={{ 
-             marginBottom: spacing.scale[3],
-             padding: spacing.scale[3],
-             background: colors.withOpacity(colors.aviation.secondary, 0.1),
-             borderRadius: spacing.radius.md,
-             border: `1px solid ${colors.withOpacity(colors.aviation.secondary, 0.2)}`
-           }}>
-             <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: colors.aviation.navy, marginBottom: spacing.scale[2] }}>
-               Fuel Policy Requirements:
-             </h4>
-                           <ul style={{ fontSize: '0.75rem', color: colors.aviation.muted, margin: 0, paddingLeft: spacing.scale[3] }}>
-                <li>Variable Reserves: Calculate percentage of trip fuel (typically 10-15%)</li>
-                <li>Fixed Reserves: Enter fixed reserve amount in kg</li>
-                <li>Weather Holding: Calculate fuel for weather-related holding (fuel flow × time)</li>
-                <li>Traffic Holding: Calculate fuel for traffic-related holding (fuel flow × time)</li>
-                <li>WIP Holding: Calculate fuel for work in progress holding (fuel flow × time)</li>
-                <li>Taxi Fuel: Enter estimated taxi fuel consumption</li>
-              </ul>
-           </div>
-
-                      {showAbnormalOps && (
-             <div style={{
-               display: 'grid',
-               gridTemplateColumns: '1fr 120px 120px 120px',
-               gap: spacing.scale[3],
-               marginBottom: spacing.scale[2],
-               padding: spacing.scale[2],
-               background: colors.gray[100],
-               borderRadius: spacing.radius.md,
-               fontSize: '0.75rem',
-               fontWeight: 600,
-               color: colors.aviation.navy,
-               textAlign: 'center'
-             }}>
-               <span>Fuel Component</span>
-               <span>Normal</span>
-               <span>Depressurised</span>
-               <span>One Engine Inop</span>
-             </div>
-           )}
-           <div style={{ 
-             display: 'grid', 
-             gap: spacing.scale[3],
-             gridTemplateColumns: showAbnormalOps ? '1fr 120px 120px 120px' : '1fr 120px'
-           }}>
+                                             {showAbnormalOps && (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 150px 150px 150px',
+                gap: spacing.scale[3],
+                marginBottom: spacing.scale[2],
+                padding: spacing.scale[2],
+                background: colors.gray[100],
+                borderRadius: spacing.radius.md,
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                color: colors.aviation.navy,
+                textAlign: 'center'
+              }}>
+                <span>Fuel Component</span>
+                <span>Normal</span>
+                <span>Depressurised</span>
+                <span>One Engine Inop</span>
+              </div>
+            )}
+            <div style={{ 
+              display: 'grid', 
+              gap: spacing.scale[3],
+              gridTemplateColumns: showAbnormalOps ? '1fr 150px 150px 150px' : '1fr 150px'
+            }}>
              <div style={{
                display: 'contents'
              }}>
@@ -666,12 +641,12 @@ const FuelPolicyModal: React.FC<FuelPolicyModalProps> = ({ isOpen, onClose, tota
              borderRadius: spacing.radius.md,
              border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.2)}`
            }}>
-             <div style={{
-               display: 'grid',
-               gridTemplateColumns: showAbnormalOps ? '1fr 120px 120px 120px' : '1fr 120px',
-               gap: spacing.scale[3],
-               alignItems: 'center'
-             }}>
+                           <div style={{
+                display: 'grid',
+                gridTemplateColumns: showAbnormalOps ? '1fr 150px 150px 150px' : '1fr 150px',
+                gap: spacing.scale[3],
+                alignItems: 'center'
+              }}>
                <span style={{ fontSize: '1rem', fontWeight: 600, color: colors.aviation.primary }}>
                  Total Fuel Required:
                </span>
@@ -689,21 +664,21 @@ const FuelPolicyModal: React.FC<FuelPolicyModalProps> = ({ isOpen, onClose, tota
                  </>
                )}
              </div>
-             {showAbnormalOps && (
-               <div style={{
-                 display: 'grid',
-                 gridTemplateColumns: '1fr 120px 120px 120px',
-                 gap: spacing.scale[3],
-                 marginTop: spacing.scale[2],
-                 fontSize: '0.75rem',
-                 color: colors.aviation.muted,
-                 textAlign: 'center'
-               }}>
-                 <span>Normal</span>
-                 <span>Depressurised</span>
-                 <span>One Engine Inop</span>
-               </div>
-             )}
+                           {showAbnormalOps && (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 150px 150px 150px',
+                  gap: spacing.scale[3],
+                  marginTop: spacing.scale[2],
+                  fontSize: '0.75rem',
+                  color: colors.aviation.muted,
+                  textAlign: 'center'
+                }}>
+                  <span>Normal</span>
+                  <span>Depressurised</span>
+                  <span>One Engine Inop</span>
+                </div>
+              )}
            </div>
         </CardContent>
 
