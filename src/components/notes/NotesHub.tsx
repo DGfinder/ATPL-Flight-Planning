@@ -307,22 +307,98 @@ const TopicDetailView: React.FC<{
 
       <div style={{ marginTop: spacing.scale[4] }}>
         {topicTab === 'theory' && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[4] }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[6] }}>
             {topicContent?.theory ? (
-              <div style={{ maxWidth: 'none' }}>
+              <Card style={{ padding: spacing.scale[6] }}>
                 <div style={{ 
-                  whiteSpace: 'pre-wrap', 
                   color: colors.aviation.navy, 
-                  lineHeight: '1.6',
+                  lineHeight: '1.7',
                   fontSize: '0.875rem'
                 }}>
-                  {topicContent.theory}
+                  {/* Parse and structure the theory content */}
+                  {topicContent.theory.split('\n').map((paragraph, index) => {
+                    const trimmedParagraph = paragraph.trim();
+                    if (!trimmedParagraph) return null;
+                    
+                    // Detect different content types
+                    if (trimmedParagraph.startsWith('Example Calculation:')) {
+                      return (
+                        <div key={index} style={{ marginTop: spacing.scale[4] }}>
+                          <h4 style={{
+                            ...styles.heading,
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                            color: colors.aviation.primary,
+                            marginBottom: spacing.scale[3]
+                          }}>
+                            Example Calculation:
+                          </h4>
+                        </div>
+                      );
+                    }
+                    
+                    if (trimmedParagraph.startsWith('Given Data:') || trimmedParagraph.startsWith('Prompt:') || trimmedParagraph.startsWith('Step')) {
+                      return (
+                        <div key={index} style={{ marginTop: spacing.scale[3] }}>
+                          <h5 style={{
+                            ...styles.heading,
+                            fontSize: '0.875rem',
+                            fontWeight: 600,
+                            color: colors.aviation.secondary,
+                            marginBottom: spacing.scale[2]
+                          }}>
+                            {trimmedParagraph}
+                          </h5>
+                        </div>
+                      );
+                    }
+                    
+                    if (trimmedParagraph.match(/^[A-Z][A-Z\s]+$/)) {
+                      // All caps line - likely a heading
+                      return (
+                        <div key={index} style={{ marginTop: spacing.scale[4] }}>
+                          <h4 style={{
+                            ...styles.heading,
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                            color: colors.aviation.primary,
+                            marginBottom: spacing.scale[2]
+                          }}>
+                            {trimmedParagraph}
+                          </h4>
+                        </div>
+                      );
+                    }
+                    
+                    // Regular paragraph
+                    return (
+                      <p key={index} style={{
+                        marginBottom: spacing.scale[3],
+                        color: colors.aviation.navy,
+                        lineHeight: '1.7',
+                        fontSize: '0.875rem'
+                      }}>
+                        {trimmedParagraph}
+                      </p>
+                    );
+                  })}
                 </div>
-              </div>
+              </Card>
             ) : (
-              <div style={{ fontSize: '0.875rem', color: colors.aviation.muted, fontStyle: 'italic' }}>
-                No theory content available for this topic yet.
-              </div>
+              <Card style={{ padding: spacing.scale[6], textAlign: 'center' }}>
+                <div style={{ 
+                  fontSize: '0.875rem', 
+                  color: colors.aviation.muted, 
+                  fontStyle: 'italic',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: spacing.scale[2]
+                }}>
+                  <span>📚</span>
+                  No theory content available for this topic yet.
+                </div>
+              </Card>
             )}
           </div>
         )}
@@ -340,10 +416,24 @@ const TopicDetailView: React.FC<{
                                       {video.description && (
                       <p style={{ fontSize: '0.875rem', color: colors.aviation.muted, marginBottom: spacing.scale[3] }}>{video.description}</p>
                     )}
-                  <div className="aspect-video">
+                  <div style={{
+                    position: 'relative',
+                    width: '100%',
+                    paddingTop: '56.25%', // 16:9 aspect ratio
+                    borderRadius: spacing.radius.lg,
+                    overflow: 'hidden'
+                  }}>
                     <iframe
                       src={`https://www.youtube.com/embed/${video.youtubeId}`}
-                      className="w-full h-full rounded"
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        border: 'none',
+                        borderRadius: spacing.radius.lg
+                      }}
                       allowFullScreen
                       title={video.title}
                     />
@@ -351,53 +441,131 @@ const TopicDetailView: React.FC<{
                 </div>
               ))
             ) : (
-              <div className="text-sm text-gray-600 italic">
-                No videos available for this topic yet.
-              </div>
+              <Card style={{ padding: spacing.scale[6], textAlign: 'center' }}>
+                <div style={{ 
+                  fontSize: '0.875rem', 
+                  color: colors.aviation.muted, 
+                  fontStyle: 'italic',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: spacing.scale[2]
+                }}>
+                  <span>🎥</span>
+                  No videos available for this topic yet.
+                </div>
+              </Card>
             )}
           </div>
         )}
 
         {topicTab === 'practice' && (
-          <div className="space-y-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
             {topicContent?.practice.length ? (
               topicContent.practice.map(item => (
-                <div key={item.id} className="border rounded-lg">
-                  <div className="flex items-center justify-between mb-2 p-3 border-b">
-                    <h4 className="font-medium text-gray-800">{item.title}</h4>
-                    <span className="text-xs px-2 py-1 bg-gray-100 rounded">{item.type}</span>
+                <Card key={item.id} style={{ padding: 0 }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: spacing.scale[3],
+                    borderBottom: `1px solid ${colors.gray[200]}`
+                  }}>
+                    <h4 style={{
+                      ...styles.heading,
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      color: colors.aviation.navy,
+                      margin: 0
+                    }}>
+                      {item.title}
+                    </h4>
+                    <span style={{
+                      fontSize: '0.75rem',
+                      padding: `${spacing.scale[1]} ${spacing.scale[2]}`,
+                      backgroundColor: colors.gray[100],
+                      borderRadius: spacing.radius.sm,
+                      color: colors.aviation.muted
+                    }}>
+                      {item.type}
+                    </span>
                   </div>
-                  <div className="p-3">
+                  <div style={{ padding: spacing.scale[3] }}>
                     {item.content === 'INTERACTIVE_TABLE:TAS' ? (
                       <TASPracticeTable />
                     ) : (
-                      <div className="whitespace-pre-wrap text-sm text-gray-700">
+                      <div style={{
+                        whiteSpace: 'pre-wrap',
+                        fontSize: '0.875rem',
+                        color: colors.aviation.navy,
+                        lineHeight: '1.6'
+                      }}>
                         {item.content}
                       </div>
                     )}
                   </div>
-                </div>
+                </Card>
               ))
             ) : (
-              <div className="text-sm text-gray-600 italic">
-                No practice content available for this topic yet.
-              </div>
+              <Card style={{ padding: spacing.scale[6], textAlign: 'center' }}>
+                <div style={{ 
+                  fontSize: '0.875rem', 
+                  color: colors.aviation.muted, 
+                  fontStyle: 'italic',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: spacing.scale[2]
+                }}>
+                  <span>✏️</span>
+                  No practice content available for this topic yet.
+                </div>
+              </Card>
             )}
           </div>
         )}
 
         {topicTab === 'imported' && importedSections.length > 0 && (
-          <div className="space-y-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
             {importedSections.map(sec => (
-              <article key={sec.id} className="p-3 bg-gray-50 rounded">
-                <div className="flex items-center justify-between mb-1">
-                  <h4 className="font-semibold text-gray-800 text-sm truncate">{sec.title}</h4>
-                  <span className="text-xs text-gray-500 ml-3">{new Date(sec.createdAt).toLocaleString()}</span>
+              <Card key={sec.id} style={{ padding: spacing.scale[3] }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: spacing.scale[1]
+                }}>
+                  <h4 style={{
+                    ...styles.heading,
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    color: colors.aviation.navy,
+                    margin: 0,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    flex: 1
+                  }}>
+                    {sec.title}
+                  </h4>
+                  <span style={{
+                    fontSize: '0.75rem',
+                    color: colors.aviation.muted,
+                    marginLeft: spacing.scale[3],
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {new Date(sec.createdAt).toLocaleString()}
+                  </span>
                 </div>
-                <div className="text-[13px] whitespace-pre-wrap text-gray-800">
+                <div style={{
+                  fontSize: '0.8125rem',
+                  whiteSpace: 'pre-wrap',
+                  color: colors.aviation.navy,
+                  lineHeight: '1.5'
+                }}>
                   {sec.content}
                 </div>
-              </article>
+              </Card>
             ))}
           </div>
         )}
