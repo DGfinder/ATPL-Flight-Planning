@@ -69,8 +69,11 @@ const NotesHub: React.FC = () => {
     <div>
       {!selectedTopic && (
         <div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-          style={{ gap: spacing.scale[4] }}
+          style={{ 
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: spacing.scale[4]
+          }}
         >
           {TOPICS.map(topic => {
             const hasContent = topicStorage.getTopicContent(topic.id);
