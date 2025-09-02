@@ -2,12 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import type { Question, QuestionCategory } from '../types';
 import { sampleQuestions } from '../data/questions';
 import { databaseService } from '../services/database';
-import { useAuth } from './useAuth';
 
 export const useQuestions = (categoryFilter: QuestionCategory | 'all' = 'all') => {
-  const { user } = useAuth();
-  const [questions, setQuestions] = useState<Question[]>(sampleQuestions);
-  const [loading, setLoading] = useState(false);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const filteredQuestions = useMemo(() => {
     if (categoryFilter === 'all') return questions;
@@ -16,23 +14,30 @@ export const useQuestions = (categoryFilter: QuestionCategory | 'all' = 'all') =
 
   useEffect(() => {
     const loadQuestions = async () => {
-      if (!user) return;
-      
       setLoading(true);
       try {
+        console.log('Loading questions from database...');
         const dbQuestions = await databaseService.getAllQuestions();
+        console.log('Database questions loaded:', dbQuestions);
+        
         if (dbQuestions && dbQuestions.length > 0) {
           setQuestions(dbQuestions);
+          console.log('Using database questions:', dbQuestions.length);
+        } else {
+          console.log('No database questions found, using sample questions');
+          setQuestions(sampleQuestions);
         }
       } catch (error) {
         console.error('Failed to load questions from database:', error);
+        console.log('Falling back to sample questions');
+        setQuestions(sampleQuestions);
       } finally {
         setLoading(false);
       }
     };
 
     loadQuestions();
-  }, [user]);
+  }, []); // Remove user dependency to always try loading
 
   return {
     questions,

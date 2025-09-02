@@ -1,21 +1,26 @@
 import React, { useState } from 'react';
 import type { Question, UserAnswer } from '../../types';
 import { Button, useDesignSystem } from '../../design-system';
+import { Plane, Fuel } from 'lucide-react';
 
 interface MultipleChoiceQuestionProps {
   question: Question;
   onAnswerSubmit: (answer: UserAnswer) => void;
   showFeedback?: boolean;
   userAnswer?: UserAnswer;
+  onOpenFlightPlan?: () => void;
+  onOpenFuelPolicy?: () => void;
 }
 
 const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
   question,
   onAnswerSubmit,
   showFeedback = false,
-  userAnswer
+  userAnswer,
+  onOpenFlightPlan,
+  onOpenFuelPolicy
 }) => {
-  const { colors, spacing } = useDesignSystem();
+  const { colors, spacing, styles } = useDesignSystem();
   const [selectedOption, setSelectedOption] = useState<number | null>(
     userAnswer?.multipleChoiceAnswer ?? null
   );
@@ -81,6 +86,71 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
+      {/* Question Text */}
+      <div style={{
+        padding: spacing.scale[4],
+        background: colors.withOpacity(colors.aviation.primary, 0.05),
+        borderRadius: spacing.radius.lg,
+        border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`,
+        marginBottom: spacing.scale[4]
+      }}>
+        <h3 style={{ 
+          ...styles.heading, 
+          fontSize: '1.125rem', 
+          marginBottom: spacing.scale[2],
+          color: colors.aviation.navy 
+        }}>
+          {question.title}
+        </h3>
+        <p style={{ 
+          ...styles.body, 
+          color: colors.aviation.text,
+          lineHeight: '1.6'
+        }}>
+          {question.description}
+        </p>
+        
+        {/* Given Data Section */}
+        {Object.keys(question.givenData).length > 0 && (
+          <div style={{ 
+            marginTop: spacing.scale[3],
+            padding: spacing.scale[3],
+            background: colors.white,
+            borderRadius: spacing.radius.md,
+            border: `1px solid ${colors.gray[200]}`
+          }}>
+            <h4 style={{ 
+              fontSize: '0.875rem', 
+              fontWeight: 600, 
+              color: colors.aviation.navy,
+              marginBottom: spacing.scale[2]
+            }}>
+              Given:
+            </h4>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: spacing.scale[2],
+              fontSize: '0.875rem'
+            }}>
+              {Object.entries(question.givenData).map(([key, value]) => (
+                <div key={key} style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between',
+                  padding: spacing.scale[1],
+                  background: colors.gray[50],
+                  borderRadius: spacing.radius.sm
+                }}>
+                  <span style={{ fontWeight: 500, color: colors.aviation.navy }}>{key}:</span>
+                  <span style={{ color: colors.aviation.text }}>{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Answer Options */}
       {question.options.map((option, index) => (
         <div
           key={index}
@@ -134,6 +204,56 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
           </div>
         </div>
       ))}
+      
+      {/* Interactive Tools Section */}
+      <div style={{
+        marginTop: spacing.scale[4],
+        padding: spacing.scale[3],
+        background: colors.withOpacity(colors.aviation.secondary, 0.05),
+        borderRadius: spacing.radius.lg,
+        border: `1px solid ${colors.withOpacity(colors.aviation.secondary, 0.1)}`
+      }}>
+        <h4 style={{ 
+          fontSize: '0.875rem', 
+          fontWeight: 600, 
+          color: colors.aviation.navy,
+          marginBottom: spacing.scale[2]
+        }}>
+          Interactive Tools:
+        </h4>
+        <div style={{ 
+          display: 'flex', 
+          gap: spacing.scale[2],
+          flexWrap: 'wrap'
+        }}>
+          <Button
+            variant="secondary"
+            onClick={onOpenFlightPlan}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: spacing.scale[2],
+              fontSize: '0.875rem'
+            }}
+          >
+            <Plane style={{ width: '1rem', height: '1rem' }} />
+            Flight Plan
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={onOpenFuelPolicy}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: spacing.scale[2],
+              fontSize: '0.875rem'
+            }}
+          >
+            <Fuel style={{ width: '1rem', height: '1rem' }} />
+            Fuel Policy
+          </Button>
+        </div>
+      </div>
       
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.scale[6] }}>
         <div style={{ fontSize: '0.875rem', color: colors.gray[600] }}>

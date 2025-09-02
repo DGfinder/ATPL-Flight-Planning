@@ -13,6 +13,8 @@ import { databaseService } from '../services/database';
 import { storageService } from '../utils/localStorage';
 import MultipleChoiceQuestion from '../components/questions/MultipleChoiceQuestion';
 import ShortAnswerQuestion from '../components/questions/ShortAnswerQuestion';
+import FlightPlanTable from '../components/flight-plan/FlightPlanTable';
+import FuelPolicyModal from '../components/flight-plan/FuelPolicyModal';
 import { BookOpen, Target, TrendingUp, Award } from 'lucide-react';
 import type { Question, UserAnswer, QuestionCategory } from '../types';
 
@@ -27,6 +29,10 @@ const QuestionsPage: React.FC = () => {
   const [sessionAnswers, setSessionAnswers] = useState<UserAnswer[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [viewMode, setViewMode] = useState<'overview' | 'practice' | 'results'>('overview');
+  
+  // Modal states
+  const [showFlightPlan, setShowFlightPlan] = useState(false);
+  const [showFuelPolicy, setShowFuelPolicy] = useState(false);
 
   // Load user progress
   useEffect(() => {
@@ -96,12 +102,22 @@ const QuestionsPage: React.FC = () => {
     setViewMode('overview');
   };
 
+  const handleOpenFlightPlan = () => {
+    setShowFlightPlan(true);
+  };
+
+  const handleOpenFuelPolicy = () => {
+    setShowFuelPolicy(true);
+  };
+
   const renderQuestionByType = (question: Question) => {
     if (question.type === 'multiple_choice') {
       return (
         <MultipleChoiceQuestion
           question={question}
           onAnswerSubmit={handleAnswerSubmit}
+          onOpenFlightPlan={handleOpenFlightPlan}
+          onOpenFuelPolicy={handleOpenFuelPolicy}
         />
       );
     } else if (question.type === 'short_answer') {
@@ -109,6 +125,8 @@ const QuestionsPage: React.FC = () => {
         <ShortAnswerQuestion
           question={question}
           onAnswerSubmit={handleAnswerSubmit}
+          onOpenFlightPlan={handleOpenFlightPlan}
+          onOpenFuelPolicy={handleOpenFuelPolicy}
         />
       );
     }
@@ -277,6 +295,56 @@ const QuestionsPage: React.FC = () => {
 
           {/* Question */}
           {renderQuestionByType(currentQuestion)}
+
+          {/* Flight Plan Modal */}
+          {showFlightPlan && (
+            <div style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000
+            }}>
+              <div style={{
+                width: '95vw',
+                height: '95vh',
+                background: colors.white,
+                borderRadius: spacing.radius.lg,
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                <div style={{
+                  padding: spacing.scale[4],
+                  borderBottom: `1px solid ${colors.gray[200]}`,
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <h2 style={{ ...styles.heading, margin: 0 }}>Interactive Flight Plan</h2>
+                  <SecondaryButton onClick={() => setShowFlightPlan(false)}>
+                    Close
+                  </SecondaryButton>
+                </div>
+                <div style={{ flex: 1, overflow: 'auto' }}>
+                  <FlightPlanTable />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Fuel Policy Modal */}
+          <FuelPolicyModal
+            isOpen={showFuelPolicy}
+            onClose={() => setShowFuelPolicy(false)}
+            totalTripFuel={0}
+            flightPlanSegments={[]}
+          />
         </div>
       </div>
     );
