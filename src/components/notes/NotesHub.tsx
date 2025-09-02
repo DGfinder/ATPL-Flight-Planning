@@ -71,7 +71,7 @@ const NotesHub: React.FC = () => {
         <div 
           style={{ 
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gridTemplateColumns: 'repeat(3, 1fr)',
             gap: spacing.scale[4]
           }}
         >
