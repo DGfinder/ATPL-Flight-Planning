@@ -33,6 +33,10 @@ const QuestionsPage: React.FC = () => {
   // Modal states
   const [showFlightPlan, setShowFlightPlan] = useState(false);
   const [showFuelPolicy, setShowFuelPolicy] = useState(false);
+  
+  // Flight plan data per question
+  const [flightPlanData, setFlightPlanData] = useState<Record<string, any>>({});
+  const [currentFlightPlanData, setCurrentFlightPlanData] = useState<any>(null);
 
   // Load user progress
   useEffect(() => {
@@ -103,7 +107,21 @@ const QuestionsPage: React.FC = () => {
   };
 
   const handleOpenFlightPlan = () => {
+    // Load existing flight plan data for this question
+    const questionId = currentQuestion?.id || 'default';
+    const existingData = flightPlanData[questionId] || null;
+    setCurrentFlightPlanData(existingData);
     setShowFlightPlan(true);
+  };
+
+  const handleFlightPlanDataChange = (newData: any) => {
+    // Save flight plan data for current question
+    const questionId = currentQuestion?.id || 'default';
+    setFlightPlanData(prev => ({
+      ...prev,
+      [questionId]: newData
+    }));
+    setCurrentFlightPlanData(newData);
   };
 
   const handleOpenFuelPolicy = () => {
@@ -326,13 +344,28 @@ const QuestionsPage: React.FC = () => {
                   justifyContent: 'space-between',
                   alignItems: 'center'
                 }}>
-                  <h2 style={{ ...styles.heading, margin: 0 }}>Interactive Flight Plan</h2>
+                  <div>
+                    <h2 style={{ ...styles.heading, margin: 0 }}>Interactive Flight Plan</h2>
+                    {currentQuestion && (
+                      <p style={{ 
+                        ...styles.caption, 
+                        marginTop: spacing.scale[1],
+                        color: colors.aviation.muted 
+                      }}>
+                        Question: {currentQuestion.title}
+                      </p>
+                    )}
+                  </div>
                   <SecondaryButton onClick={() => setShowFlightPlan(false)}>
                     Close
                   </SecondaryButton>
                 </div>
                 <div style={{ flex: 1, overflow: 'auto' }}>
-                  <FlightPlanTable />
+                  <FlightPlanTable 
+                    questionContext={currentQuestion}
+                    initialData={currentFlightPlanData}
+                    onDataChange={handleFlightPlanDataChange}
+                  />
                 </div>
               </div>
             </div>

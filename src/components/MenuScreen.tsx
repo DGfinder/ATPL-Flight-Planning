@@ -17,7 +17,7 @@ interface MenuScreenProps {
   subtitle?: string;
 }
 
-const MenuScreen: React.FC<MenuScreenProps> = ({ 
+const MenuScreen: React.FC<MenuScreenProps> = ({
   items, 
   onItemClick, 
   title = "Menu", 
@@ -32,13 +32,13 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
         <div style={{ textAlign: 'center', marginBottom: spacing.scale[8] }}>
           <h1 style={{ ...styles.heading, fontSize: '2rem', marginBottom: spacing.scale[2] }}>
             {title}
-          </h1>
+                </h1>
           {subtitle && (
             <p style={{ ...styles.body, fontSize: '1.125rem', color: colors.aviation.muted }}>
               {subtitle}
             </p>
-          )}
-        </div>
+                )}
+              </div>
 
         {/* Menu Grid */}
         <div style={{
@@ -86,7 +86,7 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
               }}>
                 {item.icon}
               </div>
-              
+
               <div style={{ flex: 1 }}>
                 <h3 style={{ 
                   ...styles.heading, 
@@ -103,10 +103,10 @@ const MenuScreen: React.FC<MenuScreenProps> = ({
                 }}>
                   {item.description}
                 </p>
+                </div>
               </div>
-            </div>
           ))}
-        </div>
+                  </div>
       </div>
     </div>
   );

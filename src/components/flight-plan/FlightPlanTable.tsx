@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import type { FlightPlanSegment } from '../../types';
+import type { FlightPlanSegment, Question } from '../../types';
 import { AviationCalculations } from '../../utils/aviationCalculations';
 import { databaseService } from '../../services/database';
 import { 
@@ -17,6 +17,9 @@ import FlightPlanVisualization from './FlightPlanVisualization';
 interface FlightPlanTableProps {
   onFlightPlanUpdate?: (segments: FlightPlanSegment[]) => void;
   initialSegments?: FlightPlanSegment[];
+  questionContext?: Question;
+  initialData?: any;
+  onDataChange?: (newData: any) => void;
 }
 
 const createEmptySegment = (id: string): FlightPlanSegment => ({
@@ -47,10 +50,14 @@ const createEmptySegment = (id: string): FlightPlanSegment => ({
 
 const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
   onFlightPlanUpdate,
-  initialSegments
+  initialSegments,
+  questionContext,
+  initialData,
+  onDataChange
 }) => {
   const defaultSegments = (): FlightPlanSegment[] => {
     if (initialSegments && initialSegments.length > 0) return initialSegments;
+    if (initialData && initialData.segments) return initialData.segments;
     return Array.from({ length: 7 }, (_, i) => createEmptySegment(`seg-${i + 1}`));
   };
 
@@ -65,6 +72,18 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
   });
   const [showFuelModal, setShowFuelModal] = useState(false);
   const [showVisualization, setShowVisualization] = useState(false);
+
+  // Update data when segments change
+  const updateData = useCallback((newSegments: FlightPlanSegment[]) => {
+    if (onDataChange) {
+      onDataChange({
+        segments: newSegments,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }, [onDataChange]);
+
+
 
   const validateAltitudeCapability = useCallback(async (segment: FlightPlanSegment) => {
     try {
@@ -95,11 +114,11 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
     } catch (error) {
       console.warn('Altitude validation failed:', error);
     }
-  }, []);
+    }, []);
 
   const updateSegment = useCallback((id: string, field: keyof FlightPlanSegment, value: string | number) => {
     setSegments(prev => {
-      const updated = prev.map(segment => {
+      const updated = prev.map((segment: FlightPlanSegment) => {
         if (segment.id !== id) return segment;
         
         const updatedSegment = { ...segment, [field]: value };
@@ -171,12 +190,11 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
         return updatedSegment;
       });
       
+      updateData(updated);
       onFlightPlanUpdate?.(updated);
       return updated;
     });
-  }, [onFlightPlanUpdate, validateAltitudeCapability]);
-
-
+  }, [onFlightPlanUpdate, validateAltitudeCapability, updateData]);
 
   const removeSegment = (id: string) => {
     if (segments.length <= 1) return;
@@ -326,6 +344,31 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
               <p style={{ ...styles.caption, marginTop: spacing.scale[1] }}>
                 Sydney → Perth | Boeing 727
               </p>
+              {questionContext && (
+                <div style={{
+                  marginTop: spacing.scale[2],
+                  padding: spacing.scale[2],
+                  background: colors.withOpacity(colors.aviation.secondary, 0.05),
+                  borderRadius: spacing.radius.md,
+                  border: `1px solid ${colors.withOpacity(colors.aviation.secondary, 0.1)}`
+                }}>
+                  <p style={{ 
+                    fontSize: '0.875rem', 
+                    fontWeight: 500, 
+                    color: colors.aviation.navy,
+                    marginBottom: spacing.scale[1]
+                  }}>
+                    Question Context:
+                  </p>
+                  <p style={{ 
+                    fontSize: '0.75rem', 
+                    color: colors.aviation.text,
+                    lineHeight: '1.4'
+                  }}>
+                    {questionContext.title}
+                  </p>
+                </div>
+              )}
             </div>
             <div style={buttonGroupStyle}>
               {visualizationData && (
@@ -341,36 +384,36 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                 </PrimaryButton>
               )}
               <SecondaryButton
-                onClick={() => {
-                  const csvData = [
-                    ['SEG', 'FL', 'TEMP T/DEV', 'MACH NO', 'TAS', 'TR', 'WIND', 'HDG', 'GS', 'DIST', 'ETI', 'AIR DIST', 'FUEL FLOW', 'ZONE FUEL', 'START ZONE WT', 'EMZW', 'END ZONE WT', 'PLAN FUEL REM', 'ACT FUEL REM', 'PLAN EST', 'ATA'],
-                    ...segments.map(s => [
-                      s.segment, s.flightLevel, s.tempDeviation, s.machNo, s.tas, s.track,
-                      s.wind, s.windComponent, s.groundSpeed, s.distance,
-                      s.estimatedTimeInterval, s.airDistance, s.fuelFlow, s.zoneFuel,
-                      s.startZoneWeight, s.emzw, s.endZoneWeight, s.planFuelRemaining,
-                      s.actualFuelRemaining, s.planEstimate, s.actualTimeArrival
-                    ])
-                  ];
-                  
-                  const csv = csvData.map(row => row.join(',')).join('\n');
-                  const blob = new Blob([csv], { type: 'text/csv' });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = `flight-plan-${Date.now()}.csv`;
-                  a.click();
-                }}
+            onClick={() => {
+              const csvData = [
+                ['SEG', 'FL', 'TEMP T/DEV', 'MACH NO', 'TAS', 'TR', 'WIND', 'HDG', 'GS', 'DIST', 'ETI', 'AIR DIST', 'FUEL FLOW', 'ZONE FUEL', 'START ZONE WT', 'EMZW', 'END ZONE WT', 'PLAN FUEL REM', 'ACT FUEL REM', 'PLAN EST', 'ATA'],
+                ...segments.map(s => [
+                  s.segment, s.flightLevel, s.tempDeviation, s.machNo, s.tas, s.track,
+                  s.wind, s.windComponent, s.groundSpeed, s.distance,
+                  s.estimatedTimeInterval, s.airDistance, s.fuelFlow, s.zoneFuel,
+                  s.startZoneWeight, s.emzw, s.endZoneWeight, s.planFuelRemaining,
+                  s.actualFuelRemaining, s.planEstimate, s.actualTimeArrival
+                ])
+              ];
+              
+              const csv = csvData.map(row => row.join(',')).join('\n');
+              const blob = new Blob([csv], { type: 'text/csv' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `flight-plan-${Date.now()}.csv`;
+              a.click();
+            }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: spacing.scale[2]
                 }}
-              >
-                Export CSV
+          >
+            Export CSV
               </SecondaryButton>
-            </div>
-          </div>
+        </div>
+      </div>
         </Card>
 
         {/* Flight Plan Table */}
@@ -389,7 +432,7 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                 fontSize: '0.75rem',
                 fontFamily: 'monospace'
               }}>
-                <thead>
+          <thead>
                   <tr style={{ 
                     background: colors.gray[50],
                     borderBottom: `2px solid ${colors.gray[300]}`
@@ -679,9 +722,9 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                     }}>
                       ✕
                     </th>
-                  </tr>
-                </thead>
-                <tbody>
+            </tr>
+          </thead>
+          <tbody>
                   {segments.map((segment, index) => (
                     <tr key={segment.id} style={{ 
                       background: index % 2 === 0 ? colors.white : colors.gray[50],
@@ -692,8 +735,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                         borderRight: `1px solid ${colors.gray[200]}`,
                         fontWeight: 500
                       }}>
-                        {renderEditableCell(segment.id, 'segment', segment.segment, 'text')}
-                      </td>
+                  {renderEditableCell(segment.id, 'segment', segment.segment, 'text')}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
@@ -707,175 +750,175 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                           gap: '2px'
                         }}>
                           <div onDoubleClick={() => {
-                            setSegments(prev => prev.map(s => s.id === segment.id ? {
-                              ...s,
-                              altitudeTrend: s.altitudeTrend === undefined ? 'climb' : s.altitudeTrend === 'climb' ? 'level' : s.altitudeTrend === 'level' ? 'descent' : undefined
-                            } : s));
-                            try { 
-                              window.localStorage.setItem('fp_hint_fl_trend_seen', '1'); 
-                            } catch (storageError) {
-                              console.warn('Could not save hint state:', storageError);
-                            }
-                            setShowFlHint(false);
-                          }}>
-                            {renderEditableCell(segment.id, 'flightLevel', segment.flightLevel)}
-                          </div>
-                          <span
+                      setSegments(prev => prev.map(s => s.id === segment.id ? {
+                        ...s,
+                        altitudeTrend: s.altitudeTrend === undefined ? 'climb' : s.altitudeTrend === 'climb' ? 'level' : s.altitudeTrend === 'level' ? 'descent' : undefined
+                      } : s));
+                      try { 
+                        window.localStorage.setItem('fp_hint_fl_trend_seen', '1'); 
+                      } catch (storageError) {
+                        console.warn('Could not save hint state:', storageError);
+                      }
+                      setShowFlHint(false);
+                    }}>
+                      {renderEditableCell(segment.id, 'flightLevel', segment.flightLevel)}
+                    </div>
+                    <span
                             style={{
                               color: segment.altitudeTrend === 'climb' ? colors.aviation.secondary :
                                      segment.altitudeTrend === 'descent' ? colors.aviation.navy : colors.aviation.muted,
                               fontSize: '0.7rem'
                             }}
-                            title={segment.altitudeTrend ? (segment.altitudeTrend.charAt(0).toUpperCase() + segment.altitudeTrend.slice(1)) : 'No trend'}
-                          >
-                            {segment.altitudeTrend === 'climb' ? '↗' : segment.altitudeTrend === 'descent' ? '↘' : '→'}
-                          </span>
-                          {altitudeWarnings[segment.id] && (
+                      title={segment.altitudeTrend ? (segment.altitudeTrend.charAt(0).toUpperCase() + segment.altitudeTrend.slice(1)) : 'No trend'}
+                    >
+                      {segment.altitudeTrend === 'climb' ? '↗' : segment.altitudeTrend === 'descent' ? '↘' : '→'}
+                    </span>
+                  {altitudeWarnings[segment.id] && (
                             <span style={{ fontSize: '0.6rem', color: colors.aviation.secondary }} title={altitudeWarnings[segment.id]}>
-                              ⚠️
+                      ⚠️
                             </span>
-                          )}
-                        </div>
-                      </td>
+                  )}
+                  </div>
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'tempDeviation', segment.tempDeviation)}
-                      </td>
+                  {renderEditableCell(segment.id, 'tempDeviation', segment.tempDeviation)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'machNo', segment.machNo)}
-                      </td>
+                  {renderEditableCell(segment.id, 'machNo', segment.machNo)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'tas', segment.tas)}
-                      </td>
+                  {renderEditableCell(segment.id, 'tas', segment.tas)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'track', segment.track)}
-                      </td>
+                  {renderEditableCell(segment.id, 'track', segment.track)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'wind', segment.wind, 'text')}
-                      </td>
+                  {renderEditableCell(segment.id, 'wind', segment.wind, 'text')}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'windComponent', segment.windComponent)}
-                      </td>
+                  {renderEditableCell(segment.id, 'windComponent', segment.windComponent)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'groundSpeed', segment.groundSpeed)}
-                      </td>
+                  {renderEditableCell(segment.id, 'groundSpeed', segment.groundSpeed)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'distance', segment.distance)}
-                      </td>
+                  {renderEditableCell(segment.id, 'distance', segment.distance)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
                         {renderEditableCell(segment.id, 'estimatedTimeInterval', segment.estimatedTimeInterval)}
-                      </td>
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'airDistance', segment.airDistance)}
-                      </td>
+                  {renderEditableCell(segment.id, 'airDistance', segment.airDistance)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'fuelFlow', segment.fuelFlow)}
-                      </td>
+                  {renderEditableCell(segment.id, 'fuelFlow', segment.fuelFlow)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'zoneFuel', segment.zoneFuel)}
-                      </td>
+                  {renderEditableCell(segment.id, 'zoneFuel', segment.zoneFuel)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'startZoneWeight', segment.startZoneWeight)}
-                      </td>
+                  {renderEditableCell(segment.id, 'startZoneWeight', segment.startZoneWeight)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'emzw', segment.emzw)}
-                      </td>
+                  {renderEditableCell(segment.id, 'emzw', segment.emzw)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'endZoneWeight', segment.endZoneWeight)}
-                      </td>
+                  {renderEditableCell(segment.id, 'endZoneWeight', segment.endZoneWeight)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'planFuelRemaining', segment.planFuelRemaining)}
-                      </td>
+                  {renderEditableCell(segment.id, 'planFuelRemaining', segment.planFuelRemaining)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'actualFuelRemaining', segment.actualFuelRemaining)}
-                      </td>
+                  {renderEditableCell(segment.id, 'actualFuelRemaining', segment.actualFuelRemaining)}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'planEstimate', segment.planEstimate, 'text')}
-                      </td>
+                  {renderEditableCell(segment.id, 'planEstimate', segment.planEstimate, 'text')}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center',
                         borderRight: `1px solid ${colors.gray[200]}`
                       }}>
-                        {renderEditableCell(segment.id, 'actualTimeArrival', segment.actualTimeArrival, 'text')}
-                      </td>
+                  {renderEditableCell(segment.id, 'actualTimeArrival', segment.actualTimeArrival, 'text')}
+                </td>
                       <td style={{
                         padding: '4px',
                         textAlign: 'center'
                       }}>
-                        <button
-                          onClick={() => removeSegment(segment.id)}
+                    <button
+                      onClick={() => removeSegment(segment.id)}
                           style={{
                             background: 'none',
                             border: 'none',
@@ -885,15 +928,15 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                             padding: '2px',
                             borderRadius: '2px'
                           }}
-                          title="Remove segment"
-                        >
-                          ✕
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                  
-                  {/* Totals Row */}
+                      title="Remove segment"
+                    >
+                      ✕
+                    </button>
+                </td>
+              </tr>
+            ))}
+            
+            {/* Totals Row */}
                   <tr style={{ background: colors.gray[200], fontWeight: 600 }}>
                     <td style={{
                       padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
@@ -901,24 +944,24 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       fontSize: '0.875rem',
                       borderBottom: `1px solid ${colors.gray[300]}`
                     }} colSpan={10}>
-                      TOTALS
-                    </td>
+                TOTALS
+              </td>
                     <td style={{
                       padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
                       textAlign: 'center',
                       fontSize: '0.875rem',
                       borderBottom: `1px solid ${colors.gray[300]}`
                     }}>
-                      {totals.distance.toFixed(0)}
-                    </td>
+                {totals.distance.toFixed(0)}
+              </td>
                     <td style={{
                       padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
                       textAlign: 'center',
                       fontSize: '0.875rem',
                       borderBottom: `1px solid ${colors.gray[300]}`
                     }}>
-                      {Math.round(totals.time)}
-                    </td>
+                {Math.round(totals.time)}
+              </td>
                     <td style={{
                       padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
                       textAlign: 'center',
@@ -931,18 +974,18 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       fontSize: '0.875rem',
                       borderBottom: `1px solid ${colors.gray[300]}`
                     }}>
-                      {totals.fuel.toFixed(0)}
-                    </td>
+                {totals.fuel.toFixed(0)}
+              </td>
                     <td style={{
                       padding: `${spacing.scale[4]} ${spacing.scale[6]}`,
                       textAlign: 'center',
                       fontSize: '0.875rem',
                       borderBottom: `1px solid ${colors.gray[300]}`
                     }} colSpan={7}></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            </tr>
+          </tbody>
+        </table>
+      </div>
           </CardContent>
         </Card>
 

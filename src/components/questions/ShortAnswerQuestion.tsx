@@ -41,6 +41,35 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
   const [isSubmitted, setIsSubmitted] = useState<boolean>(userAnswer !== undefined);
   const [validationResults, setValidationResults] = useState<Record<string, FieldValidation>>({});
 
+  // Format question text for better readability
+  const formatQuestionText = (text: string) => {
+    if (!text) return '';
+    
+    // Split by common aviation separators and format
+    return text
+      .split(/(?<=\.)\s+/)
+      .map((sentence, index) => (
+        <React.Fragment key={index}>
+          {sentence.trim()}
+          {index < text.split(/(?<=\.)\s+/).length - 1 && <br />}
+        </React.Fragment>
+      ));
+  };
+
+  // Format given data for better display
+  const formatGivenData = (data: Record<string, any>) => {
+    return Object.entries(data).map(([key, value]) => {
+      // Clean up key names for display
+      const displayKey = key
+        .replace(/([A-Z])/g, ' $1') // Add space before capitals
+        .replace(/^./, str => str.toUpperCase()) // Capitalize first letter
+        .replace(/\s+/g, ' ') // Clean up multiple spaces
+        .trim();
+      
+      return { key: displayKey, value: value.toString() };
+    });
+  };
+
   useEffect(() => {
     if (showFeedback && isSubmitted && userAnswer?.shortAnswers) {
       const results: Record<string, FieldValidation> = {};
@@ -138,7 +167,7 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
           color: colors.aviation.text,
           lineHeight: '1.6'
         }}>
-          {question.description}
+          {formatQuestionText(question.description)}
         </p>
         
         {/* Given Data Section */}
@@ -164,7 +193,7 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
               gap: spacing.scale[2],
               fontSize: '0.875rem'
             }}>
-              {Object.entries(question.givenData).map(([key, value]) => (
+              {formatGivenData(question.givenData).map(({ key, value }) => (
                 <div key={key} style={{ 
                   display: 'flex', 
                   justifyContent: 'space-between',
