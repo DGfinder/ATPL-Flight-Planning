@@ -4,7 +4,7 @@ import { topicStorage } from '../../utils/topicStorage';
 import type { NoteSection, NoteTopicId } from '../../types';
 import { initialTopics } from '../../data/initialTopics';
 import TASPracticeTable from '../practice/TASPracticeTable';
-import { InteractiveCard, CardHeader, CardContent, Button, useDesignSystem } from '../../design-system';
+import { InteractiveCard, CardHeader, CardContent, Card, Button, useDesignSystem } from '../../design-system';
 
 
 const TOPICS: { id: NoteTopicId; label: string }[] = [
