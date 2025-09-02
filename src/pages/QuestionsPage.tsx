@@ -1,201 +1,509 @@
 import React, { useState, useEffect } from 'react';
-import { Card, PrimaryButton, SecondaryButton, useDesignSystem } from '../design-system';
-import type { Question } from '../types';
+import { 
+  Card, 
+  CardHeader, 
+  CardContent, 
+  PrimaryButton, 
+  SecondaryButton,
+  useDesignSystem 
+} from '../design-system';
+import { useQuestions } from '../hooks/useQuestions';
+import { useAuth } from '../hooks/useAuth';
+import { databaseService } from '../services/database';
+import { storageService } from '../utils/localStorage';
+import MultipleChoiceQuestion from '../components/questions/MultipleChoiceQuestion';
+import ShortAnswerQuestion from '../components/questions/ShortAnswerQuestion';
+import { BookOpen, Target, TrendingUp, Award } from 'lucide-react';
+import type { Question, UserAnswer, QuestionCategory } from '../types';
 
 const QuestionsPage: React.FC = () => {
   const { colors, spacing, styles } = useDesignSystem();
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const [categoryFilter, setCategoryFilter] = useState<QuestionCategory | 'all'>('all');
+  const { questions, filteredQuestions, loading } = useQuestions(categoryFilter);
+  
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
+  const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
+  const [sessionAnswers, setSessionAnswers] = useState<UserAnswer[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [viewMode, setViewMode] = useState<'overview' | 'practice' | 'results'>('overview');
 
+  // Load user progress
   useEffect(() => {
-    // Simulate loading questions
-    setTimeout(() => {
-      setQuestions([
-        {
-          id: '1',
-          title: 'What is the primary purpose of flight planning?',
-          description: 'Basic flight planning concepts',
-          type: 'multiple_choice',
-          options: ['Navigation', 'Safety', 'Efficiency', 'All of the above'],
-          correctAnswer: 3,
-          category: 'performance',
-          marks: 1,
-          reference: 'ATPL Manual',
-          givenData: {},
-          workingSteps: []
-        },
-        {
-          id: '2',
-          title: 'Which factor affects aircraft performance most significantly?',
-          description: 'Aircraft performance factors',
-          type: 'multiple_choice',
-          options: ['Wind', 'Temperature', 'Altitude', 'Humidity'],
-          correctAnswer: 2,
-          category: 'performance',
-          marks: 1,
-          reference: 'ATPL Manual',
-          givenData: {},
-          workingSteps: []
+    const loadProgress = async () => {
+      try {
+        if (user) {
+          const progress = await databaseService.getUserProgress();
+          if (progress) {
+            setUserAnswers(progress);
+          }
+        } else {
+          const localProgress = storageService.loadUserAnswers();
+          setUserAnswers(localProgress);
         }
-      ]);
-      setLoading(false);
-    }, 1000);
-  }, []);
+      } catch (error) {
+        console.error('Failed to load user progress:', error);
+      }
+    };
 
-  const handleAnswerSelect = (questionId: string, answer: string) => {
-    setUserAnswers(prev => ({ ...prev, [questionId]: answer }));
-  };
+    loadProgress();
+  }, [user]);
 
-  const handleNext = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
+  const currentQuestion = filteredQuestions[currentQuestionIndex];
+
+  const handleAnswerSubmit = async (answer: UserAnswer) => {
+    setSessionAnswers(prev => [...prev, answer]);
+    
+    const updatedAnswers = [...userAnswers, answer];
+    setUserAnswers(updatedAnswers);
+
+    // Save progress
+    if (user) {
+      try {
+        await databaseService.saveUserAnswer(answer);
+      } catch (error) {
+        console.error('Failed to save answer to database:', error);
+        storageService.saveUserAnswers(updatedAnswers);
+      }
     } else {
-      setShowResults(true);
+      storageService.saveUserAnswers(updatedAnswers);
+    }
+
+    // Move to next question or show results
+    if (currentQuestionIndex < filteredQuestions.length - 1) {
+      setTimeout(() => {
+        setCurrentQuestionIndex(prev => prev + 1);
+      }, 1500);
+    } else {
+      setTimeout(() => {
+        setShowResults(true);
+        setViewMode('results');
+      }, 1500);
     }
   };
 
-  const handlePrevious = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(prev => prev - 1);
-    }
+  const startPractice = () => {
+    setViewMode('practice');
+    setCurrentQuestionIndex(0);
+    setSessionAnswers([]);
+    setShowResults(false);
   };
 
+  const resetSession = () => {
+    setCurrentQuestionIndex(0);
+    setSessionAnswers([]);
+    setShowResults(false);
+    setViewMode('overview');
+  };
+
+  const renderQuestionByType = (question: Question) => {
+    if (question.type === 'multiple_choice') {
+      return (
+        <MultipleChoiceQuestion
+          question={question}
+          onAnswerSubmit={handleAnswerSubmit}
+        />
+      );
+    } else if (question.type === 'short_answer') {
+      return (
+        <ShortAnswerQuestion
+          question={question}
+          onAnswerSubmit={handleAnswerSubmit}
+        />
+      );
+    }
+    return null;
+  };
+
+  // Define styles following FlightPlanTable patterns
+  const headerStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: spacing.scale[4]
+  };
+
+  const titleStyle: React.CSSProperties = {
+    ...styles.heading,
+    fontSize: '1.25rem',
+    display: 'flex',
+    alignItems: 'center',
+    gap: spacing.scale[2]
+  };
+
+  const buttonGroupStyle: React.CSSProperties = {
+    display: 'flex',
+    gap: spacing.scale[2]
+  };
+
+  const metricsStyle: React.CSSProperties = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+    gap: spacing.scale[4],
+    marginBottom: spacing.scale[6]
+  };
+
+  const metricStyle: React.CSSProperties = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: spacing.scale[3],
+    padding: spacing.scale[3],
+    background: colors.withOpacity(colors.aviation.primary, 0.05),
+    borderRadius: spacing.radius.lg,
+    border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`
+  };
+
+  const iconWrapperStyle: React.CSSProperties = {
+    width: '2rem',
+    height: '2rem',
+    borderRadius: spacing.radius.md,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: colors.withOpacity(colors.aviation.primary, 0.1)
+  };
+
+  const metricTextStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column'
+  };
+
+  const metricLabelStyle: React.CSSProperties = {
+    ...styles.caption,
+    color: colors.aviation.muted
+  };
+
+  const metricValueStyle: React.CSSProperties = {
+    ...styles.body,
+    fontWeight: 600,
+    color: colors.aviation.navy
+  };
+
+  // Loading state
   if (loading) {
     return (
-      <div style={{ padding: spacing.scale[6] }}>
-        <Card style={{ padding: spacing.scale[4], textAlign: 'center' }}>
-          <div style={{
-            animation: 'spin 1s linear infinite',
-            borderRadius: '50%',
-            height: '2rem',
-            width: '2rem',
-            border: `2px solid ${colors.aviation.primary}`,
-            borderTop: '2px solid transparent',
-            margin: '0 auto',
-            marginBottom: spacing.scale[3]
-          }} />
-          <p style={{ color: colors.aviation.text }}>
-            Loading questions...
-          </p>
+      <div style={{ padding: spacing.scale[4] }}>
+        <Card variant="elevated" padding="lg">
+          <CardContent>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{
+                width: '2rem',
+                height: '2rem',
+                border: `2px solid ${colors.aviation.primary}`,
+                borderTop: '2px solid transparent',
+                borderRadius: '50%',
+                animation: 'spin 1s linear infinite',
+                margin: '0 auto',
+                marginBottom: spacing.scale[3]
+              }} />
+              <p style={{ ...styles.body, color: colors.aviation.text }}>
+                Loading questions...
+              </p>
+            </div>
+          </CardContent>
         </Card>
       </div>
     );
   }
 
-  if (showResults) {
-    const correctAnswers = questions.filter(q => {
-      const userAnswer = userAnswers[q.id];
-      const correctOption = q.options?.[q.correctAnswer ?? 0];
-      return userAnswer === correctOption;
-    }).length;
-    const totalQuestions = questions.length;
-    const percentage = (correctAnswers / totalQuestions) * 100;
+  // No questions available
+  if (filteredQuestions.length === 0) {
+    return (
+      <div style={{ padding: spacing.scale[4] }}>
+        <Card variant="elevated" padding="lg">
+          <CardContent>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '4rem', marginBottom: spacing.scale[4] }}>❓</div>
+              <h2 style={{ ...styles.heading, fontSize: '1.5rem', marginBottom: spacing.scale[2] }}>
+                No questions available
+              </h2>
+              <p style={{ ...styles.body, color: colors.aviation.muted, marginBottom: spacing.scale[4] }}>
+                Questions for the selected category will be added soon.
+              </p>
+              {categoryFilter !== 'all' && (
+                <SecondaryButton onClick={() => setCategoryFilter('all')}>
+                  Show All Categories
+                </SecondaryButton>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Practice mode
+  if (viewMode === 'practice' && currentQuestion && !showResults) {
+    return (
+      <div style={{ padding: spacing.scale[4] }}>
+        <div style={{ maxWidth: '100%', margin: '0 auto' }}>
+          {/* Practice header */}
+          <Card variant="elevated" padding="lg" style={{ marginBottom: spacing.scale[6] }}>
+            <div style={headerStyle}>
+              <div>
+                <h1 style={titleStyle}>
+                  <BookOpen style={{ width: '1.25rem', height: '1.25rem', color: colors.aviation.primary }} />
+                  Practice Questions
+                </h1>
+                <p style={{ ...styles.caption, marginTop: spacing.scale[1] }}>
+                  Question {currentQuestionIndex + 1} of {filteredQuestions.length}
+                </p>
+              </div>
+              <div style={buttonGroupStyle}>
+                <SecondaryButton onClick={() => setViewMode('overview')}>
+                  Back to Overview
+                </SecondaryButton>
+              </div>
+            </div>
+            
+            {/* Progress bar */}
+            <div style={{ 
+              width: '100%', 
+              background: colors.gray[200], 
+              borderRadius: spacing.radius.full, 
+              height: '0.5rem' 
+            }}>
+              <div
+                style={{
+                  width: `${((currentQuestionIndex + 1) / filteredQuestions.length) * 100}%`,
+                  background: colors.aviation.primary,
+                  height: '0.5rem',
+                  borderRadius: spacing.radius.full,
+                  transition: 'all 300ms cubic-bezier(0.16, 1, 0.3, 1)'
+                }}
+              />
+            </div>
+          </Card>
+
+          {/* Question */}
+          {renderQuestionByType(currentQuestion)}
+        </div>
+      </div>
+    );
+  }
+
+  // Results mode
+  if (viewMode === 'results') {
+    const sessionStats = {
+      correct: sessionAnswers.filter(a => a.isCorrect).length,
+      total: sessionAnswers.length,
+      accuracy: sessionAnswers.length > 0 ? (sessionAnswers.filter(a => a.isCorrect).length / sessionAnswers.length) * 100 : 0
+    };
 
     return (
-      <div style={{ padding: spacing.scale[6] }}>
-        <Card style={{ padding: spacing.scale[4], textAlign: 'center' }}>
-          <h2 style={{ ...styles.heading, fontSize: '1.5rem', marginBottom: spacing.scale[4] }}>
-            Quiz Results
-          </h2>
-          <div style={{ fontSize: '2rem', fontWeight: 700, color: colors.aviation.primary, marginBottom: spacing.scale[2] }}>
-            {correctAnswers}/{totalQuestions}
-          </div>
-          <div style={{ fontSize: '1.125rem', color: colors.aviation.muted, marginBottom: spacing.scale[4] }}>
-            {percentage.toFixed(1)}% Correct
-          </div>
-          <SecondaryButton
-            onClick={() => {
-              setShowResults(false);
-              setCurrentQuestionIndex(0);
-              setUserAnswers({});
-            }}
-            style={{ marginTop: spacing.scale[4] }}
-          >
-            Retake Quiz
-          </SecondaryButton>
+      <div style={{ padding: spacing.scale[4] }}>
+        <Card variant="elevated" padding="lg">
+          <CardContent>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '4rem', marginBottom: spacing.scale[4] }}>
+                {sessionStats.accuracy >= 80 ? '🎉' : sessionStats.accuracy >= 60 ? '👍' : '📚'}
+              </div>
+              
+              <h2 style={{ ...styles.heading, fontSize: '1.5rem', marginBottom: spacing.scale[4] }}>
+                Practice Complete!
+              </h2>
+              
+              <div style={metricsStyle}>
+                <div style={metricStyle}>
+                  <div style={iconWrapperStyle}>
+                    <Target style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
+                  </div>
+                  <div style={metricTextStyle}>
+                    <p style={metricLabelStyle}>Correct Answers</p>
+                    <p style={metricValueStyle}>{sessionStats.correct}</p>
+                  </div>
+                </div>
+                <div style={metricStyle}>
+                  <div style={iconWrapperStyle}>
+                    <BookOpen style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
+                  </div>
+                  <div style={metricTextStyle}>
+                    <p style={metricLabelStyle}>Total Questions</p>
+                    <p style={metricValueStyle}>{sessionStats.total}</p>
+                  </div>
+                </div>
+                <div style={metricStyle}>
+                  <div style={iconWrapperStyle}>
+                    <TrendingUp style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
+                  </div>
+                  <div style={metricTextStyle}>
+                    <p style={metricLabelStyle}>Accuracy</p>
+                    <p style={metricValueStyle}>{sessionStats.accuracy.toFixed(0)}%</p>
+                  </div>
+                </div>
+              </div>
+
+              <div style={buttonGroupStyle}>
+                <PrimaryButton onClick={startPractice}>
+                  Practice Again
+                </PrimaryButton>
+                <SecondaryButton onClick={resetSession}>
+                  Back to Overview
+                </SecondaryButton>
+              </div>
+            </div>
+          </CardContent>
         </Card>
       </div>
     );
   }
 
-  const currentQuestion = questions[currentQuestionIndex];
+  // Overview mode (default)
+  const stats = {
+    totalQuestions: filteredQuestions.length,
+    attemptedQuestions: userAnswers.filter(answer => 
+      filteredQuestions.some(q => q.id === answer.questionId)
+    ).length,
+    correctAnswers: userAnswers.filter(answer => 
+      filteredQuestions.some(q => q.id === answer.questionId) && answer.isCorrect
+    ).length
+  };
+  stats.accuracy = stats.attemptedQuestions > 0 ? (stats.correctAnswers / stats.attemptedQuestions) * 100 : 0;
+
+  const categories: Array<{ value: QuestionCategory | 'all'; label: string }> = [
+    { value: 'all', label: 'All Categories' },
+    { value: 'performance', label: 'Performance' },
+    { value: 'navigation', label: 'Navigation' },
+    { value: 'fuel_planning', label: 'Fuel Planning' },
+    { value: 'weight_balance', label: 'Weight & Balance' },
+    { value: 'weather', label: 'Weather' },
+    { value: 'emergency_procedures', label: 'Emergency Procedures' }
+  ];
 
   return (
-    <div style={{ padding: spacing.scale[6] }}>
-      <Card style={{ padding: spacing.scale[6] }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.scale[4] }}>
-          <h2 style={{ ...styles.heading, fontSize: '1.5rem' }}>
-            Question {currentQuestionIndex + 1} of {questions.length}
-          </h2>
-          <div style={{ fontSize: '0.875rem', color: colors.aviation.muted }}>
-            {currentQuestion.category.replace('_', ' ').toUpperCase()}
+    <div style={{ padding: spacing.scale[4] }}>
+      <div style={{ maxWidth: '100%', margin: '0 auto' }}>
+        {/* Header */}
+        <Card variant="elevated" padding="lg" style={{ marginBottom: spacing.scale[6] }}>
+          <div style={headerStyle}>
+            <div>
+              <h1 style={titleStyle}>
+                <BookOpen style={{ width: '1.25rem', height: '1.25rem', color: colors.aviation.primary }} />
+                Practice Questions
+              </h1>
+              <p style={{ ...styles.caption, marginTop: spacing.scale[1] }}>
+                Test your ATPL knowledge with aviation questions
+              </p>
+            </div>
+            <div style={buttonGroupStyle}>
+              <PrimaryButton onClick={startPractice}>
+                Start Practice
+              </PrimaryButton>
+            </div>
           </div>
-        </div>
 
-        <div style={{ marginBottom: spacing.scale[6] }}>
-          <p style={{ ...styles.body, fontSize: '1.125rem', lineHeight: '1.6' }}>
-            {currentQuestion.title}
-          </p>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3], marginBottom: spacing.scale[6] }}>
-          {currentQuestion.options?.map((option, index) => (
-            <button
-              key={index}
-              onClick={() => handleAnswerSelect(currentQuestion.id, option)}
+          {/* Category filter */}
+          <div style={{ marginBottom: spacing.scale[4] }}>
+            <label style={{ 
+              display: 'block', 
+              fontSize: '0.875rem', 
+              fontWeight: 500, 
+              color: colors.aviation.navy, 
+              marginBottom: spacing.scale[2] 
+            }}>
+              Filter by Category:
+            </label>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value as QuestionCategory | 'all')}
               style={{
-                padding: spacing.scale[4],
-                border: `2px solid ${userAnswers[currentQuestion.id] === option ? colors.aviation.primary : colors.gray[200]}`,
-                borderRadius: spacing.radius.lg,
-                background: userAnswers[currentQuestion.id] === option ? colors.withOpacity(colors.aviation.primary, 0.05) : colors.white,
-                textAlign: 'left',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
+                padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
+                border: `1px solid ${colors.aviation.border}`,
+                borderRadius: spacing.radius.md,
+                background: colors.white,
+                color: colors.aviation.navy,
                 fontSize: '0.875rem',
-                color: colors.aviation.navy
+                minWidth: '200px',
+                outline: 'none'
               }}
             >
-              <span style={{ fontWeight: 600, marginRight: spacing.scale[2] }}>
-                {String.fromCharCode(65 + index)}.
-              </span>
-              {option}
-            </button>
-          ))}
-        </div>
+              {categories.map(category => (
+                <option key={category.value} value={category.value}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <SecondaryButton
-            onClick={handlePrevious}
-            disabled={currentQuestionIndex === 0}
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: spacing.scale[2],
-              opacity: currentQuestionIndex === 0 ? 0.5 : 1,
-              cursor: currentQuestionIndex === 0 ? 'not-allowed' : 'pointer'
-            }}
-          >
-            ← Previous
-          </SecondaryButton>
-          
-          <PrimaryButton
-            onClick={handleNext}
-            disabled={!userAnswers[currentQuestion.id]}
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: spacing.scale[2],
-              opacity: userAnswers[currentQuestion.id] ? 1 : 0.5,
-              cursor: userAnswers[currentQuestion.id] ? 'pointer' : 'not-allowed'
-            }}
-          >
-            {currentQuestionIndex === questions.length - 1 ? 'Finish' : 'Next →'}
-          </PrimaryButton>
-        </div>
-      </Card>
+          {/* Key Metrics */}
+          <div style={metricsStyle}>
+            <div style={metricStyle}>
+              <div style={iconWrapperStyle}>
+                <BookOpen style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
+              </div>
+              <div style={metricTextStyle}>
+                <p style={metricLabelStyle}>Total Questions</p>
+                <p style={metricValueStyle}>{stats.totalQuestions}</p>
+              </div>
+            </div>
+            <div style={metricStyle}>
+              <div style={iconWrapperStyle}>
+                <Target style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
+              </div>
+              <div style={metricTextStyle}>
+                <p style={metricLabelStyle}>Attempted</p>
+                <p style={metricValueStyle}>{stats.attemptedQuestions}</p>
+              </div>
+            </div>
+            <div style={metricStyle}>
+              <div style={iconWrapperStyle}>
+                <Award style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
+              </div>
+              <div style={metricTextStyle}>
+                <p style={metricLabelStyle}>Correct</p>
+                <p style={metricValueStyle}>{stats.correctAnswers}</p>
+              </div>
+            </div>
+            <div style={metricStyle}>
+              <div style={iconWrapperStyle}>
+                <TrendingUp style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
+              </div>
+              <div style={metricTextStyle}>
+                <p style={metricLabelStyle}>Accuracy</p>
+                <p style={metricValueStyle}>{stats.accuracy.toFixed(0)}%</p>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Progress indicator if user has attempted questions */}
+        {stats.attemptedQuestions > 0 && (
+          <Card variant="default" padding="lg">
+            <CardHeader title="Overall Progress" />
+            <CardContent>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between', 
+                marginBottom: spacing.scale[2] 
+              }}>
+                <span style={{ ...styles.body, fontWeight: 500, color: colors.aviation.navy }}>
+                  Progress
+                </span>
+                <span style={{ ...styles.caption, color: colors.aviation.muted }}>
+                  {stats.attemptedQuestions}/{stats.totalQuestions} questions
+                </span>
+              </div>
+              <div style={{ 
+                width: '100%', 
+                background: colors.gray[200], 
+                borderRadius: spacing.radius.full, 
+                height: '0.5rem' 
+              }}>
+                <div
+                  style={{
+                    width: `${(stats.attemptedQuestions / stats.totalQuestions) * 100}%`,
+                    background: colors.aviation.primary,
+                    height: '0.5rem',
+                    borderRadius: spacing.radius.full,
+                    transition: 'all 300ms cubic-bezier(0.16, 1, 0.3, 1)'
+                  }}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   );
 };

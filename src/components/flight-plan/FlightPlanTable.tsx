@@ -1024,12 +1024,13 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
         </div>
       </div>
 
-      {/* Fuel Policy Modal */}
-      <FuelPolicyModal 
-        isOpen={showFuelModal}
-        onClose={() => setShowFuelModal(false)}
-        totalTripFuel={totals.fuel}
-      />
+             {/* Fuel Policy Modal */}
+       <FuelPolicyModal 
+         isOpen={showFuelModal}
+         onClose={() => setShowFuelModal(false)}
+         totalTripFuel={totals.fuel}
+         flightPlanSegments={segments}
+       />
 
       {showFlHint && (
         <div style={{

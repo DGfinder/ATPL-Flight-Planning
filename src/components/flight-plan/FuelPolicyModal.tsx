@@ -6,6 +6,7 @@ interface FuelPolicyModalProps {
   isOpen: boolean;
   onClose: () => void;
   totalTripFuel: number;
+  flightPlanSegments?: any[];
 }
 
 interface FuelBreakdown {
@@ -24,7 +25,7 @@ interface AbnormalOperations {
   oneEngineInoperative: FuelBreakdown;
 }
 
-const FuelPolicyModal: React.FC<FuelPolicyModalProps> = ({ isOpen, onClose, totalTripFuel }) => {
+const FuelPolicyModal: React.FC<FuelPolicyModalProps> = ({ isOpen, onClose, totalTripFuel, flightPlanSegments = [] }) => {
   const { colors, spacing, styles } = useDesignSystem();
   const [fuelBreakdown, setFuelBreakdown] = useState<FuelBreakdown>({
     fuelBurn: totalTripFuel,
@@ -127,6 +128,70 @@ const FuelPolicyModal: React.FC<FuelPolicyModalProps> = ({ isOpen, onClose, tota
         
                  <CardContent style={{ flex: 1, overflow: 'auto' }}>
            
+            {/* Zone Fuel Breakdown from Flight Plan */}
+            {flightPlanSegments.length > 0 && (
+              <div style={{
+                marginBottom: spacing.scale[4],
+                padding: spacing.scale[3],
+                background: colors.withOpacity(colors.aviation.secondary, 0.05),
+                borderRadius: spacing.radius.md,
+                border: `1px solid ${colors.withOpacity(colors.aviation.secondary, 0.1)}`
+              }}>
+                <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: colors.aviation.navy, marginBottom: spacing.scale[2] }}>
+                  Zone Fuel Breakdown (from Flight Plan)
+                </h4>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr 1fr',
+                  gap: spacing.scale[2],
+                  fontSize: '0.75rem'
+                }}>
+                  <div style={{ fontWeight: 600, color: colors.aviation.navy }}>Segment</div>
+                  <div style={{ fontWeight: 600, color: colors.aviation.navy, textAlign: 'right' }}>Zone Fuel (kg)</div>
+                  <div style={{ fontWeight: 600, color: colors.aviation.navy, textAlign: 'right' }}>Cumulative</div>
+                  {flightPlanSegments.map((segment: any, index: number) => (
+                    <React.Fragment key={segment.id}>
+                      <div style={{ color: colors.aviation.muted }}>{segment.segment || `Seg ${index + 1}`}</div>
+                      <div style={{ textAlign: 'right', color: colors.aviation.navy }}>
+                        {segment.zoneFuel > 0 ? segment.zoneFuel.toFixed(0) : '-'}
+                      </div>
+                      <div style={{ textAlign: 'right', color: colors.aviation.primary, fontWeight: 600 }}>
+                        {flightPlanSegments
+                          .slice(0, index + 1)
+                          .reduce((sum: number, seg: any) => sum + (seg.zoneFuel || 0), 0)
+                          .toFixed(0)}
+                      </div>
+                    </React.Fragment>
+                  ))}
+                  <div style={{ 
+                    fontWeight: 600, 
+                    color: colors.aviation.primary,
+                    borderTop: `1px solid ${colors.gray[200]}`,
+                    paddingTop: spacing.scale[1]
+                  }}>
+                    Total Trip Fuel
+                  </div>
+                  <div style={{ 
+                    textAlign: 'right',
+                    fontWeight: 600, 
+                    color: colors.aviation.primary,
+                    borderTop: `1px solid ${colors.gray[200]}`,
+                    paddingTop: spacing.scale[1]
+                  }}>
+                    {totalTripFuel.toFixed(0)} kg
+                  </div>
+                  <div style={{ 
+                    textAlign: 'right',
+                    fontWeight: 600, 
+                    color: colors.aviation.primary,
+                    borderTop: `1px solid ${colors.gray[200]}`,
+                    paddingTop: spacing.scale[1]
+                  }}>
+                    {totalTripFuel.toFixed(0)} kg
+                  </div>
+                </div>
+              </div>
+            )}
 
                                              {showAbnormalOps && (
               <div style={{
@@ -674,6 +739,7 @@ const FuelPolicyModal: React.FC<FuelPolicyModalProps> = ({ isOpen, onClose, tota
                   color: colors.aviation.muted,
                   textAlign: 'center'
                 }}>
+                  <span></span>
                   <span>Normal</span>
                   <span>Depressurised</span>
                   <span>One Engine Inop</span>
