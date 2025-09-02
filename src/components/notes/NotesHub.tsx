@@ -4,6 +4,7 @@ import { topicStorage } from '../../utils/topicStorage';
 import type { NoteSection, NoteTopicId } from '../../types';
 import { initialTopics } from '../../data/initialTopics';
 import TASPracticeTable from '../practice/TASPracticeTable';
+import ISAPracticeTable from '../practice/ISAPracticeTable';
 import { InteractiveCard, CardHeader, CardContent, Card, Button, useDesignSystem } from '../../design-system';
 
 interface EditModalProps {
@@ -239,7 +240,7 @@ const NotesHub: React.FC = () => {
         </div>
       )}
 
-      {selectedTopic && topicContent && (
+      {selectedTopic && (
         <div>
           {/* Header with back button and edit button */}
           <div style={{ 
@@ -268,7 +269,7 @@ const NotesHub: React.FC = () => {
             </div>
             
             {/* Admin Edit Button - Only show for TAS topic */}
-            {selectedTopic === 'tas_heading_ground_speed' && (
+            {selectedTopic === 'tas_heading_ground_speed' && topicContent && (
               <Button
                 onClick={handleEditTheory}
                 style={{ 
@@ -317,134 +318,181 @@ const NotesHub: React.FC = () => {
           <div>
             {topicTab === 'theory' && (
               <Card style={{ padding: spacing.scale[6] }}>
-                <div style={{
-                  color: colors.aviation.navy,
-                  lineHeight: '1.7',
-                  fontSize: '0.875rem'
-                }}>
-                  {/* Parse and structure the theory content */}
-                  {topicContent.theory.split('\n').map((paragraph, index) => {
-                    const trimmedParagraph = paragraph.trim();
-                    if (!trimmedParagraph) return null;
+                {topicContent ? (
+                  <div style={{
+                    color: colors.aviation.navy,
+                    lineHeight: '1.7',
+                    fontSize: '0.875rem'
+                  }}>
+                    {/* Parse and structure the theory content */}
+                    {topicContent.theory.split('\n').map((paragraph, index) => {
+                      const trimmedParagraph = paragraph.trim();
+                      if (!trimmedParagraph) return null;
 
-                    // Detect different content types
-                    if (trimmedParagraph.startsWith('Example Calculation:')) {
+                      // Detect different content types
+                      if (trimmedParagraph.startsWith('Example Calculation:')) {
+                        return (
+                          <div key={index} style={{ marginTop: spacing.scale[4] }}>
+                            <h4 style={{
+                              ...styles.heading,
+                              fontSize: '1rem',
+                              fontWeight: 600,
+                              color: colors.aviation.primary,
+                              marginBottom: spacing.scale[3]
+                            }}>
+                              Example Calculation:
+                            </h4>
+                          </div>
+                        );
+                      }
+
+                      if (trimmedParagraph.startsWith('Given:') || trimmedParagraph.startsWith('Prompt:') || trimmedParagraph.startsWith('Step')) {
+                        return (
+                          <div key={index} style={{ marginTop: spacing.scale[3] }}>
+                            <h5 style={{
+                              ...styles.heading,
+                              fontSize: '0.875rem',
+                              fontWeight: 600,
+                              color: colors.aviation.secondary,
+                              marginBottom: spacing.scale[2]
+                            }}>
+                              {trimmedParagraph}
+                            </h5>
+                          </div>
+                        );
+                      }
+
+                      if (trimmedParagraph.match(/^[A-Z][A-Z\s]+$/)) {
+                        // All caps line - likely a heading
+                        return (
+                          <div key={index} style={{ marginTop: spacing.scale[4] }}>
+                            <h4 style={{
+                              ...styles.heading,
+                              fontSize: '1rem',
+                              fontWeight: 600,
+                              color: colors.aviation.primary,
+                              marginBottom: spacing.scale[2]
+                            }}>
+                              {trimmedParagraph}
+                            </h4>
+                          </div>
+                        );
+                      }
+
+                      // Regular paragraph
                       return (
-                        <div key={index} style={{ marginTop: spacing.scale[4] }}>
-                          <h4 style={{
-                            ...styles.heading,
-                            fontSize: '1rem',
-                            fontWeight: 600,
-                            color: colors.aviation.primary,
-                            marginBottom: spacing.scale[3]
-                          }}>
-                            Example Calculation:
-                          </h4>
-                        </div>
+                        <p key={index} style={{
+                          marginBottom: spacing.scale[3],
+                          color: colors.aviation.navy,
+                          lineHeight: '1.7',
+                          fontSize: '0.875rem'
+                        }}>
+                          {trimmedParagraph}
+                        </p>
                       );
-                    }
-
-                    if (trimmedParagraph.startsWith('Given:') || trimmedParagraph.startsWith('Prompt:') || trimmedParagraph.startsWith('Step')) {
-                      return (
-                        <div key={index} style={{ marginTop: spacing.scale[3] }}>
-                          <h5 style={{
-                            ...styles.heading,
-                            fontSize: '0.875rem',
-                            fontWeight: 600,
-                            color: colors.aviation.secondary,
-                            marginBottom: spacing.scale[2]
-                          }}>
-                            {trimmedParagraph}
-                          </h5>
-                        </div>
-                      );
-                    }
-
-                    if (trimmedParagraph.match(/^[A-Z][A-Z\s]+$/)) {
-                      // All caps line - likely a heading
-                      return (
-                        <div key={index} style={{ marginTop: spacing.scale[4] }}>
-                          <h4 style={{
-                            ...styles.heading,
-                            fontSize: '1rem',
-                            fontWeight: 600,
-                            color: colors.aviation.primary,
-                            marginBottom: spacing.scale[2]
-                          }}>
-                            {trimmedParagraph}
-                          </h4>
-                        </div>
-                      );
-                    }
-
-                    // Regular paragraph
-                    return (
-                      <p key={index} style={{
-                        marginBottom: spacing.scale[3],
-                        color: colors.aviation.navy,
-                        lineHeight: '1.7',
-                        fontSize: '0.875rem'
-                      }}>
-                        {trimmedParagraph}
-                      </p>
-                    );
-                  })}
-                </div>
+                    })}
+                  </div>
+                ) : (
+                  <div style={{
+                    textAlign: 'center',
+                    color: colors.aviation.muted,
+                    padding: spacing.scale[8]
+                  }}>
+                    <div style={{ fontSize: '3rem', marginBottom: spacing.scale[3] }}>📄</div>
+                    <p style={{ fontSize: '1rem', marginBottom: spacing.scale[2] }}>
+                      No theory content available for this topic yet.
+                    </p>
+                    <p style={{ fontSize: '0.875rem' }}>
+                      Content will be loaded from the initial topics data.
+                    </p>
+                  </div>
+                )}
               </Card>
             )}
 
             {topicTab === 'videos' && (
               <div>
-                {topicContent.videos?.map((video) => (
-                  <Card key={video.id} style={{ marginBottom: spacing.scale[4] }}>
-                    <CardHeader>
-                      <h4 style={{ ...styles.heading, fontSize: '1.125rem', margin: 0 }}>
-                        {video.title}
-                      </h4>
-                    </CardHeader>
-                    <CardContent>
-                      <p style={{ color: colors.aviation.muted, marginBottom: spacing.scale[3] }}>
-                        {video.description}
+                {topicContent ? (
+                  topicContent.videos?.map((video) => (
+                    <Card key={video.id} style={{ marginBottom: spacing.scale[4] }}>
+                      <CardHeader>
+                        <h4 style={{ ...styles.heading, fontSize: '1.125rem', margin: 0 }}>
+                          {video.title}
+                        </h4>
+                      </CardHeader>
+                      <CardContent>
+                        <p style={{ color: colors.aviation.muted, marginBottom: spacing.scale[3] }}>
+                          {video.description}
+                        </p>
+                        <div style={{
+                          position: 'relative',
+                          paddingBottom: '56.25%',
+                          height: 0,
+                          overflow: 'hidden'
+                        }}>
+                          <iframe
+                            src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                            style={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              width: '100%',
+                              height: '100%',
+                              border: 'none'
+                            }}
+                            allowFullScreen
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <Card style={{ padding: spacing.scale[6] }}>
+                    <div style={{
+                      textAlign: 'center',
+                      color: colors.aviation.muted,
+                      padding: spacing.scale[8]
+                    }}>
+                      <div style={{ fontSize: '3rem', marginBottom: spacing.scale[3] }}>🎥</div>
+                      <p style={{ fontSize: '1rem', marginBottom: spacing.scale[2] }}>
+                        No videos available for this topic yet.
                       </p>
-                      <div style={{
-                        position: 'relative',
-                        paddingBottom: '56.25%',
-                        height: 0,
-                        overflow: 'hidden'
-                      }}>
-                        <iframe
-                          src={`https://www.youtube.com/embed/${video.youtubeId}`}
-                          style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            border: 'none'
-                          }}
-                          allowFullScreen
-                        />
-                      </div>
-                    </CardContent>
+                    </div>
                   </Card>
-                ))}
+                )}
               </div>
             )}
 
             {topicTab === 'practice' && (
               <div>
-                {topicContent.practice?.map((item) => (
-                  <Card key={item.id} style={{ marginBottom: spacing.scale[4] }}>
-                    <CardHeader>
-                      <h4 style={{ ...styles.heading, fontSize: '1.125rem', margin: 0 }}>
-                        {item.title}
-                      </h4>
-                    </CardHeader>
-                    <CardContent>
-                      {item.content === 'INTERACTIVE_TABLE:TAS' && <TASPracticeTable />}
-                    </CardContent>
+                {topicContent ? (
+                  topicContent.practice?.map((item) => (
+                    <Card key={item.id} style={{ marginBottom: spacing.scale[4] }}>
+                      <CardHeader>
+                        <h4 style={{ ...styles.heading, fontSize: '1.125rem', margin: 0 }}>
+                          {item.title}
+                        </h4>
+                      </CardHeader>
+                      <CardContent>
+                        {item.content === 'INTERACTIVE_TABLE:TAS' && <TASPracticeTable />}
+                        {item.content === 'INTERACTIVE_TABLE:ISA' && <ISAPracticeTable />}
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <Card style={{ padding: spacing.scale[6] }}>
+                    <div style={{
+                      textAlign: 'center',
+                      color: colors.aviation.muted,
+                      padding: spacing.scale[8]
+                    }}>
+                      <div style={{ fontSize: '3rem', marginBottom: spacing.scale[3] }}>📝</div>
+                      <p style={{ fontSize: '1rem', marginBottom: spacing.scale[2] }}>
+                        No practice content available for this topic yet.
+                      </p>
+                    </div>
                   </Card>
-                ))}
+                )}
               </div>
             )}
 

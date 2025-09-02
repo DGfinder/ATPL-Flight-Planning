@@ -93,8 +93,8 @@ This methodology of expressing temperature relative to ISA can be used at any al
     practice: [
       {
         id: 'mach_practice_1',
-        title: 'Mach Number Calculations',
-        content: 'Practice calculating Mach numbers and understanding the relationship between TAS and the speed of sound.',
+        title: 'ISA Temperature Calculations',
+        content: 'INTERACTIVE_TABLE:ISA',
         type: 'exercise'
       }
     ],
