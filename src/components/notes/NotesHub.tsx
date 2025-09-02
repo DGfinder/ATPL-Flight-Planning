@@ -157,13 +157,7 @@ const TOPICS: { id: NoteTopicId; label: string }[] = [
   { id: 'boeing_727_weight_limits', label: 'Boeing 727 maximum weight limitations' },
   { id: 'destination_alternate_fuel', label: 'Destination -Alternate Fuel Policy' },
   { id: 'equi_time_point', label: 'Equi-Time Point (Critical Point)' },
-  { id: 'point_of_no_return', label: 'Point of No Return' },
-  { id: 'fuel_planning_basics', label: 'Fuel Planning Basics' },
-  { id: 'weight_balance_basics', label: 'Weight and Balance Basics' },
-  { id: 'performance_basics', label: 'Performance Basics' },
-  { id: 'meteorology_basics', label: 'Meteorology Basics' },
-  { id: 'navigation_basics', label: 'Navigation Basics' },
-  { id: 'flight_planning_procedures', label: 'Flight Planning Procedures' },
+  { id: 'point_no_return', label: 'Point of No Return' },
 ];
 
 type TopicTab = 'theory' | 'videos' | 'practice' | 'imported';
