@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import type { FlightPlanSegment } from '../../types';
 import { AviationCalculations } from '../../utils/aviationCalculations';
 import { databaseService } from '../../services/database';
@@ -10,7 +10,9 @@ import {
   SecondaryButton,
   useDesignSystem 
 } from '../../design-system';
-import { MapPin, Clock, Navigation } from 'lucide-react';
+import { MapPin, Clock, Navigation, Fuel } from 'lucide-react';
+import FuelPolicyModal from './FuelPolicyModal';
+import FlightPlanVisualization from './FlightPlanVisualization';
 
 interface FlightPlanTableProps {
   onFlightPlanUpdate?: (segments: FlightPlanSegment[]) => void;
@@ -61,6 +63,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
       return true;
     }
   });
+  const [showFuelModal, setShowFuelModal] = useState(false);
+  const [showVisualization, setShowVisualization] = useState(false);
 
   const validateAltitudeCapability = useCallback(async (segment: FlightPlanSegment) => {
     try {
@@ -213,6 +217,38 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
     fuel: segments.reduce((sum, seg) => sum + seg.zoneFuel, 0)
   };
 
+  // Convert segments to flight plan data format for visualization
+  const visualizationData = useMemo(() => {
+    // Only create visualization data if there are segments with actual data
+    const hasValidSegments = segments.some(seg => 
+      seg.segment && seg.flightLevel > 0 && seg.distance > 0
+    );
+    
+    if (!hasValidSegments) return undefined;
+
+    return {
+      departure: { code: 'YSSY', name: 'Sydney', lat: -33.9461, lon: 151.1772, elevation: 21 },
+      arrival: { code: 'YPPH', name: 'Perth', lat: -31.9403, lon: 115.9672, elevation: 67 },
+      waypoints: segments
+        .filter(segment => segment.segment && segment.flightLevel > 0) // Only include valid waypoints
+        .map((segment, index) => ({
+          id: index + 1,
+          code: segment.segment,
+          lat: -33 + (index * 0.5),
+          lon: 151 - (index * 2),
+          altitude: segment.flightLevel * 100,
+          time: `${Math.floor(segment.estimatedTimeInterval / 60)}:${(segment.estimatedTimeInterval % 60).toString().padStart(2, '0')}`,
+          fuel: segment.zoneFuel
+        })),
+      alternates: [],
+      plannedAltitude: segments[0]?.flightLevel * 100 || 37000,
+      distance: totals.distance,
+      estimatedTime: `${Math.floor(totals.time / 60)}:${(totals.time % 60).toString().padStart(2, '0')}`,
+      fuelRequired: totals.fuel,
+      winds: { direction: 270, speed: 45 }
+    };
+  }, [segments, totals]);
+
   const { colors, spacing, styles } = useDesignSystem();
 
   const headerStyle: React.CSSProperties = {
@@ -283,7 +319,7 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
     <div style={{ padding: spacing.scale[4] }}>
       <div style={{ maxWidth: '100%', margin: '0 auto' }}>
         {/* Header */}
-        <Card variant="elevated" padding="lg" style={{ marginBottom: spacing.scale[6] }}>
+        <Card variant="elevated" padding="lg" style={{ marginBottom: spacing.scale[4] }}>
           <div style={headerStyle}>
             <div>
               <h1 style={titleStyle}>
@@ -295,39 +331,18 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
               </p>
             </div>
             <div style={buttonGroupStyle}>
-              <PrimaryButton
-                onClick={addSegment}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: spacing.scale[2]
-                }}
-              >
-                Add Segment
-              </PrimaryButton>
-              <SecondaryButton
-                onClick={async () => {
-                  if (segments.length > 0 && segments[0].startZoneWeight > 0 && segments[0].track > 0) {
-                    try {
-                      const optimal = await databaseService.getOptimumAltitudeForWeight(
-                        segments[0].startZoneWeight,
-                        segments[0].track,
-                        segments[0].tempDeviation
-                      );
-                      alert(`Suggested FL${optimal.flightLevel} using ${optimal.cruiseSchedule} for weight ${(segments[0].startZoneWeight/1000).toFixed(1)}t`);
-                    } catch (error) {
-                      console.error('Failed to get altitude suggestion:', error);
-                    }
-                  }
-                }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: spacing.scale[2]
-                }}
-              >
-                Suggest Altitude
-              </SecondaryButton>
+              {visualizationData && (
+                <PrimaryButton
+                  onClick={() => setShowVisualization(!showVisualization)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: spacing.scale[2]
+                  }}
+                >
+                  {showVisualization ? 'Hide Route Visualization' : 'Show Route Visualization'}
+                </PrimaryButton>
+              )}
               <SecondaryButton
                 onClick={() => {
                   const csvData = [
@@ -359,63 +374,10 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
               </SecondaryButton>
             </div>
           </div>
-
-          {/* Key Metrics */}
-          <div style={metricsStyle}>
-            <div style={metricStyle}>
-              <div style={iconWrapperStyle}>
-                <Navigation style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
-              </div>
-              <div style={metricTextStyle}>
-                <p style={metricLabelStyle}>Total Distance</p>
-                <p style={metricValueStyle}>{totals.distance.toFixed(0)} nm</p>
-              </div>
-            </div>
-            <div style={metricStyle}>
-              <div style={iconWrapperStyle}>
-                <Clock style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
-              </div>
-              <div style={metricTextStyle}>
-                <p style={metricLabelStyle}>Total Time</p>
-                <p style={metricValueStyle}>{Math.round(totals.time)} min</p>
-              </div>
-            </div>
-            <div style={metricStyle}>
-              <div style={iconWrapperStyle}>
-                <MapPin style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
-              </div>
-              <div style={metricTextStyle}>
-                <p style={metricLabelStyle}>Cruise Altitude</p>
-                <p style={metricValueStyle}>FL{segments[0].flightLevel}</p>
-              </div>
-            </div>
-            <div style={metricStyle}>
-              <div style={iconWrapperStyle}>
-                <Navigation style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
-              </div>
-              <div style={metricTextStyle}>
-                <p style={metricLabelStyle}>Total Fuel</p>
-                <p style={metricValueStyle}>{totals.fuel.toFixed(0)} kg</p>
-              </div>
-            </div>
-          </div>
         </Card>
 
-        <div style={{
-          marginBottom: spacing.scale[4],
-          padding: spacing.scale[3],
-          background: colors.withOpacity(colors.aviation.primary, 0.05),
-          border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.2)}`,
-          borderRadius: spacing.radius.lg
-        }}>
-          <div style={{ fontSize: '0.875rem', color: colors.aviation.primary }}>
-            <strong>Learning Mode:</strong> GS (Ground Speed), ETI (Time), EMZW (Mid-Zone Weight), and END ZONE WT are manually editable. 
-            Practice your calculations and learn from mistakes!
-          </div>
-        </div>
-
         {/* Flight Plan Table */}
-        <Card variant="default" padding="none">
+        <Card variant="default" padding="none" style={{ marginBottom: spacing.scale[4] }}>
           <CardHeader title="Flight Plan Segments" />
           <CardContent>
             <div style={{ 
@@ -986,7 +948,91 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
             </div>
           </CardContent>
         </Card>
+
+        {/* Flight Visualization (conditionally shown) */}
+        {showVisualization && visualizationData && (
+          <div style={{ 
+            marginBottom: spacing.scale[4],
+            border: `1px solid ${colors.gray[200]}`,
+            borderRadius: spacing.radius.lg,
+            overflow: 'hidden'
+          }}>
+            <FlightPlanVisualization flightPlan={visualizationData} />
+          </div>
+        )}
+
+        {/* Learning Mode Banner */}
+        <div style={{
+          marginBottom: spacing.scale[4],
+          padding: spacing.scale[3],
+          background: colors.withOpacity(colors.aviation.primary, 0.05),
+          border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.2)}`,
+          borderRadius: spacing.radius.lg
+        }}>
+          <div style={{ fontSize: '0.875rem', color: colors.aviation.primary }}>
+            <strong>Learning Mode:</strong> GS (Ground Speed), ETI (Time), EMZW (Mid-Zone Weight), and END ZONE WT are manually editable. 
+            Practice your calculations and learn from mistakes!
+          </div>
+        </div>
+
+        {/* Summary Cards */}
+        <div style={metricsStyle}>
+          <div style={metricStyle}>
+            <div style={iconWrapperStyle}>
+              <Navigation style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
+            </div>
+            <div style={metricTextStyle}>
+              <p style={metricLabelStyle}>Total Distance</p>
+              <p style={metricValueStyle}>{totals.distance.toFixed(0)} nm</p>
+            </div>
+          </div>
+          <div style={metricStyle}>
+            <div style={iconWrapperStyle}>
+              <Clock style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
+            </div>
+            <div style={metricTextStyle}>
+              <p style={metricLabelStyle}>Total Time</p>
+              <p style={metricValueStyle}>{Math.round(totals.time)} min</p>
+            </div>
+          </div>
+          <div style={metricStyle}>
+            <div style={iconWrapperStyle}>
+              <MapPin style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
+            </div>
+            <div style={metricTextStyle}>
+              <p style={metricLabelStyle}>Cruise Altitude</p>
+              <p style={metricValueStyle}>FL{segments[0].flightLevel}</p>
+            </div>
+          </div>
+          <div style={metricStyle}>
+            <div style={iconWrapperStyle}>
+              <Fuel style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
+            </div>
+            <div style={metricTextStyle}>
+              <button
+                onClick={() => setShowFuelModal(true)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+              >
+                <p style={metricLabelStyle}>Total Fuel</p>
+                <p style={metricValueStyle}>{totals.fuel.toFixed(0)} kg</p>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Fuel Policy Modal */}
+      <FuelPolicyModal 
+        isOpen={showFuelModal}
+        onClose={() => setShowFuelModal(false)}
+        totalTripFuel={totals.fuel}
+      />
 
       {showFlHint && (
         <div style={{

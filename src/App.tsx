@@ -29,96 +29,16 @@ const ExamPage = () => {
 };
 
 const FlightPlanPage = () => {
-  const { spacing, colors } = useDesignSystem();
+  const { spacing } = useDesignSystem();
   const [flightPlanSegments, setFlightPlanSegments] = useState<FlightPlanSegment[]>([]);
-  const [showVisualization, setShowVisualization] = useState(false);
 
   const handleFlightPlanUpdate = useCallback((segments: FlightPlanSegment[]) => {
     setFlightPlanSegments(segments);
   }, []);
 
-  // Convert segments to flight plan data format for visualization
-  const visualizationData = useMemo(() => {
-    // Only create visualization data if there are segments with actual data
-    const hasValidSegments = flightPlanSegments.some(seg => 
-      seg.segment && seg.flightLevel > 0 && seg.distance > 0
-    );
-    
-    if (!hasValidSegments) return undefined;
-
-    const totals = {
-      distance: flightPlanSegments.reduce((sum, seg) => sum + seg.distance, 0),
-      time: flightPlanSegments.reduce((sum, seg) => sum + seg.estimatedTimeInterval, 0),
-      fuel: flightPlanSegments.reduce((sum, seg) => sum + seg.zoneFuel, 0)
-    };
-
-    return {
-      departure: { code: 'YSSY', name: 'Sydney', lat: -33.9461, lon: 151.1772, elevation: 21 },
-      arrival: { code: 'YPPH', name: 'Perth', lat: -31.9403, lon: 115.9672, elevation: 67 },
-      waypoints: flightPlanSegments
-        .filter(segment => segment.segment && segment.flightLevel > 0) // Only include valid waypoints
-        .map((segment, index) => ({
-          id: index + 1,
-          code: segment.segment,
-          lat: -33 + (index * 0.5),
-          lon: 151 - (index * 2),
-          altitude: segment.flightLevel * 100,
-          time: `${Math.floor(segment.estimatedTimeInterval / 60)}:${(segment.estimatedTimeInterval % 60).toString().padStart(2, '0')}`,
-          fuel: segment.zoneFuel
-        })),
-      alternates: [],
-      plannedAltitude: flightPlanSegments[0]?.flightLevel * 100 || 37000,
-      distance: totals.distance,
-      estimatedTime: `${Math.floor(totals.time / 60)}:${(totals.time % 60).toString().padStart(2, '0')}`,
-      fuelRequired: totals.fuel,
-      winds: { direction: 270, speed: 45 }
-    };
-  }, [flightPlanSegments]);
-
   return (
     <div style={{ padding: spacing.scale[4] }}>
       <div style={{ maxWidth: '100%', margin: '0 auto' }}>
-        {/* Visualization Toggle Button */}
-        {visualizationData && (
-          <div style={{ 
-            marginBottom: spacing.scale[4],
-            display: 'flex',
-            justifyContent: 'center'
-          }}>
-            <button
-              onClick={() => setShowVisualization(!showVisualization)}
-              style={{
-                padding: `${spacing.scale[2]} ${spacing.scale[4]}`,
-                background: showVisualization ? colors.aviation.primary : colors.white,
-                color: showVisualization ? colors.white : colors.aviation.primary,
-                border: `2px solid ${colors.aviation.primary}`,
-                borderRadius: spacing.radius.md,
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                display: 'flex',
-                alignItems: 'center',
-                gap: spacing.scale[2]
-              }}
-            >
-              {showVisualization ? 'Hide Route Visualization' : 'Show Route Visualization'}
-            </button>
-          </div>
-        )}
-
-        {/* Flight Visualization (conditionally shown) */}
-        {showVisualization && visualizationData && (
-          <div style={{ 
-            marginBottom: spacing.scale[6],
-            border: `1px solid ${colors.gray[200]}`,
-            borderRadius: spacing.radius.lg,
-            overflow: 'hidden'
-          }}>
-            <FlightPlanVisualization flightPlan={visualizationData} />
-          </div>
-        )}
-        
         {/* Interactive Flight Plan Table - Now the primary focus */}
         <FlightPlanTable 
           onFlightPlanUpdate={handleFlightPlanUpdate}
