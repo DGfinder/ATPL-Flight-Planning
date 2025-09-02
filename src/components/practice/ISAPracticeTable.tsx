@@ -66,11 +66,6 @@ const ISAPracticeTable: React.FC = () => {
     return parseInt(studentAnswer) === correctValue;
   };
 
-  const calculateISATemp = (pressureAltitude: number): number => {
-    // ISA temperature decreases by 2°C per 1000ft from sea level (15°C)
-    return 15 - (pressureAltitude / 1000) * 2;
-  };
-
   return (
     <Card style={{ marginBottom: spacing.scale[4] }}>
       <CardHeader>
