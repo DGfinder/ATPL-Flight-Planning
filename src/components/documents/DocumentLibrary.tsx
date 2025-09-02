@@ -81,7 +81,7 @@ const DocumentLibrary: React.FC<DocumentLibraryProps> = ({
         {isRichContent ? (
           <RichContentViewer
             title={selectedDocument.title}
-            description={selectedDocument.description.split('\n')[0]}
+            subtitle={selectedDocument.description.split('\n')[0]}
             content={selectedDocument.description}
             subjectId={subjectId}
           />
