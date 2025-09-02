@@ -4,7 +4,7 @@ import { topicStorage } from '../../utils/topicStorage';
 import type { NoteSection, NoteTopicId } from '../../types';
 import { initialTopics } from '../../data/initialTopics';
 import TASPracticeTable from '../practice/TASPracticeTable';
-import { Card, InteractiveCard, CardHeader, CardContent, Button, useDesignSystem } from '../../design-system';
+import { InteractiveCard, CardHeader, CardContent, Button, useDesignSystem } from '../../design-system';
 
 
 const TOPICS: { id: NoteTopicId; label: string }[] = [
@@ -44,7 +44,7 @@ type TopicTab = 'theory' | 'videos' | 'practice' | 'imported';
 
 const NotesHub: React.FC = () => {
   const { colors, spacing, styles } = useDesignSystem();
-  const [data, setData] = useState(notesStorage.load());
+  const data = notesStorage.load();
   const [selectedTopic, setSelectedTopic] = useState<NoteTopicId | null>(null);
   const [topicTab, setTopicTab] = useState<TopicTab>('theory');
   
