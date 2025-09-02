@@ -64,10 +64,10 @@ const CourseNotes: React.FC = () => {
                 <button
                   style={noteButtonStyle(n.id === activeNoteId)}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = noteButtonHoverStyle(n.id === activeNoteId).background!;
+                    e.currentTarget.style.background = noteButtonHoverStyle(n.id === activeNoteId).background as string;
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = noteButtonStyle(n.id === activeNoteId).background!;
+                    e.currentTarget.style.background = noteButtonStyle(n.id === activeNoteId).background as string;
                   }}
                   onClick={() => setActiveNoteId(n.id)}
                 >

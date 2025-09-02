@@ -5,7 +5,9 @@ interface RichContentViewerProps {
   content: string;
   title?: string;
   subtitle?: string;
+  description?: string;
   icon?: React.ReactNode;
+  subjectId?: string;
 }
 
 const RichContentViewer: React.FC<RichContentViewerProps> = ({ 

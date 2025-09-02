@@ -4,29 +4,38 @@ import type { Question } from '../../types';
 
 interface QuestionDisplayProps {
   question: Question;
-  onAnswer: (answer: string) => void;
-  onNext: () => void;
-  onPrevious: () => void;
-  hasNext: boolean;
-  hasPrevious: boolean;
+  onAnswer?: (answer: string) => void;
+  onAnswerSubmit?: (answer: any) => Promise<void>;
+  onNext?: () => void;
+  onPrevious?: () => void;
+  hasNext?: boolean;
+  hasPrevious?: boolean;
   userAnswer?: string;
+  studyMode?: string;
 }
 
 const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
   question,
   onAnswer,
+  onAnswerSubmit,
   onNext,
   onPrevious,
   hasNext,
   hasPrevious,
-  userAnswer
+  userAnswer,
+  studyMode
 }) => {
+  // Acknowledge unused props to satisfy TypeScript
+  void onAnswerSubmit;
+  void studyMode;
   const { colors, spacing, styles } = useDesignSystem();
   const [selectedAnswer, setSelectedAnswer] = useState(userAnswer || '');
 
   const handleAnswerSelect = (answer: string) => {
     setSelectedAnswer(answer);
-    onAnswer(answer);
+    if (onAnswer) {
+      onAnswer(answer);
+    }
   };
 
   return (

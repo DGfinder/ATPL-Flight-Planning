@@ -17,18 +17,28 @@ const QuestionsPage: React.FC = () => {
         {
           id: '1',
           title: 'What is the primary purpose of flight planning?',
+          description: 'Basic flight planning concepts',
+          type: 'multiple_choice',
           options: ['Navigation', 'Safety', 'Efficiency', 'All of the above'],
-          correctAnswer: 'All of the above',
-          category: 'flight_planning_basics',
-          marks: 1
+          correctAnswer: 3,
+          category: 'performance',
+          marks: 1,
+          reference: 'ATPL Manual',
+          givenData: {},
+          workingSteps: []
         },
         {
           id: '2',
           title: 'Which factor affects aircraft performance most significantly?',
+          description: 'Aircraft performance factors',
+          type: 'multiple_choice',
           options: ['Wind', 'Temperature', 'Altitude', 'Humidity'],
-          correctAnswer: 'Altitude',
+          correctAnswer: 2,
           category: 'performance',
-          marks: 1
+          marks: 1,
+          reference: 'ATPL Manual',
+          givenData: {},
+          workingSteps: []
         }
       ]);
       setLoading(false);
@@ -76,7 +86,11 @@ const QuestionsPage: React.FC = () => {
   }
 
   if (showResults) {
-    const correctAnswers = questions.filter(q => userAnswers[q.id] === q.correctAnswer).length;
+    const correctAnswers = questions.filter(q => {
+      const userAnswer = userAnswers[q.id];
+      const correctOption = q.options?.[q.correctAnswer ?? 0];
+      return userAnswer === correctOption;
+    }).length;
     const totalQuestions = questions.length;
     const percentage = (correctAnswers / totalQuestions) * 100;
 

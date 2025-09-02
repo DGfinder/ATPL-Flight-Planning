@@ -4,9 +4,9 @@ import { SecondaryButton, useDesignSystem } from '../../design-system';
 const TASPracticeTable: React.FC = () => {
   const { colors, spacing, styles } = useDesignSystem();
   const [data, setData] = useState([
-    { id: 1, altitude: 10000, ias: 250, tas: '', wind: 20, heading: 90, groundSpeed: '' },
-    { id: 2, altitude: 15000, ias: 280, tas: '', wind: 25, heading: 180, groundSpeed: '' },
-    { id: 3, altitude: 20000, ias: 300, tas: '', wind: 30, heading: 270, groundSpeed: '' },
+    { id: 1, altitude: 10000, ias: 250, tas: 0, wind: 20, heading: 90, groundSpeed: 0 },
+    { id: 2, altitude: 15000, ias: 280, tas: 0, wind: 25, heading: 180, groundSpeed: 0 },
+    { id: 3, altitude: 20000, ias: 300, tas: 0, wind: 30, heading: 270, groundSpeed: 0 },
   ]);
 
   const calculateTAS = (altitude: number, ias: number) => {
@@ -32,9 +32,9 @@ const TASPracticeTable: React.FC = () => {
 
   const handleReset = () => {
     setData([
-      { id: 1, altitude: 10000, ias: 250, tas: '', wind: 20, heading: 90, groundSpeed: '' },
-      { id: 2, altitude: 15000, ias: 280, tas: '', wind: 25, heading: 180, groundSpeed: '' },
-      { id: 3, altitude: 20000, ias: 300, tas: '', wind: 30, heading: 270, groundSpeed: '' },
+      { id: 1, altitude: 10000, ias: 250, tas: 0, wind: 20, heading: 90, groundSpeed: 0 },
+      { id: 2, altitude: 15000, ias: 280, tas: 0, wind: 25, heading: 180, groundSpeed: 0 },
+      { id: 3, altitude: 20000, ias: 300, tas: 0, wind: 30, heading: 270, groundSpeed: 0 },
     ]);
   };
 
