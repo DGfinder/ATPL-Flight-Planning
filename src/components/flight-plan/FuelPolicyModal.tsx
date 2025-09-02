@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardHeader, CardContent, PrimaryButton, SecondaryButton, useDesignSystem } from '../../design-system';
+import { Card, CardHeader, CardContent, SecondaryButton, useDesignSystem } from '../../design-system';
 import { Fuel } from 'lucide-react';
 
 interface FuelPolicyModalProps {

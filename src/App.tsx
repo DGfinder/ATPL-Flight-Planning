@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -8,7 +8,7 @@ import LoginPage from './pages/LoginPage';
 import NewDashboardPage from './pages/NewDashboardPage';
 import { useDesignSystem } from './design-system';
 import FlightPlanTable from './components/flight-plan/FlightPlanTable';
-import FlightPlanVisualization from './components/flight-plan/FlightPlanVisualization';
+
 import type { FlightPlanSegment } from './types';
 
 // Import actual page components

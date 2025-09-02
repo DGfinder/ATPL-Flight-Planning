@@ -176,10 +176,7 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
     });
   }, [onFlightPlanUpdate, validateAltitudeCapability]);
 
-  const addSegment = () => {
-    const newId = `seg-${segments.length + 1}`;
-    setSegments(prev => [...prev, createEmptySegment(newId)]);
-  };
+
 
   const removeSegment = (id: string) => {
     if (segments.length <= 1) return;
