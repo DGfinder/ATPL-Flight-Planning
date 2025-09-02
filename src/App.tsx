@@ -39,7 +39,12 @@ const FlightPlanPage = () => {
 
   // Convert segments to flight plan data format for visualization
   const visualizationData = useMemo(() => {
-    if (flightPlanSegments.length === 0) return undefined;
+    // Only create visualization data if there are segments with actual data
+    const hasValidSegments = flightPlanSegments.some(seg => 
+      seg.segment && seg.flightLevel > 0 && seg.distance > 0
+    );
+    
+    if (!hasValidSegments) return undefined;
 
     const totals = {
       distance: flightPlanSegments.reduce((sum, seg) => sum + seg.distance, 0),
@@ -50,15 +55,17 @@ const FlightPlanPage = () => {
     return {
       departure: { code: 'YSSY', name: 'Sydney', lat: -33.9461, lon: 151.1772, elevation: 21 },
       arrival: { code: 'YPPH', name: 'Perth', lat: -31.9403, lon: 115.9672, elevation: 67 },
-      waypoints: flightPlanSegments.map((segment, index) => ({
-        id: index + 1,
-        code: segment.segment,
-        lat: -33 + (index * 0.5),
-        lon: 151 - (index * 2),
-        altitude: segment.flightLevel * 100,
-        time: `${Math.floor(segment.estimatedTimeInterval / 60)}:${(segment.estimatedTimeInterval % 60).toString().padStart(2, '0')}`,
-        fuel: segment.zoneFuel
-      })),
+      waypoints: flightPlanSegments
+        .filter(segment => segment.segment && segment.flightLevel > 0) // Only include valid waypoints
+        .map((segment, index) => ({
+          id: index + 1,
+          code: segment.segment,
+          lat: -33 + (index * 0.5),
+          lon: 151 - (index * 2),
+          altitude: segment.flightLevel * 100,
+          time: `${Math.floor(segment.estimatedTimeInterval / 60)}:${(segment.estimatedTimeInterval % 60).toString().padStart(2, '0')}`,
+          fuel: segment.zoneFuel
+        })),
       alternates: [],
       plannedAltitude: flightPlanSegments[0]?.flightLevel * 100 || 37000,
       distance: totals.distance,

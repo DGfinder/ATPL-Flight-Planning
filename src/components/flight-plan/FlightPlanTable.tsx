@@ -291,7 +291,7 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                 Interactive Flight Planning Sheet
               </h1>
               <p style={{ ...styles.caption, marginTop: spacing.scale[1] }}>
-                Sydney → Perth | Boeing 737-800
+                Sydney → Perth | Boeing 727
               </p>
             </div>
             <div style={buttonGroupStyle}>
