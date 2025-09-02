@@ -2,14 +2,10 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { notesStorage } from '../../utils/notesStorage';
 import { topicStorage } from '../../utils/topicStorage';
 import type { NoteSection, NoteTopicId } from '../../types';
-import { GlobalWorkerOptions, getDocument, version } from 'pdfjs-dist';
-import { extractTextFromImage, renderPdfPageToImageDataUrl } from '../../utils/ocr';
 import { initialTopics } from '../../data/initialTopics';
 import TASPracticeTable from '../practice/TASPracticeTable';
-import { Card, Button, useDesignSystem } from '../../design-system';
+import { Card, InteractiveCard, CardHeader, CardContent, Button, useDesignSystem } from '../../design-system';
 
-// Configure worker (CDN fallback)
-GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
 
 const TOPICS: { id: NoteTopicId; label: string }[] = [
   { id: 'tas_heading_ground_speed', label: 'TAS, Heading and Ground Speed determinations using the flight computer' },
@@ -44,17 +40,13 @@ const TOPICS: { id: NoteTopicId; label: string }[] = [
   { id: 'point_no_return', label: 'Point of No Return (PNR)' },
 ];
 
-type Tab = 'topics' | 'import';
 type TopicTab = 'theory' | 'videos' | 'practice' | 'imported';
 
 const NotesHub: React.FC = () => {
-  const { } = useDesignSystem();
-  const [tab, setTab] = useState<Tab>('topics');
+  const { colors, spacing, styles } = useDesignSystem();
   const [data, setData] = useState(notesStorage.load());
   const [selectedTopic, setSelectedTopic] = useState<NoteTopicId | null>(null);
   const [topicTab, setTopicTab] = useState<TopicTab>('theory');
-  const [isImporting, setIsImporting] = useState(false);
-  const [importProgress, setImportProgress] = useState<string>('');
   
   useEffect(() => {
     const existingData = topicStorage.load();
@@ -72,165 +64,184 @@ const NotesHub: React.FC = () => {
     return groups;
   }, [data.sections]);
 
-  const handleImportPdf = async (file: File, assumedTopic: NoteTopicId = 'tas_heading_ground_speed') => {
-    try {
-      setIsImporting(true);
-      setImportProgress('Loading PDF...');
-
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await getDocument({ data: arrayBuffer }).promise;
-
-      const sections: NoteSection[] = [];
-
-      for (let p = 1; p <= pdf.numPages; p++) {
-        setImportProgress(`Rendering page ${p}/${pdf.numPages}...`);
-        const dataUrl = await renderPdfPageToImageDataUrl(pdf, p, 2);
-        setImportProgress(`Running OCR on page ${p}/${pdf.numPages}...`);
-        const { text } = await extractTextFromImage(dataUrl);
-
-        const cleaned = text
-          .replace(/\s+\n/g, '\n')
-          .replace(/\n{3,}/g, '\n\n')
-          .trim();
-
-        if (cleaned.length === 0) continue;
-
-        sections.push({
-          id: `${file.name}-p${p}-${Date.now()}`,
-          topicId: assumedTopic,
-          title: `${file.name} - Page ${p}`,
-          content: cleaned,
-          source: file.name,
-          createdAt: new Date().toISOString(),
-        });
-      }
-
-      const updated = { sections: [...sections, ...data.sections] };
-      notesStorage.save(updated);
-      setData(updated);
-      setTab('topics');
-    } catch (err) {
-      console.error(err);
-      alert('Failed to import and OCR this PDF.');
-    } finally {
-      setIsImporting(false);
-      setImportProgress('');
-    }
-  };
 
   return (
-    <Card className="p-4">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-2">
-          <Button
-            variant={tab === 'topics' ? 'primary' : 'ghost'}
-            size="sm"
-            onClick={() => setTab('topics')}
-          >
-            Topics
-          </Button>
-          <Button
-            variant={tab === 'import' ? 'primary' : 'ghost'}
-            size="sm"
-            onClick={() => setTab('import')}
-          >
-            Import from PDF (OCR)
-          </Button>
-        </div>
-
-        {tab === 'topics' && selectedTopic && (
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setSelectedTopic(null)}
-          >
-            ← Back to Topics
-          </Button>
-        )}
-      </div>
-
-      {tab === 'import' && (
-        <div className="space-y-3">
-          <div className="text-sm text-gray-700">
-            Select a PDF scan to extract text via OCR. OCR quality depends on scan clarity.
-          </div>
-          <ImportForm onImport={handleImportPdf} isImporting={isImporting} progress={importProgress} />
-        </div>
-      )}
-
-      {tab === 'topics' && !selectedTopic && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+    <div>
+      {!selectedTopic && (
+        <div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+          style={{ gap: spacing.scale[4] }}
+        >
           {TOPICS.map(topic => {
             const hasContent = topicStorage.getTopicContent(topic.id);
             const hasImportedNotes = groupedSections[topic.id]?.length > 0;
+            const topicContent = hasContent ? topicStorage.getTopicContent(topic.id) : null;
+            
+            // Calculate progress indicators
+            const hasTheory = topicContent?.theory && topicContent.theory.length > 0;
+            const hasVideos = topicContent?.videos && topicContent.videos.length > 0;
+            const hasPractice = topicContent?.practice && topicContent.practice.length > 0;
+            
+            const completedSections = [hasTheory, hasVideos, hasPractice].filter(Boolean).length;
+            const totalSections = 3;
+            const progressPercentage = Math.round((completedSections / totalSections) * 100);
+            
             return (
-              <Card
+              <InteractiveCard
                 key={topic.id}
-                variant="interactive"
-                className="p-4 cursor-pointer"
+                padding="none"
                 onClick={() => setSelectedTopic(topic.id)}
+                style={{
+                  minHeight: '140px',
+                  transition: 'all 0.2s ease-in-out',
+                  border: `1px solid ${colors.gray[200]}`,
+                  cursor: 'pointer'
+                }}
               >
-                <div className="font-medium text-sm text-gray-800 mb-1">{topic.label}</div>
-                <div className="text-xs text-gray-500">
-                  {hasContent ? '✓ Theory content' : 'No theory content'}
-                  {hasImportedNotes && <span className="block">📄 {groupedSections[topic.id].length} imported notes</span>}
-                </div>
-              </Card>
+                <CardHeader
+                  style={{
+                    padding: spacing.scale[4],
+                    borderBottom: `1px solid ${colors.gray[100]}`
+                  }}
+                >
+                  <div>
+                    <h3 style={{
+                      ...styles.heading,
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      color: colors.aviation.navy,
+                      margin: 0,
+                      marginBottom: spacing.scale[1],
+                      lineHeight: '1.3'
+                    }}>
+                      {topic.label}
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[1] }}>
+                      <div style={{
+                        fontSize: '0.75rem',
+                        color: colors.aviation.muted,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: spacing.scale[2]
+                      }}>
+                        {progressPercentage > 0 ? (
+                          <>
+                            <span style={{ 
+                              backgroundColor: colors.aviation.primary,
+                              color: colors.white,
+                              padding: `${spacing.scale[1]} ${spacing.scale[2]}`,
+                              borderRadius: spacing.radius.sm,
+                              fontSize: '0.6875rem',
+                              fontWeight: 500
+                            }}>
+                              {progressPercentage}% Complete
+                            </span>
+                          </>
+                        ) : (
+                          <span style={{ color: colors.gray[400] }}>
+                            Not started
+                          </span>
+                        )}
+                      </div>
+                      
+                      {/* Progress bar */}
+                      <div style={{
+                        width: '100%',
+                        height: '3px',
+                        backgroundColor: colors.gray[200],
+                        borderRadius: spacing.radius.sm,
+                        overflow: 'hidden'
+                      }}>
+                        <div style={{
+                          width: `${progressPercentage}%`,
+                          height: '100%',
+                          backgroundColor: progressPercentage > 0 ? colors.aviation.primary : 'transparent',
+                          borderRadius: spacing.radius.sm,
+                          transition: 'width 0.3s ease-in-out'
+                        }} />
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                
+                <CardContent style={{ padding: spacing.scale[4] }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[2] }}>
+                    {/* Content indicators */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.scale[1] }}>
+                      <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: spacing.scale[1],
+                        fontSize: '0.6875rem',
+                        color: hasTheory ? colors.aviation.primary : colors.gray[400]
+                      }}>
+                        <span>{hasTheory ? '✓' : '○'}</span>
+                        <span>Theory</span>
+                      </div>
+                      
+                      <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: spacing.scale[1],
+                        fontSize: '0.6875rem',
+                        color: hasVideos ? colors.aviation.primary : colors.gray[400]
+                      }}>
+                        <span>{hasVideos ? '✓' : '○'}</span>
+                        <span>Videos</span>
+                      </div>
+                      
+                      <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: spacing.scale[1],
+                        fontSize: '0.6875rem',
+                        color: hasPractice ? colors.aviation.primary : colors.gray[400]
+                      }}>
+                        <span>{hasPractice ? '✓' : '○'}</span>
+                        <span>Practice</span>
+                      </div>
+                    </div>
+                    
+                    {hasImportedNotes && (
+                      <div style={{
+                        fontSize: '0.6875rem',
+                        color: colors.aviation.muted,
+                        fontStyle: 'italic'
+                      }}>
+                        📄 {groupedSections[topic.id].length} imported note{groupedSections[topic.id].length > 1 ? 's' : ''}
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </InteractiveCard>
             );
           })}
         </div>
       )}
 
-      {tab === 'topics' && selectedTopic && (
-        <TopicDetailView 
-          topicId={selectedTopic} 
-          topicTab={topicTab} 
-          setTopicTab={setTopicTab}
-          importedSections={groupedSections[selectedTopic] || []}
-        />
+      {selectedTopic && (
+        <>
+          <div style={{ marginBottom: '1rem' }}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => setSelectedTopic(null)}
+            >
+              ← Back to Topics
+            </Button>
+          </div>
+          <TopicDetailView 
+            topicId={selectedTopic} 
+            topicTab={topicTab} 
+            setTopicTab={setTopicTab}
+            importedSections={groupedSections[selectedTopic] || []}
+          />
+        </>
       )}
-    </Card>
-  );
-};
-
-const ImportForm: React.FC<{ onImport: (file: File, topic: NoteTopicId) => void; isImporting: boolean; progress: string }>
-  = ({ onImport, isImporting, progress }) => {
-  const { colors, spacing } = useDesignSystem();
-  const [file, setFile] = useState<File | null>(null);
-  const [topic, setTopic] = useState<NoteTopicId>('tas_heading_ground_speed');
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: spacing.scale[3] }}>
-        <input type="file" accept="application/pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-        <select 
-          style={{
-            padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
-            border: `1px solid ${colors.gray[300]}`,
-            borderRadius: spacing.radius.md,
-            fontSize: '0.875rem',
-            outline: 'none'
-          }}
-          value={topic} 
-          onChange={(e) => setTopic(e.target.value as NoteTopicId)}
-        >
-          {TOPICS.map(t => (
-            <option key={t.id} value={t.id}>{t.label}</option>
-          ))}
-        </select>
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => file && onImport(file, topic)}
-          disabled={!file || isImporting}
-        >
-          {isImporting ? 'Importing…' : 'Import'}
-        </Button>
-      </div>
-      {progress && <div style={{ fontSize: '0.75rem', color: colors.aviation.muted }}>{progress}</div>}
     </div>
   );
 };
+
 
 const TopicDetailView: React.FC<{
   topicId: NoteTopicId;
