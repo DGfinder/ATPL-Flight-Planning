@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -29,7 +29,7 @@ const ExamPage = () => {
 };
 
 const FlightPlanPage = () => {
-  const { colors, spacing } = useDesignSystem();
+  const { spacing } = useDesignSystem();
   const [flightPlanSegments, setFlightPlanSegments] = useState<FlightPlanSegment[]>([]);
 
   const handleFlightPlanUpdate = useCallback((segments: FlightPlanSegment[]) => {
