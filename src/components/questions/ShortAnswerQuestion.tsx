@@ -59,9 +59,10 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
   // Format given data for better display
   const formatGivenData = (data: Record<string, any>) => {
     return Object.entries(data).map(([key, value]) => {
-      // Clean up key names for display
+      // Clean up key names for display while preserving aviation abbreviations
       const displayKey = key
-        .replace(/([A-Z])/g, ' $1') // Add space before capitals
+        .replace(/([A-Z])([A-Z])/g, '$1 $2') // Add space between consecutive capitals (but not for single letters)
+        .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space between lowercase and uppercase
         .replace(/^./, str => str.toUpperCase()) // Capitalize first letter
         .replace(/\s+/g, ' ') // Clean up multiple spaces
         .trim();
