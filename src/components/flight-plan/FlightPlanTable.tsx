@@ -210,7 +210,7 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
   ) => (
     <input
       type={type}
-      value={value}
+      value={type === 'number' ? (value === 0 ? '' : value) : value}
       onChange={(e) => updateSegment(segmentId, field, type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value)}
       style={{
         width: '100%',
