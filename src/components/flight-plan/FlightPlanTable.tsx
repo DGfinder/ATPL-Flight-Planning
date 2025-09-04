@@ -58,7 +58,7 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
   const defaultSegments = (): FlightPlanSegment[] => {
     if (initialSegments && initialSegments.length > 0) return initialSegments;
     if (initialData && initialData.segments) return initialData.segments;
-    return Array.from({ length: 7 }, (_, i) => createEmptySegment(`seg-${i + 1}`));
+    return Array.from({ length: 10 }, (_, i) => createEmptySegment(`seg-${i + 1}`));
   };
 
   const [segments, setSegments] = useState<FlightPlanSegment[]>(defaultSegments());
@@ -201,6 +201,10 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
     setSegments(prev => prev.filter(seg => seg.id !== id));
   };
 
+  const addSegment = () => {
+    setSegments(prev => [...prev, createEmptySegment(`seg-${prev.length + 1}`)]);
+  };
+
   const renderEditableCell = (
     segmentId: string, 
     field: keyof FlightPlanSegment,
@@ -220,7 +224,17 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
         borderRadius: spacing.radius.md,
         background: disabled ? colors.gray[100] : colors.white,
         cursor: disabled ? 'not-allowed' : 'text',
-        outline: 'none'
+        outline: 'none',
+        transition: 'all 0.2s ease',
+        boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)'
+      }}
+      onFocus={(e) => {
+        e.target.style.borderColor = colors.aviation.primary;
+        e.target.style.boxShadow = `0 0 0 2px ${colors.withOpacity(colors.aviation.primary, 0.2)}`;
+      }}
+      onBlur={(e) => {
+        e.target.style.borderColor = colors.aviation.border;
+        e.target.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.1)';
       }}
       disabled={disabled}
     />
@@ -331,8 +345,17 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
 
 
   return (
-    <div style={{ padding: spacing.scale[4] }}>
-      <div style={{ maxWidth: '100%', margin: '0 auto' }}>
+    <div style={{ padding: spacing.scale[2] }}>
+      <style>
+        {`
+          @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+          }
+        `}
+      </style>
+      <div style={{ width: '100%', margin: '0 auto' }}>
         {/* Header */}
         <Card variant="elevated" padding="lg" style={{ marginBottom: spacing.scale[4] }}>
           <div style={headerStyle}>
@@ -377,12 +400,38 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: spacing.scale[2]
+                    gap: spacing.scale[2],
+                    background: showVisualization ? colors.aviation.secondary : colors.aviation.primary,
+                    border: `2px solid ${showVisualization ? colors.aviation.secondary : colors.aviation.primary}`,
+                    position: 'relative'
                   }}
                 >
                   {showVisualization ? 'Hide Route Visualization' : 'Show Route Visualization'}
+                  {!showVisualization && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '-4px',
+                      right: '-4px',
+                      width: '12px',
+                      height: '12px',
+                      borderRadius: '50%',
+                      background: colors.aviation.secondary,
+                      border: `2px solid ${colors.white}`,
+                      animation: 'pulse 2s infinite'
+                    }}></div>
+                  )}
                 </PrimaryButton>
               )}
+              <SecondaryButton
+                onClick={addSegment}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: spacing.scale[2]
+                }}
+              >
+                Add Segment
+              </SecondaryButton>
               <SecondaryButton
             onClick={() => {
               const csvData = [
@@ -424,7 +473,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
               overflowX: 'auto',
               border: `1px solid ${colors.gray[200]}`,
               borderRadius: spacing.radius.md,
-              background: colors.white
+              background: colors.white,
+              minWidth: '1400px'
             }}>
               <table style={{ 
                 width: '100%', 
@@ -445,8 +495,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
-                      minWidth: '80px',
-                      maxWidth: '100px'
+                      minWidth: '100px',
+                      maxWidth: '120px'
                     }}>
                       Segment
                     </th>
@@ -995,7 +1045,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
             marginBottom: spacing.scale[4],
             border: `1px solid ${colors.gray[200]}`,
             borderRadius: spacing.radius.lg,
-            overflow: 'hidden'
+            overflow: 'hidden',
+            boxShadow: `0 4px 6px ${colors.withOpacity(colors.gray[900], 0.1)}`
           }}>
             <FlightPlanVisualization flightPlan={visualizationData} />
           </div>
@@ -1041,7 +1092,22 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
             </div>
             <div style={metricTextStyle}>
               <p style={metricLabelStyle}>Cruise Altitude</p>
-              <p style={metricValueStyle}>FL{segments[0].flightLevel}</p>
+              <p style={metricValueStyle}>
+                {(() => {
+                  const validSegments = segments.filter(s => s.flightLevel > 0);
+                  if (validSegments.length === 0) return 'FL0';
+                  
+                  const uniqueLevels = [...new Set(validSegments.map(s => s.flightLevel))];
+                  if (uniqueLevels.length === 1) {
+                    return `FL${uniqueLevels[0]}`;
+                  } else {
+                    // Multiple altitudes - show range for PNR/DP scenarios
+                    const minLevel = Math.min(...uniqueLevels);
+                    const maxLevel = Math.max(...uniqueLevels);
+                    return minLevel === maxLevel ? `FL${minLevel}` : `FL${minLevel}-${maxLevel}`;
+                  }
+                })()}
+              </p>
             </div>
           </div>
           <div style={metricStyle}>
@@ -1056,11 +1122,23 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                   border: 'none',
                   padding: 0,
                   cursor: 'pointer',
-                  textAlign: 'left'
+                  textAlign: 'left',
+                  position: 'relative'
                 }}
+                title="Click to open Fuel Policy Calculator"
               >
-                <p style={metricLabelStyle}>Total Fuel</p>
+                <p style={metricLabelStyle}>Fuel</p>
                 <p style={metricValueStyle}>{totals.fuel.toFixed(0)} kg</p>
+                <div style={{
+                  position: 'absolute',
+                  top: '-2px',
+                  right: '-2px',
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: colors.aviation.secondary,
+                  animation: 'pulse 2s infinite'
+                }}></div>
               </button>
             </div>
           </div>
