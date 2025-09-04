@@ -108,9 +108,7 @@ export class AviationCalculations {
   }
 
   static formatTime(minutes: number): string {
-    const hours = Math.floor(minutes / 60);
-    const mins = Math.round(minutes % 60);
-    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+    return minutes.toFixed(1);
   }
 
   static getWeightBracket(weight: number): number {
