@@ -73,7 +73,7 @@ const atplSubjects: AtplSubject[] = [
         order: 1
       }
     ],
-    questionCategories: ['navigation', 'performance'],
+    questionCategories: ['tas_groundspeed_calculations', 'maximum_altitude_capability_normal_ops'],
     estimatedStudyHours: 8,
     difficulty: 'intermediate',
     order: 1
@@ -86,7 +86,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP02',
     documents: [],
     videos: [],
-    questionCategories: ['performance'],
+    questionCategories: ['ias_mach_number_conversion'],
     estimatedStudyHours: 6,
     difficulty: 'intermediate',
     order: 2
@@ -99,7 +99,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP03',
     documents: [],
     videos: [],
-    questionCategories: ['navigation', 'weather'],
+    questionCategories: ['tas_groundspeed_calculations', 'maximum_tat_limitations'],
     estimatedStudyHours: 5,
     difficulty: 'intermediate',
     order: 3
@@ -112,7 +112,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP04',
     documents: [],
     videos: [],
-    questionCategories: ['navigation'],
+    questionCategories: ['tas_groundspeed_calculations'],
     estimatedStudyHours: 4,
     difficulty: 'beginner',
     order: 4
@@ -125,7 +125,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP05',
     documents: [],
     videos: [],
-    questionCategories: ['navigation'],
+    questionCategories: ['tas_groundspeed_calculations'],
     estimatedStudyHours: 6,
     difficulty: 'advanced',
     order: 5
@@ -138,7 +138,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP06',
     documents: [],
     videos: [],
-    questionCategories: ['performance'],
+    questionCategories: ['climb_fuel_distance_time_altitude'],
     estimatedStudyHours: 8,
     difficulty: 'intermediate',
     order: 6
@@ -151,7 +151,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP07',
     documents: [],
     videos: [],
-    questionCategories: ['performance'],
+    questionCategories: ['descent_point_planning'],
     estimatedStudyHours: 8,
     difficulty: 'intermediate',
     order: 7
@@ -164,7 +164,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP08',
     documents: [],
     videos: [],
-    questionCategories: ['performance'],
+    questionCategories: ['maximum_altitude_capability_normal_ops'],
     estimatedStudyHours: 6,
     difficulty: 'intermediate',
     order: 8
@@ -177,7 +177,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP09',
     documents: [],
     videos: [],
-    questionCategories: ['performance'],
+    questionCategories: ['selection_cruise_schedules_altitude'],
     estimatedStudyHours: 7,
     difficulty: 'intermediate',
     order: 9
@@ -190,7 +190,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP10',
     documents: [],
     videos: [],
-    questionCategories: ['performance'],
+    questionCategories: ['buffet_boundaries_margins'],
     estimatedStudyHours: 5,
     difficulty: 'advanced',
     order: 10
@@ -203,7 +203,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP11',
     documents: [],
     videos: [],
-    questionCategories: ['fuel_planning', 'navigation'],
+    questionCategories: ['sector_fuel_burn_normal_cruise', 'tas_groundspeed_calculations'],
     estimatedStudyHours: 10,
     difficulty: 'beginner',
     order: 11
@@ -216,7 +216,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP12',
     documents: [],
     videos: [],
-    questionCategories: ['fuel_planning', 'navigation'],
+    questionCategories: ['sector_fuel_burn_normal_cruise', 'tas_groundspeed_calculations'],
     estimatedStudyHours: 12,
     difficulty: 'intermediate',
     order: 12
@@ -229,7 +229,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP13',
     documents: [],
     videos: [],
-    questionCategories: ['performance', 'fuel_planning'],
+    questionCategories: ['climb_fuel_distance_time_altitude', 'sector_fuel_burn_normal_cruise'],
     estimatedStudyHours: 6,
     difficulty: 'intermediate',
     order: 13
@@ -242,7 +242,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP14',
     documents: [],
     videos: [],
-    questionCategories: ['fuel_planning', 'navigation'],
+    questionCategories: ['sector_fuel_burn_normal_cruise', 'tas_groundspeed_calculations'],
     estimatedStudyHours: 8,
     difficulty: 'advanced',
     order: 14
@@ -255,7 +255,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP15',
     documents: [],
     videos: [],
-    questionCategories: ['fuel_planning', 'weight_balance'],
+    questionCategories: ['payload_uplift_capability', 'mtow_brw_calculations'],
     estimatedStudyHours: 10,
     difficulty: 'advanced',
     order: 15
@@ -268,7 +268,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP16',
     documents: [],
     videos: [],
-    questionCategories: ['emergency_procedures', 'performance'],
+    questionCategories: ['pnr_depressurised', 'maximum_altitude_capability_normal_ops'],
     estimatedStudyHours: 6,
     difficulty: 'advanced',
     order: 16
@@ -281,7 +281,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP17',
     documents: [],
     videos: [],
-    questionCategories: ['emergency_procedures', 'performance'],
+    questionCategories: ['engine_out_drift_down_altitude', 'maximum_altitude_capability_engine_out'],
     estimatedStudyHours: 5,
     difficulty: 'advanced',
     order: 17
@@ -294,7 +294,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP18',
     documents: [],
     videos: [],
-    questionCategories: ['emergency_procedures', 'performance'],
+    questionCategories: ['abnormal_configuration_gear_down_performance', 'maximum_altitude_capability_engine_out'],
     estimatedStudyHours: 4,
     difficulty: 'advanced',
     order: 18
@@ -307,7 +307,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP19',
     documents: [],
     videos: [],
-    questionCategories: ['emergency_procedures', 'performance'],
+    questionCategories: ['abnormal_configuration_gear_down_performance', 'maximum_altitude_capability_engine_out'],
     estimatedStudyHours: 5,
     difficulty: 'advanced',
     order: 19
@@ -320,7 +320,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP20',
     documents: [],
     videos: [],
-    questionCategories: ['emergency_procedures', 'performance'],
+    questionCategories: ['engine_out_drift_down_altitude', 'maximum_altitude_capability_engine_out'],
     estimatedStudyHours: 10,
     difficulty: 'advanced',
     order: 20
@@ -333,7 +333,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP21',
     documents: [],
     videos: [],
-    questionCategories: ['emergency_procedures', 'fuel_planning'],
+    questionCategories: ['fuel_dumping_time_quantity', 'sector_fuel_burn_normal_cruise'],
     estimatedStudyHours: 4,
     difficulty: 'intermediate',
     order: 21
@@ -346,7 +346,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP22',
     documents: [],
     videos: [],
-    questionCategories: ['fuel_planning'],
+    questionCategories: ['alternate_holding_fuel'],
     estimatedStudyHours: 6,
     difficulty: 'intermediate',
     order: 22
@@ -359,7 +359,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP23',
     documents: [],
     videos: [],
-    questionCategories: ['fuel_planning'],
+    questionCategories: ['total_fuel_required_ramp_fuel'],
     estimatedStudyHours: 4,
     difficulty: 'beginner',
     order: 23
@@ -372,7 +372,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP24',
     documents: [],
     videos: [],
-    questionCategories: ['fuel_planning'],
+    questionCategories: ['total_fuel_required_ramp_fuel'],
     estimatedStudyHours: 6,
     difficulty: 'intermediate',
     order: 24
@@ -385,7 +385,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP25',
     documents: [],
     videos: [],
-    questionCategories: ['navigation'],
+    questionCategories: ['tas_groundspeed_calculations'],
     estimatedStudyHours: 5,
     difficulty: 'intermediate',
     order: 25
@@ -398,7 +398,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP26',
     documents: [],
     videos: [],
-    questionCategories: ['fuel_planning', 'navigation'],
+    questionCategories: ['tas_groundspeed_calculations', 'inflight_replanning_holding'],
     estimatedStudyHours: 8,
     difficulty: 'advanced',
     order: 26
@@ -411,7 +411,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP27',
     documents: [],
     videos: [],
-    questionCategories: ['weight_balance'],
+    questionCategories: ['mtow_brw_calculations'],
     estimatedStudyHours: 6,
     difficulty: 'intermediate',
     order: 27
@@ -424,7 +424,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP28',
     documents: [],
     videos: [],
-    questionCategories: ['fuel_planning'],
+    questionCategories: ['alternate_holding_fuel'],
     estimatedStudyHours: 7,
     difficulty: 'intermediate',
     order: 28
@@ -437,7 +437,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP29',
     documents: [],
     videos: [],
-    questionCategories: ['navigation', 'fuel_planning'],
+    questionCategories: ['cp_1_inop_equi_time_point', 'tas_groundspeed_calculations'],
     estimatedStudyHours: 8,
     difficulty: 'advanced',
     order: 29
@@ -450,7 +450,7 @@ const atplSubjects: AtplSubject[] = [
     code: 'FP30',
     documents: [],
     videos: [],
-    questionCategories: ['navigation', 'fuel_planning'],
+    questionCategories: ['pnr_1_inop_return_departure', 'tas_groundspeed_calculations'],
     estimatedStudyHours: 8,
     difficulty: 'advanced',
     order: 30

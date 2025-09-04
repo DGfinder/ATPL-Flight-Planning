@@ -464,12 +464,36 @@ const QuestionsPage: React.FC = () => {
 
   const categories: Array<{ value: QuestionCategory | 'all'; label: string }> = [
     { value: 'all', label: 'All Categories' },
-    { value: 'performance', label: 'Performance' },
-    { value: 'navigation', label: 'Navigation' },
-    { value: 'fuel_planning', label: 'Fuel Planning' },
-    { value: 'weight_balance', label: 'Weight & Balance' },
-    { value: 'weather', label: 'Weather' },
-    { value: 'emergency_procedures', label: 'Emergency Procedures' }
+    { value: 'payload_uplift_capability', label: 'Payload Uplift & Capability' },
+    { value: 'mtow_brw_calculations', label: 'MTOW / BRW Calculations' },
+    { value: 'sector_fuel_burn_normal_cruise', label: 'Sector Fuel Burn (Normal Cruise)' },
+    { value: 'trip_fuel_total_flight_plan', label: 'Trip Fuel (Total for Flight Plan)' },
+    { value: 'alternate_holding_fuel', label: 'Alternate & Holding Fuel' },
+    { value: 'final_reserve_variable_reserve_fuel', label: 'Final Reserve & Variable Reserve Fuel' },
+    { value: 'total_fuel_required_ramp_fuel', label: 'Total Fuel Required (Ramp Fuel)' },
+    { value: 'fuel_dumping_time_quantity', label: 'Fuel Dumping (Time & Quantity)' },
+    { value: 'rate_of_climb_roc', label: 'Rate of Climb (ROC)' },
+    { value: 'climb_fuel_distance_time_altitude', label: 'Climb Fuel, Distance & Time to Altitude' },
+    { value: 'intermediate_level_change_cruise_climb', label: 'Intermediate Level Change (Cruise Climb)' },
+    { value: 'selection_cruise_schedules_altitude', label: 'Selection of Cruise Schedules & Altitude' },
+    { value: 'inflight_epr_limitations', label: 'In-flight EPR Limitations' },
+    { value: 'maximum_tat_limitations', label: 'Maximum TAT Limitations' },
+    { value: 'ias_mach_number_conversion', label: 'IAS to Mach Number Conversion' },
+    { value: 'tas_groundspeed_calculations', label: 'TAS & Groundspeed Calculations' },
+    { value: 'descent_point_planning', label: 'Descent Point & Planning' },
+    { value: 'inflight_replanning_holding', label: 'In-flight Replanning (for Holding)' },
+    { value: 'pnr_1_inop_return_departure', label: 'PNR 1-INOP (Return to Departure)' },
+    { value: 'pnr_1_inop_return_alternate', label: 'PNR 1-INOP (Return to Alternate)' },
+    { value: 'cp_1_inop_equi_time_point', label: 'CP 1-INOP (Equi-time Point)' },
+    { value: 'pnr_depressurised', label: 'PNR Depressurised' },
+    { value: 'cp_depressurised', label: 'CP Depressurised' },
+    { value: 'engine_out_drift_down_altitude', label: 'Engine Out Drift-down Altitude' },
+    { value: 'engine_out_fuel_flow_tas', label: 'Engine Out Fuel Flow & TAS' },
+    { value: 'buffet_boundaries_margins', label: 'Buffet Boundaries & Margins' },
+    { value: 'maximum_altitude_capability_normal_ops', label: 'Maximum Altitude Capability (Normal Ops)' },
+    { value: 'maximum_altitude_capability_engine_out', label: 'Maximum Altitude Capability (Engine Out)' },
+    { value: 'abnormal_configuration_gear_down_performance', label: 'Abnormal Configuration (Gear Down Performance)' },
+    { value: 'abnormal_configuration_system_failures', label: 'Abnormal Configuration (System Failures)' }
   ];
 
   return (
