@@ -35,8 +35,8 @@ const QuestionsPage: React.FC = () => {
   const [showFuelPolicy, setShowFuelPolicy] = useState(false);
   
   // Flight plan data per question
-  const [flightPlanData, setFlightPlanData] = useState<Record<string, any>>({});
-  const [currentFlightPlanData, setCurrentFlightPlanData] = useState<any>(null);
+  const [flightPlanData, setFlightPlanData] = useState<Record<string, unknown>>({});
+  const [currentFlightPlanData, setCurrentFlightPlanData] = useState<unknown>(null);
 
   // Load user progress
   useEffect(() => {
@@ -114,7 +114,7 @@ const QuestionsPage: React.FC = () => {
     setShowFlightPlan(true);
   };
 
-  const handleFlightPlanDataChange = (newData: any) => {
+  const handleFlightPlanDataChange = (newData: unknown) => {
     // Save flight plan data for current question
     const questionId = currentQuestion?.id || 'default';
     setFlightPlanData(prev => ({

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Card, CardHeader, CardContent, SecondaryButton, useDesignSystem } from '../../design-system';
 import { Fuel } from 'lucide-react';
+import type { FlightPlanSegment } from '../../types';
 
 interface FuelPolicyModalProps {
   isOpen: boolean;
   onClose: () => void;
   totalTripFuel: number;
-  flightPlanSegments?: any[];
+  flightPlanSegments?: FlightPlanSegment[];
 }
 
 interface FuelBreakdown {
@@ -149,7 +150,7 @@ const FuelPolicyModal: React.FC<FuelPolicyModalProps> = ({ isOpen, onClose, tota
                   <div style={{ fontWeight: 600, color: colors.aviation.navy }}>Segment</div>
                   <div style={{ fontWeight: 600, color: colors.aviation.navy, textAlign: 'right' }}>Zone Fuel (kg)</div>
                   <div style={{ fontWeight: 600, color: colors.aviation.navy, textAlign: 'right' }}>Cumulative</div>
-                  {flightPlanSegments.map((segment: any, index: number) => (
+                  {flightPlanSegments.map((segment: FlightPlanSegment, index: number) => (
                     <React.Fragment key={segment.id}>
                       <div style={{ color: colors.aviation.muted }}>{segment.segment || `Seg ${index + 1}`}</div>
                       <div style={{ textAlign: 'right', color: colors.aviation.navy }}>
@@ -158,7 +159,7 @@ const FuelPolicyModal: React.FC<FuelPolicyModalProps> = ({ isOpen, onClose, tota
                       <div style={{ textAlign: 'right', color: colors.aviation.primary, fontWeight: 600 }}>
                         {flightPlanSegments
                           .slice(0, index + 1)
-                          .reduce((sum: number, seg: any) => sum + (seg.zoneFuel || 0), 0)
+                          .reduce((sum: number, seg: FlightPlanSegment) => sum + (seg.zoneFuel || 0), 0)
                           .toFixed(0)}
                       </div>
                     </React.Fragment>

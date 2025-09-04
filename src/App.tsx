@@ -20,8 +20,8 @@ const ExamPage = () => {
   const { colors, spacing, styles } = useDesignSystem();
   const [showFlightPlan, setShowFlightPlan] = useState(false);
   const [showFuelPolicy, setShowFuelPolicy] = useState(false);
-  const [flightPlanData, setFlightPlanData] = useState<Record<string, any>>({});
-  const [currentFlightPlanData, setCurrentFlightPlanData] = useState<any>(null);
+  const [flightPlanData, setFlightPlanData] = useState<Record<string, unknown>>({});
+  const [currentFlightPlanData, setCurrentFlightPlanData] = useState<unknown>(null);
 
   // Load saved flight plan data on component mount
   useEffect(() => {
@@ -43,7 +43,7 @@ const ExamPage = () => {
     setShowFlightPlan(true);
   };
 
-  const handleFlightPlanDataChange = (newData: any) => {
+  const handleFlightPlanDataChange = (newData: unknown) => {
     const questionId = `exam-question-1`;
     const updatedData = {
       ...flightPlanData,

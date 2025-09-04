@@ -5,16 +5,23 @@ interface SettingsPanelProps {
   onClose: () => void;
 }
 
+type Settings = {
+  theme: string;
+  notifications: boolean;
+  autoSave: boolean;
+  language: string;
+};
+
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ onClose }) => {
   const { colors, spacing, styles } = useDesignSystem();
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<Settings>({
     theme: 'light',
     notifications: true,
     autoSave: true,
     language: 'en'
   });
 
-  const handleSettingChange = (key: string, value: any) => {
+  const handleSettingChange = <K extends keyof Settings>(key: K, value: Settings[K]) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 

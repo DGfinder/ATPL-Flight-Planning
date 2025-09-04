@@ -18,8 +18,8 @@ interface FlightPlanTableProps {
   onFlightPlanUpdate?: (segments: FlightPlanSegment[]) => void;
   initialSegments?: FlightPlanSegment[];
   questionContext?: Question;
-  initialData?: any;
-  onDataChange?: (newData: any) => void;
+  initialData?: { segments?: FlightPlanSegment[]; [key: string]: unknown };
+  onDataChange?: (newData: { segments: FlightPlanSegment[]; [key: string]: unknown }) => void;
 }
 
 const createEmptySegment = (id: string): FlightPlanSegment => ({
@@ -446,7 +446,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '80px',
-                      maxWidth: '100px'
                     }}>
                       Segment
                     </th>
@@ -459,7 +458,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '40px',
-                      maxWidth: '50px'
                     }}>
                       FL
                     </th>
@@ -472,7 +470,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '60px',
-                      maxWidth: '70px'
                     }}>
                       T/DEV
                     </th>
@@ -485,7 +482,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '50px',
-                      maxWidth: '60px'
                     }}>
                       Mach
                     </th>
@@ -498,7 +494,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '50px',
-                      maxWidth: '60px'
                     }}>
                       TAS
                     </th>
@@ -511,7 +506,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '40px',
-                      maxWidth: '50px'
                     }}>
                       TR
                     </th>
@@ -524,7 +518,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '60px',
-                      maxWidth: '70px'
                     }}>
                       Wind
                     </th>
@@ -537,7 +530,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '40px',
-                      maxWidth: '50px'
                     }}>
                       WC
                     </th>
@@ -550,7 +542,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '50px',
-                      maxWidth: '60px'
                     }}>
                       GS
                     </th>
@@ -563,7 +554,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '50px',
-                      maxWidth: '60px'
                     }}>
                       Dist
                     </th>
@@ -576,7 +566,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '50px',
-                      maxWidth: '60px'
                     }}>
                       ETI
                     </th>
@@ -589,7 +578,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '60px',
-                      maxWidth: '70px'
                     }}>
                       Air Dist
                     </th>
@@ -602,7 +590,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '60px',
-                      maxWidth: '70px'
                     }}>
                       Fuel Flow
                     </th>
@@ -615,7 +602,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '60px',
-                      maxWidth: '70px'
                     }}>
                       Zone Fuel
                     </th>
@@ -628,7 +614,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '80px',
-                      maxWidth: '90px'
                     }}>
                       Start WT
                     </th>
@@ -641,7 +626,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '60px',
-                      maxWidth: '70px'
                     }}>
                       EMZW
                     </th>
@@ -654,7 +638,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '80px',
-                      maxWidth: '90px'
                     }}>
                       End WT
                     </th>
@@ -667,7 +650,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '80px',
-                      maxWidth: '90px'
                     }}>
                       Plan Rem
                     </th>
@@ -680,7 +662,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '80px',
-                      maxWidth: '90px'
                     }}>
                       Act Rem
                     </th>
@@ -693,7 +674,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '60px',
-                      maxWidth: '70px'
                     }}>
                       Plan Est
                     </th>
@@ -706,7 +686,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
                       minWidth: '60px',
-                      maxWidth: '70px'
                     }}>
                       ATA
                     </th>
@@ -718,7 +697,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       minWidth: '30px',
-                      maxWidth: '40px'
                     }}>
                       ✕
                     </th>
@@ -1049,20 +1027,16 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
               <Fuel style={{ width: '1rem', height: '1rem', color: colors.aviation.primary }} />
             </div>
             <div style={metricTextStyle}>
-              <button
-                onClick={() => setShowFuelModal(true)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: 0,
-                  cursor: 'pointer',
-                  textAlign: 'left'
-                }}
-              >
-                <p style={metricLabelStyle}>Total Fuel</p>
-                <p style={metricValueStyle}>{totals.fuel.toFixed(0)} kg</p>
-              </button>
+              <p style={metricLabelStyle}>Total Fuel</p>
+              <p style={metricValueStyle}>{totals.fuel.toFixed(0)} kg</p>
             </div>
+            <SecondaryButton
+              size="sm"
+              onClick={() => setShowFuelModal(true)}
+              style={{ marginLeft: 'auto' }}
+            >
+              Fuel Policy
+            </SecondaryButton>
           </div>
         </div>
       </div>

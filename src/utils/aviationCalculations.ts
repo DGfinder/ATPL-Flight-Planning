@@ -328,12 +328,12 @@ export class AviationCalculations {
   }
 
   static parseWindComponent(windString: string): { direction: number; speed: number } | null {
-    const match = windString.match(/(\d{3})(\d{2})/);
+    const match = windString.match(/^(\d{3})(?:\/)?(\d{2,3})$/);
     if (!match) return null;
-    
+
     return {
-      direction: parseInt(match[1]),
-      speed: parseInt(match[2])
+      direction: parseInt(match[1], 10),
+      speed: parseInt(match[2], 10)
     };
   }
 

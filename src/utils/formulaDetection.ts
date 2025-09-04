@@ -147,7 +147,7 @@ export class FormulaDetection {
       
       // Look for formula patterns
       if (this.isFormulaLine(line)) {
-        const formula = this.parseFormulaLine(line, lines, i);
+        const formula = this.parseFormulaLine(line);
         if (formula) {
           extractedFormulas.push(formula);
         }
@@ -171,7 +171,7 @@ export class FormulaDetection {
     return formulaPatterns.some(pattern => pattern.test(line));
   }
 
-  private static parseFormulaLine(line: string, _allLines: string[], _lineIndex: number): Formula | null {
+  private static parseFormulaLine(line: string): Formula | null {
     
     // Simple formula extraction - can be enhanced
     if (line.includes('ETAS') && line.includes('345')) {

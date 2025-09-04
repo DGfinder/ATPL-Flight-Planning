@@ -57,7 +57,7 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
   };
 
   // Format given data for better display
-  const formatGivenData = (data: Record<string, any>) => {
+  const formatGivenData = (data: Record<string, unknown>) => {
     return Object.entries(data).map(([key, value]) => {
       // Clean up key names for display while preserving aviation abbreviations
       const displayKey = key
@@ -67,7 +67,7 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
         .replace(/\s+/g, ' ') // Clean up multiple spaces
         .trim();
       
-      return { key: displayKey, value: value.toString() };
+      return { key: displayKey, value: String(value) };
     });
   };
 

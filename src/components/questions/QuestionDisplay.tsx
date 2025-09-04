@@ -5,7 +5,7 @@ import type { Question } from '../../types';
 interface QuestionDisplayProps {
   question: Question;
   onAnswer?: (answer: string) => void;
-  onAnswerSubmit?: (answer: any) => Promise<void>;
+  onAnswerSubmit?: (answer: string) => Promise<void>;
   onNext?: () => void;
   onPrevious?: () => void;
   hasNext?: boolean;
