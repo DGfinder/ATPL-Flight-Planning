@@ -152,8 +152,8 @@ export class AviationCalculations {
     while (iterations < maxIterations) {
       const fuelFlow = this.getFuelFlow(currentEMZW, machNumber, isaDeviation);
       const zoneFuel = this.calculateZoneFuel(fuelFlow, timeInterval);
-      const actualEMZW = startZoneWeight - zoneFuel;
-      const endZoneWeight = actualEMZW - zoneFuel;
+      const endZoneWeight = startZoneWeight - zoneFuel;
+      const actualEMZW = (startZoneWeight + endZoneWeight) / 2;
       
       // Check if actual EMZW falls within the weight bracket used
       const usedBracket = this.getWeightBracket(currentEMZW);
@@ -181,7 +181,7 @@ export class AviationCalculations {
       emzw: currentEMZW,
       zoneFuel,
       fuelFlow,
-      endZoneWeight: currentEMZW - zoneFuel
+      endZoneWeight: currentEMZW - zoneFuel / 2
     };
   }
 
