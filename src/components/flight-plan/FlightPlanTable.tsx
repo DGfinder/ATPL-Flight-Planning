@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import type { FlightPlanSegment, Question, FlightPlanData } from '../../types';
 import { AviationCalculations } from '../../utils/aviationCalculations';
 import { databaseService } from '../../services/database';
@@ -11,7 +11,6 @@ import {
 } from '../../design-system';
 import { MapPin, Clock, Navigation, Fuel } from 'lucide-react';
 import FuelPolicyModal from './FuelPolicyModal';
-import FlightPlanVisualization from './FlightPlanVisualization';
 
 interface FlightPlanTableProps {
   onFlightPlanUpdate?: (segments: FlightPlanSegment[]) => void;
@@ -244,52 +243,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
     fuel: segments.reduce((sum, seg) => sum + seg.zoneFuel, 0)
   };
 
-  // Convert segments to flight plan data format for visualization
-  const visualizationData = useMemo(() => {
-    // Always create visualization data, even with empty segments
-    // Extract route from question context if available
-    let departure = { code: 'YSSY', name: 'Sydney', lat: -33.9461, lon: 151.1772, elevation: 21 };
-    let arrival = { code: 'YPPH', name: 'Perth', lat: -31.9403, lon: 115.9672, elevation: 67 };
-    
-    if (questionContext) {
-      const title = questionContext.title;
-      const description = questionContext.description;
-      
-      // Look for "from X to Y" pattern in title or description
-      const fromToMatch = (title + ' ' + description).match(/from\s+([A-Z\s]+?)\s+to\s+([A-Z\s]+?)(?:\s+via|\s+in|\s+on|\s+at|$)/i);
-      if (fromToMatch) {
-        const from = fromToMatch[1].trim();
-        const to = fromToMatch[2].trim();
-        
-        // Use airport codes if we can determine them
-        departure = { code: from.substring(0, 4), name: from, lat: -33.9461, lon: 151.1772, elevation: 21 };
-        arrival = { code: to.substring(0, 4), name: to, lat: -31.9403, lon: 115.9672, elevation: 67 };
-      }
-    }
-
-    return {
-      departure,
-      arrival,
-      waypoints: segments
-        .filter(segment => segment.segment && segment.flightLevel > 0) // Only include valid waypoints
-        .map((segment, index) => ({
-          id: index + 1,
-          code: segment.segment,
-          lat: departure.lat + (index * 0.5),
-          lon: departure.lon + (index * 2),
-          altitude: segment.flightLevel * 100,
-          time: `${Math.floor(segment.estimatedTimeInterval / 60)}:${(segment.estimatedTimeInterval % 60).toString().padStart(2, '0')}`,
-          fuel: segment.zoneFuel
-        })),
-      alternates: [],
-      plannedAltitude: segments[0]?.flightLevel * 100 || 37000,
-      distance: totals.distance,
-      estimatedTime: `${Math.floor(totals.time / 60)}:${(totals.time % 60).toString().padStart(2, '0')}`,
-      fuelRequired: totals.fuel,
-      winds: { direction: 270, speed: 45 }
-    };
-  }, [segments, totals, questionContext]);
-
   const { colors, spacing, styles } = useDesignSystem();
 
   const headerStyle: React.CSSProperties = {
@@ -451,128 +404,73 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
       </div>
         </Card>
 
-        {/* Main Content Area - Two Column Layout */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: spacing.scale[6],
-          marginBottom: spacing.scale[4]
-        }}>
-          {/* Left Column - Question Context and Given Data */}
-          <div>
-            {questionContext && (
-              <Card variant="default" padding="lg">
-                <CardHeader title="Question Details" />
-                <CardContent>
-                  {/* Question Context */}
-                  <div style={{
-                    padding: spacing.scale[3],
-                    background: colors.withOpacity(colors.aviation.secondary, 0.05),
-                    borderRadius: spacing.radius.md,
-                    border: `1px solid ${colors.withOpacity(colors.aviation.secondary, 0.1)}`,
-                    marginBottom: spacing.scale[4]
-                  }}>
+        {/* Question Context and Given Data */}
+        {questionContext && (
+          <Card variant="default" padding="lg" style={{ marginBottom: spacing.scale[4] }}>
+            <CardHeader title="Question Details" />
+            <CardContent>
+              {/* Question Context */}
+              <div style={{
+                padding: spacing.scale[3],
+                background: colors.withOpacity(colors.aviation.secondary, 0.05),
+                borderRadius: spacing.radius.md,
+                border: `1px solid ${colors.withOpacity(colors.aviation.secondary, 0.1)}`,
+                marginBottom: spacing.scale[4]
+              }}>
+                <p style={{ 
+                  fontSize: '0.875rem', 
+                  fontWeight: 500, 
+                  color: colors.aviation.navy,
+                  marginBottom: spacing.scale[2]
+                }}>
+                  Question Context:
+                </p>
+                <p style={{ 
+                  fontSize: '0.75rem', 
+                  color: colors.aviation.text,
+                  lineHeight: '1.4',
+                  marginBottom: spacing.scale[3]
+                }}>
+                  {questionContext.description}
+                </p>
+                
+                {/* Given Data */}
+                {questionContext.givenData && Object.keys(questionContext.givenData).length > 0 && (
+                  <div>
                     <p style={{ 
-                      fontSize: '0.875rem', 
+                      fontSize: '0.75rem', 
                       fontWeight: 500, 
                       color: colors.aviation.navy,
                       marginBottom: spacing.scale[2]
                     }}>
-                      Question Context:
+                      Given Data:
                     </p>
-                    <p style={{ 
-                      fontSize: '0.75rem', 
-                      color: colors.aviation.text,
-                      lineHeight: '1.4',
-                      marginBottom: spacing.scale[3]
+                    <div style={{ 
+                      display: 'grid', 
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
+                      gap: spacing.scale[2],
+                      fontSize: '0.7rem'
                     }}>
-                      {questionContext.description}
-                    </p>
-                    
-                    {/* Given Data */}
-                    {questionContext.givenData && Object.keys(questionContext.givenData).length > 0 && (
-                      <div>
-                        <p style={{ 
-                          fontSize: '0.75rem', 
-                          fontWeight: 500, 
-                          color: colors.aviation.navy,
-                          marginBottom: spacing.scale[2]
+                      {Object.entries(questionContext.givenData).map(([key, value]) => (
+                        <div key={key} style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
+                          background: colors.withOpacity(colors.aviation.primary, 0.05),
+                          borderRadius: spacing.radius.sm,
+                          border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`
                         }}>
-                          Given Data:
-                        </p>
-                        <div style={{ 
-                          display: 'grid', 
-                          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
-                          gap: spacing.scale[2],
-                          fontSize: '0.7rem'
-                        }}>
-                          {Object.entries(questionContext.givenData).map(([key, value]) => (
-                            <div key={key} style={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
-                              background: colors.withOpacity(colors.aviation.primary, 0.05),
-                              borderRadius: spacing.radius.sm,
-                              border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`
-                            }}>
-                              <span style={{ fontWeight: 500, color: colors.aviation.navy }}>{key}:</span>
-                              <span style={{ color: colors.aviation.text }}>{value}</span>
-                            </div>
-                          ))}
+                          <span style={{ fontWeight: 500, color: colors.aviation.navy }}>{key}:</span>
+                          <span style={{ color: colors.aviation.text }}>{value}</span>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-
-          {/* Right Column - Flight Visualization */}
-          <div>
-            <Card variant="default" padding="lg">
-              <CardHeader title="Flight Profile Visualization" />
-              <CardContent>
-                <div style={{
-                  height: '400px',
-                  background: colors.withOpacity(colors.aviation.primary, 0.02),
-                  borderRadius: spacing.radius.lg,
-                  border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`,
-                  padding: spacing.scale[4],
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}>
-                  <div style={{
-                    position: 'absolute',
-                    top: spacing.scale[3],
-                    left: spacing.scale[3],
-                    right: spacing.scale[3],
-                    bottom: spacing.scale[3]
-                  }}>
-                    <FlightPlanVisualization 
-                      flightPlan={visualizationData}
-                      className="compact-visualization"
-                    />
-                    {/* Debug info */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '10px',
-                      right: '10px',
-                      background: 'rgba(0,0,0,0.7)',
-                      color: 'white',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      fontSize: '10px',
-                      zIndex: 1000
-                    }}>
-                      Segments: {segments.filter(s => s.segment).length}
+                      ))}
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Flight Plan Table */}
         <Card variant="default" padding="none" style={{ marginBottom: spacing.scale[4] }}>
@@ -1148,7 +1046,129 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
           </CardContent>
         </Card>
 
-        {/* Learning Mode Banner */}
+        {/* Simple Altitude Profile Graph */}
+        <Card variant="default" padding="lg" style={{ marginBottom: spacing.scale[4] }}>
+          <CardHeader title="Flight Profile" />
+          <CardContent>
+            <div style={{
+              height: '200px',
+              background: colors.withOpacity(colors.aviation.primary, 0.02),
+              borderRadius: spacing.radius.lg,
+              border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`,
+              padding: spacing.scale[4],
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Simple SVG Altitude Profile */}
+              <svg
+                width="100%"
+                height="100%"
+                style={{ position: 'absolute', top: 0, left: 0 }}
+                viewBox="0 0 800 200"
+                preserveAspectRatio="none"
+              >
+                {/* Grid lines */}
+                <defs>
+                  <pattern id="grid" width="40" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 20" fill="none" stroke={colors.withOpacity(colors.aviation.primary, 0.1)} strokeWidth="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+                
+                {/* Altitude profile line */}
+                <path
+                  d={(() => {
+                    const validSegments = segments.filter(s => s.segment && s.flightLevel > 0);
+                    if (validSegments.length === 0) {
+                      // Show a simple horizontal line at FL370
+                      return "M 50 100 L 750 100";
+                    }
+                    
+                    const points = validSegments.map((segment, index) => {
+                      const x = 50 + (index * (700 / Math.max(validSegments.length - 1, 1)));
+                      const y = 180 - ((segment.flightLevel / 500) * 160); // Scale FL to height
+                      return `${x},${y}`;
+                    });
+                    
+                    return `M ${points.join(' L ')}`;
+                  })()}
+                  fill="none"
+                  stroke={colors.aviation.primary}
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                
+                {/* Waypoint markers */}
+                {segments
+                  .filter(s => s.segment && s.flightLevel > 0)
+                  .map((segment, index) => {
+                    const x = 50 + (index * (700 / Math.max(segments.filter(s => s.segment && s.flightLevel > 0).length - 1, 1)));
+                    const y = 180 - ((segment.flightLevel / 500) * 160);
+                    return (
+                      <g key={segment.id}>
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r="4"
+                          fill={colors.aviation.primary}
+                          stroke={colors.white}
+                          strokeWidth="2"
+                        />
+                        <text
+                          x={x}
+                          y={y - 10}
+                          textAnchor="middle"
+                          fontSize="10"
+                          fill={colors.aviation.navy}
+                          fontWeight="500"
+                        >
+                          {segment.segment}
+                        </text>
+                        <text
+                          x={x}
+                          y={y + 20}
+                          textAnchor="middle"
+                          fontSize="8"
+                          fill={colors.aviation.text}
+                        >
+                          FL{segment.flightLevel}
+                        </text>
+                      </g>
+                    );
+                  })}
+                
+                {/* Y-axis labels */}
+                <text x="10" y="30" fontSize="10" fill={colors.aviation.text} textAnchor="middle">FL500</text>
+                <text x="10" y="80" fontSize="10" fill={colors.aviation.text} textAnchor="middle">FL400</text>
+                <text x="10" y="130" fontSize="10" fill={colors.aviation.text} textAnchor="middle">FL300</text>
+                <text x="10" y="180" fontSize="10" fill={colors.aviation.text} textAnchor="middle">FL200</text>
+                
+                {/* X-axis label */}
+                <text x="400" y="195" fontSize="10" fill={colors.aviation.text} textAnchor="middle">Distance (nm)</text>
+              </svg>
+              
+              {/* Summary stats */}
+              <div style={{
+                position: 'absolute',
+                top: spacing.scale[2],
+                right: spacing.scale[2],
+                background: colors.withOpacity(colors.white, 0.9),
+                padding: spacing.scale[2],
+                borderRadius: spacing.radius.sm,
+                fontSize: '0.75rem',
+                color: colors.aviation.navy,
+                border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`
+              }}>
+                <div style={{ fontWeight: 500, marginBottom: spacing.scale[1] }}>Flight Summary</div>
+                <div>Total Distance: {totals.distance.toFixed(0)} nm</div>
+                <div>Total Time: {Math.floor(totals.time / 60)}:{(totals.time % 60).toString().padStart(2, '0')}</div>
+                <div>Total Fuel: {totals.fuel.toFixed(0)} kg</div>
+                <div>Segments: {segments.filter(s => s.segment).length}</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         <div style={{
           marginBottom: spacing.scale[4],
           padding: spacing.scale[3],
