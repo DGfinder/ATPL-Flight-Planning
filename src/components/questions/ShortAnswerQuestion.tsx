@@ -39,6 +39,14 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
   );
   const [startTime] = useState<Date>(new Date());
   const [isSubmitted, setIsSubmitted] = useState<boolean>(userAnswer !== undefined);
+  
+  // Debug logging
+  console.log('ShortAnswerQuestion render:', {
+    isSubmitted,
+    userAnswer: !!userAnswer,
+    answers,
+    questionId: question.id
+  });
   const [validationResults, setValidationResults] = useState<Record<string, FieldValidation>>({});
 
   // Format question text for better readability
@@ -99,12 +107,18 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
   const handleInputChange = (field: string, value: string) => {
     if (isSubmitted) return;
     
-    // Allow numbers, decimal points, and negative signs
-    const numericValue = value.replace(/[^\d.-]/g, '');
-    setAnswers(prev => ({
-      ...prev,
-      [field]: numericValue
-    }));
+    console.log('handleInputChange called with:', field, value);
+    
+    // Only allow whole numbers (no decimals)
+    const wholeNumberValue = value.replace(/[^\d]/g, '');
+    setAnswers(prev => {
+      const newAnswers = {
+        ...prev,
+        [field]: wholeNumberValue
+      };
+      console.log('New answers state:', newAnswers);
+      return newAnswers;
+    });
   };
 
   const handleSubmit = () => {
@@ -235,7 +249,7 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
           marginBottom: spacing.scale[3],
           opacity: 0.8
         }}>
-          Enter your answer here
+          Enter your answer here (whole numbers only)
         </p>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
@@ -249,9 +263,12 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
                 {expected.description || expected.field} ({expected.unit}):
               </label>
               <input
-                type="text"
+                type="number"
                 value={answers[expected.field] || ''}
-                onChange={(e) => handleInputChange(expected.field, e.target.value)}
+                onChange={(e) => {
+                  console.log('Input changed:', e.target.value);
+                  handleInputChange(expected.field, e.target.value);
+                }}
                 disabled={isSubmitted}
                 style={{
                   padding: spacing.scale[3],
@@ -263,13 +280,16 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
                   width: '100%',
                   transition: 'border-color 0.2s ease'
                 }}
-                placeholder={`Enter your answer here (${expected.unit})`}
+                placeholder={`Enter your answer here (whole number, ${expected.unit})`}
                 onFocus={(e) => {
                   e.target.style.borderColor = colors.aviation.primary;
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = colors.gray[300];
                 }}
+                min="0"
+                max="99999"
+                step="1"
               />
               
               {showFeedback && isSubmitted && validationResults[expected.field] && (

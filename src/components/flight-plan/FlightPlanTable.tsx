@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { FlightPlanSegment, Question, FlightPlanData } from '../../types';
 import { databaseService } from '../../services/database';
 import { 
@@ -8,9 +9,9 @@ import {
   SecondaryButton,
   useDesignSystem 
 } from '../../design-system';
+import PlaneIcon from './PlaneIcon';
 import { MapPin, Clock, Navigation, Fuel } from 'lucide-react';
 import FuelPolicyModal from './FuelPolicyModal';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface FlightPlanTableProps {
   onFlightPlanUpdate?: (segments: FlightPlanSegment[]) => void;
@@ -1058,8 +1059,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                     dataKey="altitude"
                     stroke={colors.aviation.primary}
                     strokeWidth={3}
-                    dot={{ fill: colors.aviation.primary, strokeWidth: 2, r: 6 }}
-                    activeDot={{ r: 8, stroke: colors.aviation.primary, strokeWidth: 2 }}
+                    dot={(props) => <PlaneIcon {...props} />}
+                    activeDot={(props) => <PlaneIcon {...props} r={8} />}
                   />
                 </LineChart>
               </ResponsiveContainer>
