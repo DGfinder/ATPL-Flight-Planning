@@ -364,33 +364,95 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                 <Navigation style={{ width: '1.25rem', height: '1.25rem', color: colors.aviation.primary }} />
                 Interactive Flight Planning Sheet
               </h1>
-              <p style={{ ...styles.caption, marginTop: spacing.scale[1] }}>
-                Sydney → Perth | Boeing 727
-              </p>
-              {questionContext && (
-                <div style={{
-                  marginTop: spacing.scale[2],
-                  padding: spacing.scale[2],
-                  background: colors.withOpacity(colors.aviation.secondary, 0.05),
-                  borderRadius: spacing.radius.md,
-                  border: `1px solid ${colors.withOpacity(colors.aviation.secondary, 0.1)}`
-                }}>
-                  <p style={{ 
-                    fontSize: '0.875rem', 
-                    fontWeight: 500, 
-                    color: colors.aviation.navy,
-                    marginBottom: spacing.scale[1]
-                  }}>
-                    Question Context:
+              {questionContext ? (
+                <div>
+                  <p style={{ ...styles.caption, marginTop: spacing.scale[1] }}>
+                    {(() => {
+                      // Extract route information from question title/description
+                      const title = questionContext.title;
+                      const description = questionContext.description;
+                      
+                      // Look for "from X to Y" pattern in title or description
+                      const fromToMatch = (title + ' ' + description).match(/from\s+([A-Z\s]+?)\s+to\s+([A-Z\s]+?)(?:\s+via|\s+in|\s+on|\s+at|$)/i);
+                      if (fromToMatch) {
+                        const from = fromToMatch[1].trim();
+                        const to = fromToMatch[2].trim();
+                        return `${from} → ${to}`;
+                      }
+                      
+                      // Look for aircraft type in title
+                      const aircraftMatch = title.match(/(B\d{3}|A\d{3}|Boeing\s+\d{3}|Airbus\s+\d{3})/i);
+                      const aircraft = aircraftMatch ? aircraftMatch[1] : 'Aircraft';
+                      
+                      // Fallback to showing just the aircraft type
+                      return aircraft;
+                    })()}
                   </p>
-                  <p style={{ 
-                    fontSize: '0.75rem', 
-                    color: colors.aviation.text,
-                    lineHeight: '1.4'
+                  
+                  {/* Question Context */}
+                  <div style={{
+                    marginTop: spacing.scale[2],
+                    padding: spacing.scale[2],
+                    background: colors.withOpacity(colors.aviation.secondary, 0.05),
+                    borderRadius: spacing.radius.md,
+                    border: `1px solid ${colors.withOpacity(colors.aviation.secondary, 0.1)}`
                   }}>
-                    {questionContext.title}
-                  </p>
+                    <p style={{ 
+                      fontSize: '0.875rem', 
+                      fontWeight: 500, 
+                      color: colors.aviation.navy,
+                      marginBottom: spacing.scale[1]
+                    }}>
+                      Question Context:
+                    </p>
+                    <p style={{ 
+                      fontSize: '0.75rem', 
+                      color: colors.aviation.text,
+                      lineHeight: '1.4',
+                      marginBottom: spacing.scale[2]
+                    }}>
+                      {questionContext.title}
+                    </p>
+                    
+                    {/* Given Data */}
+                    {questionContext.givenData && Object.keys(questionContext.givenData).length > 0 && (
+                      <div style={{ marginTop: spacing.scale[2] }}>
+                        <p style={{ 
+                          fontSize: '0.75rem', 
+                          fontWeight: 500, 
+                          color: colors.aviation.navy,
+                          marginBottom: spacing.scale[1]
+                        }}>
+                          Given Data:
+                        </p>
+                        <div style={{ 
+                          display: 'grid', 
+                          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+                          gap: spacing.scale[1],
+                          fontSize: '0.7rem'
+                        }}>
+                          {Object.entries(questionContext.givenData).map(([key, value]) => (
+                            <div key={key} style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              padding: `${spacing.scale[1]} ${spacing.scale[2]}`,
+                              background: colors.withOpacity(colors.aviation.primary, 0.05),
+                              borderRadius: spacing.radius.sm,
+                              border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`
+                            }}>
+                              <span style={{ fontWeight: 500, color: colors.aviation.navy }}>{key}:</span>
+                              <span style={{ color: colors.aviation.text }}>{value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
+              ) : (
+                <p style={{ ...styles.caption, marginTop: spacing.scale[1] }}>
+                  Flight Planning Sheet
+                </p>
               )}
             </div>
             <div style={buttonGroupStyle}>
