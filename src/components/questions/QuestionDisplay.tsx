@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Card, PrimaryButton, SecondaryButton, useDesignSystem } from '../../design-system';
-import type { Question } from '../../types';
+import type { Question, UserAnswer } from '../../types';
 
 interface QuestionDisplayProps {
   question: Question;
   onAnswer?: (answer: string) => void;
-  onAnswerSubmit?: (answer: any) => Promise<void>;
+  onAnswerSubmit?: (answer: UserAnswer) => Promise<void>;
   onNext?: () => void;
   onPrevious?: () => void;
   hasNext?: boolean;

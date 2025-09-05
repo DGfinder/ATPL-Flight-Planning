@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import type { FlightPlanSegment, Question } from '../../types';
+import type { FlightPlanSegment, Question, FlightPlanData } from '../../types';
 import { AviationCalculations } from '../../utils/aviationCalculations';
 import { databaseService } from '../../services/database';
 import { 
@@ -18,8 +18,8 @@ interface FlightPlanTableProps {
   onFlightPlanUpdate?: (segments: FlightPlanSegment[]) => void;
   initialSegments?: FlightPlanSegment[];
   questionContext?: Question;
-  initialData?: any;
-  onDataChange?: (newData: any) => void;
+  initialData?: FlightPlanData;
+  onDataChange?: (newData: FlightPlanData) => void;
 }
 
 const createEmptySegment = (id: string): FlightPlanSegment => ({

@@ -115,6 +115,11 @@ export interface FlightPlanSegment {
   actualTimeArrival: string;
 }
 
+export interface FlightPlanData {
+  segments: FlightPlanSegment[];
+  timestamp?: string;
+}
+
 export interface FlightPlan {
   id: string;
   aircraft: string;

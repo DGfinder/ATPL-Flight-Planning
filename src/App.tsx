@@ -9,7 +9,7 @@ import NewDashboardPage from './pages/NewDashboardPage';
 import { useDesignSystem } from './design-system';
 import FlightPlanTable from './components/flight-plan/FlightPlanTable';
 
-import type { FlightPlanSegment } from './types';
+import type { FlightPlanSegment, FlightPlanData } from './types';
 
 // Import actual page components
 import QuestionsPage from './pages/QuestionsPage';
@@ -20,8 +20,8 @@ const ExamPage = () => {
   const { colors, spacing, styles } = useDesignSystem();
   const [showFlightPlan, setShowFlightPlan] = useState(false);
   const [showFuelPolicy, setShowFuelPolicy] = useState(false);
-  const [flightPlanData, setFlightPlanData] = useState<Record<string, any>>({});
-  const [currentFlightPlanData, setCurrentFlightPlanData] = useState<any>(null);
+  const [flightPlanData, setFlightPlanData] = useState<Record<string, FlightPlanData>>({});
+  const [currentFlightPlanData, setCurrentFlightPlanData] = useState<FlightPlanData | null>(null);
 
   // Load saved flight plan data on component mount
   useEffect(() => {
@@ -43,7 +43,7 @@ const ExamPage = () => {
     setShowFlightPlan(true);
   };
 
-  const handleFlightPlanDataChange = (newData: any) => {
+  const handleFlightPlanDataChange = (newData: FlightPlanData) => {
     const questionId = `exam-question-1`;
     const updatedData = {
       ...flightPlanData,
@@ -221,7 +221,7 @@ const ExamPage = () => {
               </div>
               <div style={{ flex: 1, overflow: 'auto' }}>
                 <FlightPlanTable 
-                  initialData={currentFlightPlanData}
+                  initialData={currentFlightPlanData ?? undefined}
                   onDataChange={handleFlightPlanDataChange}
                 />
               </div>
