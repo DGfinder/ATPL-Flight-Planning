@@ -10,8 +10,12 @@ import { useDesignSystem } from './design-system';
 import { Navigation } from 'lucide-react';
 import FlightPlanTable from './components/flight-plan/FlightPlanTable';
 import TrialExamGenerator from './components/exam/TrialExamGenerator';
+import ExamInterface from './components/exam/ExamInterface';
+import ExamResults from './components/exam/ExamResults';
+import QuestionReview from './components/exam/QuestionReview';
 
-import type { FlightPlanSegment, TrialExam } from './types';
+import type { FlightPlanSegment, TrialExam, ExamSession, ExamResult } from './types';
+import { ExamSessionManager } from './services/examService';
 
 // Import actual page components
 import QuestionsPage from './pages/QuestionsPage';
@@ -21,7 +25,8 @@ import NotesPage from './pages/NotesPage';
 const ExamPage = () => {
   const { colors, spacing, styles } = useDesignSystem();
   const [currentExam, setCurrentExam] = useState<TrialExam | null>(null);
-  const [examMode, setExamMode] = useState<'generator' | 'taking' | 'results'>('generator');
+  const [examMode, setExamMode] = useState<'generator' | 'taking' | 'results' | 'review'>('generator');
+  const [examResult, setExamResult] = useState<ExamResult | null>(null);
 
   const handleExamGenerated = (exam: TrialExam) => {
     setCurrentExam(exam);
@@ -32,13 +37,35 @@ const ExamPage = () => {
     setExamMode('taking');
   };
 
-  // const handleExamComplete = () => {
-  //   setExamMode('results');
-  // };
+  const handleExamComplete = (session: ExamSession) => {
+    if (currentExam) {
+      const result = ExamSessionManager.calculateResults(currentExam, session);
+      setExamResult(result);
+      setExamMode('results');
+      // Clear the session from localStorage
+      ExamSessionManager.clearSession();
+    }
+  };
 
   const handleBackToGenerator = () => {
     setExamMode('generator');
     setCurrentExam(null);
+    setExamResult(null);
+  };
+
+  const handleReviewQuestions = () => {
+    setExamMode('review');
+  };
+
+  const handleBackToResults = () => {
+    setExamMode('results');
+  };
+
+  const handleExitExam = () => {
+    // Confirm before exiting
+    if (window.confirm('Are you sure you want to exit the exam? Your progress will be saved.')) {
+      setExamMode('generator');
+    }
   };
 
   return (
@@ -92,118 +119,26 @@ const ExamPage = () => {
         )}
 
         {examMode === 'taking' && currentExam && (
-          <div style={{
-            padding: spacing.scale[6],
-            background: colors.white,
-            borderRadius: spacing.radius.lg,
-            border: `1px solid ${colors.gray[200]}`,
-            textAlign: 'center'
-          }}>
-            <h2 style={{ 
-              ...styles.heading, 
-              fontSize: '1.5rem', 
-              color: colors.aviation.navy,
-              marginBottom: spacing.scale[4]
-            }}>
-              Exam Interface Coming Soon
-            </h2>
-            <p style={{ 
-              ...styles.body, 
-              color: colors.aviation.muted,
-              marginBottom: spacing.scale[4]
-            }}>
-              The exam taking interface with timer, question navigation, and flight planning tools will be available soon.
-            </p>
-            <div style={{
-              padding: spacing.scale[4],
-              background: colors.withOpacity(colors.aviation.primary, 0.05),
-              borderRadius: spacing.radius.md,
-              border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`,
-              marginBottom: spacing.scale[4]
-            }}>
-              <h3 style={{ fontSize: '1rem', color: colors.aviation.navy, marginBottom: spacing.scale[2] }}>
-                Generated Exam Details
-              </h3>
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
-                gap: spacing.scale[3],
-                fontSize: '0.875rem' 
-              }}>
-                <div>
-                  <strong>Scenario:</strong> {currentExam.scenario}
-                </div>
-                <div>
-                  <strong>Questions:</strong> {currentExam.totalQuestions}
-                </div>
-                <div>
-                  <strong>Total Marks:</strong> {currentExam.totalMarks}
-                </div>
-                <div>
-                  <strong>Time Limit:</strong> {currentExam.timeLimit}min
-                </div>
-                <div>
-                  <strong>Seed:</strong> {currentExam.seed}
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={handleBackToGenerator}
-              style={{
-                padding: `${spacing.scale[3]} ${spacing.scale[4]}`,
-                background: colors.aviation.primary,
-                color: colors.white,
-                border: 'none',
-                borderRadius: spacing.radius.md,
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
-            >
-              Back to Generator
-            </button>
-          </div>
+          <ExamInterface
+            exam={currentExam}
+            onExamComplete={handleExamComplete}
+            onExitExam={handleExitExam}
+          />
         )}
 
-        {examMode === 'results' && currentExam && (
-          <div style={{
-            padding: spacing.scale[6],
-            background: colors.white,
-            borderRadius: spacing.radius.lg,
-            border: `1px solid ${colors.gray[200]}`,
-            textAlign: 'center'
-          }}>
-            <h2 style={{ 
-              ...styles.heading, 
-              fontSize: '1.5rem', 
-              color: colors.aviation.navy,
-              marginBottom: spacing.scale[4]
-            }}>
-              Exam Results
-            </h2>
-            <p style={{ 
-              ...styles.body, 
-              color: colors.aviation.muted,
-              marginBottom: spacing.scale[4]
-            }}>
-              Results display with detailed scoring and performance analytics will be available soon.
-            </p>
-            <button
-              onClick={handleBackToGenerator}
-              style={{
-                padding: `${spacing.scale[3]} ${spacing.scale[4]}`,
-                background: colors.aviation.primary,
-                color: colors.white,
-                border: 'none',
-                borderRadius: spacing.radius.md,
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                cursor: 'pointer'
-              }}
-            >
-              Generate New Exam
-            </button>
-          </div>
+        {examMode === 'results' && examResult && (
+          <ExamResults
+            result={examResult}
+            onNewExam={handleBackToGenerator}
+            onReviewQuestions={handleReviewQuestions}
+          />
+        )}
+
+        {examMode === 'review' && examResult && (
+          <QuestionReview
+            result={examResult}
+            onBackToResults={handleBackToResults}
+          />
         )}
       </div>
     </div>
