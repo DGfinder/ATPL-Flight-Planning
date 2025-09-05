@@ -6,7 +6,6 @@ import {
   Card, 
   CardHeader, 
   CardContent, 
-  PrimaryButton, 
   SecondaryButton,
   useDesignSystem 
 } from '../../design-system';
@@ -71,7 +70,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
     }
   });
   const [showFuelModal, setShowFuelModal] = useState(false);
-  const [showVisualization, setShowVisualization] = useState(false);
 
   // Update data when segments change
   const updateData = useCallback((newSegments: FlightPlanSegment[]) => {
@@ -388,66 +386,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       return aircraft;
                     })()}
                   </p>
-                  
-                  {/* Question Context */}
-                  <div style={{
-                    marginTop: spacing.scale[2],
-                    padding: spacing.scale[2],
-                    background: colors.withOpacity(colors.aviation.secondary, 0.05),
-                    borderRadius: spacing.radius.md,
-                    border: `1px solid ${colors.withOpacity(colors.aviation.secondary, 0.1)}`
-                  }}>
-                    <p style={{ 
-                      fontSize: '0.875rem', 
-                      fontWeight: 500, 
-                      color: colors.aviation.navy,
-                      marginBottom: spacing.scale[1]
-                    }}>
-                      Question Context:
-                    </p>
-                    <p style={{ 
-                      fontSize: '0.75rem', 
-                      color: colors.aviation.text,
-                      lineHeight: '1.4',
-                      marginBottom: spacing.scale[2]
-                    }}>
-                      {questionContext.title}
-                    </p>
-                    
-                    {/* Given Data */}
-                    {questionContext.givenData && Object.keys(questionContext.givenData).length > 0 && (
-                      <div style={{ marginTop: spacing.scale[2] }}>
-                        <p style={{ 
-                          fontSize: '0.75rem', 
-                          fontWeight: 500, 
-                          color: colors.aviation.navy,
-                          marginBottom: spacing.scale[1]
-                        }}>
-                          Given Data:
-                        </p>
-                        <div style={{ 
-                          display: 'grid', 
-                          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-                          gap: spacing.scale[1],
-                          fontSize: '0.7rem'
-                        }}>
-                          {Object.entries(questionContext.givenData).map(([key, value]) => (
-                            <div key={key} style={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                              padding: `${spacing.scale[1]} ${spacing.scale[2]}`,
-                              background: colors.withOpacity(colors.aviation.primary, 0.05),
-                              borderRadius: spacing.radius.sm,
-                              border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`
-                            }}>
-                              <span style={{ fontWeight: 500, color: colors.aviation.navy }}>{key}:</span>
-                              <span style={{ color: colors.aviation.text }}>{value}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
                 </div>
               ) : (
                 <p style={{ ...styles.caption, marginTop: spacing.scale[1] }}>
@@ -456,34 +394,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
               )}
             </div>
             <div style={buttonGroupStyle}>
-              {visualizationData && (
-                <PrimaryButton
-                  onClick={() => setShowVisualization(!showVisualization)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: spacing.scale[2],
-                    background: showVisualization ? colors.aviation.secondary : colors.aviation.primary,
-                    border: `2px solid ${showVisualization ? colors.aviation.secondary : colors.aviation.primary}`,
-                    position: 'relative'
-                  }}
-                >
-                  {showVisualization ? 'Hide Route Visualization' : 'Show Route Visualization'}
-                  {!showVisualization && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '-4px',
-                      right: '-4px',
-                      width: '12px',
-                      height: '12px',
-                      borderRadius: '50%',
-                      background: colors.aviation.secondary,
-                      border: `2px solid ${colors.white}`,
-                      animation: 'pulse 2s infinite'
-                    }}></div>
-                  )}
-                </PrimaryButton>
-              )}
               <SecondaryButton
                 onClick={addSegment}
                 style={{
@@ -526,6 +436,117 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
         </div>
       </div>
         </Card>
+
+        {/* Main Content Area - Two Column Layout */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: spacing.scale[6],
+          marginBottom: spacing.scale[4]
+        }}>
+          {/* Left Column - Question Context and Given Data */}
+          <div>
+            {questionContext && (
+              <Card variant="default" padding="lg">
+                <CardHeader title="Question Details" />
+                <CardContent>
+                  {/* Question Context */}
+                  <div style={{
+                    padding: spacing.scale[3],
+                    background: colors.withOpacity(colors.aviation.secondary, 0.05),
+                    borderRadius: spacing.radius.md,
+                    border: `1px solid ${colors.withOpacity(colors.aviation.secondary, 0.1)}`,
+                    marginBottom: spacing.scale[4]
+                  }}>
+                    <p style={{ 
+                      fontSize: '0.875rem', 
+                      fontWeight: 500, 
+                      color: colors.aviation.navy,
+                      marginBottom: spacing.scale[2]
+                    }}>
+                      Question Context:
+                    </p>
+                    <p style={{ 
+                      fontSize: '0.75rem', 
+                      color: colors.aviation.text,
+                      lineHeight: '1.4',
+                      marginBottom: spacing.scale[3]
+                    }}>
+                      {questionContext.description}
+                    </p>
+                    
+                    {/* Given Data */}
+                    {questionContext.givenData && Object.keys(questionContext.givenData).length > 0 && (
+                      <div>
+                        <p style={{ 
+                          fontSize: '0.75rem', 
+                          fontWeight: 500, 
+                          color: colors.aviation.navy,
+                          marginBottom: spacing.scale[2]
+                        }}>
+                          Given Data:
+                        </p>
+                        <div style={{ 
+                          display: 'grid', 
+                          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
+                          gap: spacing.scale[2],
+                          fontSize: '0.7rem'
+                        }}>
+                          {Object.entries(questionContext.givenData).map(([key, value]) => (
+                            <div key={key} style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
+                              background: colors.withOpacity(colors.aviation.primary, 0.05),
+                              borderRadius: spacing.radius.sm,
+                              border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`
+                            }}>
+                              <span style={{ fontWeight: 500, color: colors.aviation.navy }}>{key}:</span>
+                              <span style={{ color: colors.aviation.text }}>{value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Right Column - Flight Visualization */}
+          <div>
+            {visualizationData && (
+              <Card variant="default" padding="lg">
+                <CardHeader title="Flight Profile Visualization" />
+                <CardContent>
+                  <div style={{
+                    height: '400px',
+                    background: colors.withOpacity(colors.aviation.primary, 0.02),
+                    borderRadius: spacing.radius.lg,
+                    border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`,
+                    padding: spacing.scale[4],
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}>
+                    <div style={{
+                      position: 'absolute',
+                      top: spacing.scale[3],
+                      left: spacing.scale[3],
+                      right: spacing.scale[3],
+                      bottom: spacing.scale[3]
+                    }}>
+                      <FlightPlanVisualization 
+                        flightPlan={visualizationData}
+                        className="compact-visualization"
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
 
         {/* Flight Plan Table */}
         <Card variant="default" padding="none" style={{ marginBottom: spacing.scale[4] }}>
@@ -1100,19 +1121,6 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
       </div>
           </CardContent>
         </Card>
-
-        {/* Flight Visualization (conditionally shown) */}
-        {showVisualization && visualizationData && (
-          <div style={{ 
-            marginBottom: spacing.scale[4],
-            border: `1px solid ${colors.gray[200]}`,
-            borderRadius: spacing.radius.lg,
-            overflow: 'hidden',
-            boxShadow: `0 4px 6px ${colors.withOpacity(colors.gray[900], 0.1)}`
-          }}>
-            <FlightPlanVisualization flightPlan={visualizationData} />
-          </div>
-        )}
 
         {/* Learning Mode Banner */}
         <div style={{
