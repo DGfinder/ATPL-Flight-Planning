@@ -10,6 +10,7 @@ interface MultipleChoiceQuestionProps {
   userAnswer?: UserAnswer;
   onOpenFlightPlan?: () => void;
   onOpenFuelPolicy?: () => void;
+  hideInteractiveTools?: boolean; // New prop to hide tools
 }
 
 const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
@@ -18,7 +19,8 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
   showFeedback = false,
   userAnswer,
   onOpenFlightPlan,
-  onOpenFuelPolicy
+  onOpenFuelPolicy,
+  hideInteractiveTools = false
 }) => {
   const { colors, spacing, styles } = useDesignSystem();
   const [selectedOption, setSelectedOption] = useState<number | null>(
@@ -235,55 +237,57 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
         </div>
       ))}
       
-      {/* Interactive Tools Section */}
-      <div style={{
-        marginTop: spacing.scale[4],
-        padding: spacing.scale[3],
-        background: colors.withOpacity(colors.aviation.secondary, 0.05),
-        borderRadius: spacing.radius.lg,
-        border: `1px solid ${colors.withOpacity(colors.aviation.secondary, 0.1)}`
-      }}>
-        <h4 style={{ 
-          fontSize: '0.875rem', 
-          fontWeight: 600, 
-          color: colors.aviation.navy,
-          marginBottom: spacing.scale[2]
+      {/* Interactive Tools Section - Only show if not hidden */}
+      {!hideInteractiveTools && (
+        <div style={{
+          marginTop: spacing.scale[4],
+          padding: spacing.scale[3],
+          background: colors.withOpacity(colors.aviation.secondary, 0.05),
+          borderRadius: spacing.radius.lg,
+          border: `1px solid ${colors.withOpacity(colors.aviation.secondary, 0.1)}`
         }}>
-          Interactive Tools:
-        </h4>
-        <div style={{ 
-          display: 'flex', 
-          gap: spacing.scale[2],
-          flexWrap: 'wrap'
-        }}>
-          <Button
-            variant="secondary"
-            onClick={onOpenFlightPlan}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: spacing.scale[2],
-              fontSize: '0.875rem'
-            }}
-          >
-            <Plane style={{ width: '1rem', height: '1rem' }} />
-            Flight Plan
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={onOpenFuelPolicy}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: spacing.scale[2],
-              fontSize: '0.875rem'
-            }}
-          >
-            <Fuel style={{ width: '1rem', height: '1rem' }} />
-            Fuel Policy
-          </Button>
+          <h4 style={{ 
+            fontSize: '0.875rem', 
+            fontWeight: 600, 
+            color: colors.aviation.navy,
+            marginBottom: spacing.scale[2]
+          }}>
+            Interactive Tools:
+          </h4>
+          <div style={{ 
+            display: 'flex', 
+            gap: spacing.scale[2],
+            flexWrap: 'wrap'
+          }}>
+            <Button
+              variant="secondary"
+              onClick={onOpenFlightPlan}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: spacing.scale[2],
+                fontSize: '0.875rem'
+              }}
+            >
+              <Plane style={{ width: '1rem', height: '1rem' }} />
+              Flight Plan
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={onOpenFuelPolicy}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: spacing.scale[2],
+                fontSize: '0.875rem'
+              }}
+            >
+              <Fuel style={{ width: '1rem', height: '1rem' }} />
+              Fuel Policy
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
       
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.scale[6] }}>
         <div style={{ fontSize: '0.875rem', color: colors.gray[600] }}>

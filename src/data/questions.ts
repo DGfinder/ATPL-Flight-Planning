@@ -26,6 +26,42 @@ export const sampleQuestions: Question[] = [
     ],
     workingSteps: [],
     reference: "Part 61 MOS Schedule 3 Unit 1.10.2 AFPA 2.1.1(d) Sector Fuel Burn"
+  },
+  {
+    id: "AFPA_070",
+    title: "Total Fuel for Depressurisation at CP/DP",
+    description: "Refer B727 Flight Manual Extract, ERC H3 and RSWT Extract. You are planning a flight from DARWIN (YPDN) to MELBOURNE (YMML) via A461 and H119. You have the following planning data: Ramp weight 83250 kg, Cruise level FL330, TMN 0.82. Enroute overhead ALICE SPRINGS (YBAS), Gross weight is 74630 kg. DARWIN is SUITABLE, MELBOURNE and ALICE SPRINGS are ACCEPTABLE, but may be considered SUITABLE if 30 minutes holding fuel is carried. You calculate the ALICE SPRINGS to MELBOURNE CP/DP to be 6 nm south of LEIGH CREEK (YLEC). Your calculation of the total fuel required to be on board at engine start, to cover depressurisation at the CP/DP, is closest to -",
+    type: "short_answer",
+    category: "total_fuel_required_ramp_fuel",
+    marks: 4,
+    givenData: {
+      "Route": "YPDN to YMML",
+      "Ramp Weight": "83250 kg",
+      "Cruise Level": "FL340",
+      "TMN": "0.82",
+      "GW at YBAS": "74630 kg",
+      "CP/DP Location": "6 nm south of YLEC",
+      "Holding Fuel": "30 minutes",
+      "Weather Data ID": "AFPA_070_WEATHER_001"
+    },
+    expectedAnswers: [
+      {
+        field: "total_fuel",
+        value: 22250,
+        tolerance: 200,
+        unit: "kg",
+        description: "Total fuel required for depressurisation scenario"
+      }
+    ],
+    workingSteps: [
+      "Step 1: Calculate the total flight fuel required for the entire trip from Darwin to Melbourne. The initial plan shows a fuel burn of 8,470 kg from DN to AS.",
+      "Step 2: Plan the depressurisation scenario from the CP/DP to the destination (Melbourne). This involves a cruise segment at a lower altitude (e.g., FL130).",
+      "Step 3: Calculate the fuel burn from YBAS to the CP/DP (480 nm) at normal cruise, which is 4,565 kg.",
+      "Step 4: Calculate the fuel burn from the CP/DP to landing at YMML during depressurisation. This includes the cruise at FL130 and descent, totaling 5,796 kg + 520 kg + 400 kg = 6,716 kg.",
+      "Step 5: The total flight fuel for this contingency is the sum of fuel from DN-YBAS, YBAS-CP/DP, and CP/DP-YMML. Total FF = 8470 + 4565 + 6716 = 19,751 kg.",
+      "Step 6: Add the required reserves for a depressurisation scenario."
+    ],
+    reference: "Part 61 MOS Schedule 3 Unit 1.10.2 AFPA 2.1.1(i) CP/DP"
   }
 ];
 

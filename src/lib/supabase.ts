@@ -79,3 +79,49 @@ export interface Profile {
   created_at: string;
   updated_at: string;
 }
+
+// Weather Data Types - Complete RSWT Structure
+export interface RSWTLevelData {
+  isa_temp: number; // ISA temperature in Celsius
+  ypdn_ybas: string; // Wind direction/speed for YPDN/YBAS segment (e.g., "300/40")
+  ybas_lec: string; // Wind direction/speed for YBAS/LEC segment (e.g., "210/20")
+  lec_ymml: string; // Wind direction/speed for LEC/YMML segment (e.g., "270/45")
+}
+
+export interface RSWTData {
+  "185": RSWTLevelData;
+  "235": RSWTLevelData;
+  "300": RSWTLevelData;
+  "340": RSWTLevelData;
+  "385": RSWTLevelData;
+  "445": RSWTLevelData;
+}
+
+export interface WeatherData {
+  id: number;
+  weather_id: string;
+  scenario_name: string;
+  route_from?: string;
+  route_to?: string;
+  rswt_data: RSWTData; // Complete RSWT extract with all flight levels
+  total_distance_nm?: number;
+  segment_distances?: Record<string, number>;
+  pressure_altitude?: number;
+  visibility_nm?: number;
+  cloud_base_ft?: number;
+  created_at: string;
+  updated_at: string;
+  created_by?: string;
+}
+
+export interface WeatherDataFormatted {
+  weather_id: string;
+  scenario_name: string;
+  route_from?: string;
+  route_to?: string;
+  rswt_data: RSWTData;
+  total_distance_nm?: number;
+  segment_distances?: Record<string, number>;
+  created_at: string;
+  updated_at: string;
+}

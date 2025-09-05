@@ -326,6 +326,7 @@ export const ExamInterface: React.FC<ExamInterfaceProps> = ({
                 onAnswerSubmit={handleAnswerSubmit}
                 userAnswer={session.answers[currentQuestion.id]}
                 showFeedback={false}
+                hideInteractiveTools={true}
               />
             ) : (
               <ShortAnswerQuestion
@@ -333,6 +334,7 @@ export const ExamInterface: React.FC<ExamInterfaceProps> = ({
                 onAnswerSubmit={handleAnswerSubmit}
                 userAnswer={session.answers[currentQuestion.id]}
                 showFeedback={false}
+                hideInteractiveTools={true}
               />
             )}
             
