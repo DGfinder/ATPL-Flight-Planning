@@ -162,7 +162,21 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
         cursor: disabled ? 'not-allowed' : 'text',
         outline: 'none',
         transition: 'all 0.2s ease',
-        boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)'
+        boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)',
+        textAlign: 'center',
+        fontFamily: 'monospace',
+        // Hide number input spinners
+        MozAppearance: 'textfield',
+        WebkitAppearance: 'none',
+        appearance: 'none'
+      }}
+      // Additional CSS to hide spinners
+      onWheel={(e) => e.preventDefault()}
+      onKeyDown={(e) => {
+        // Prevent arrow keys from changing values
+        if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
+          e.preventDefault();
+        }
       }}
       onFocus={(e) => {
         e.target.style.borderColor = colors.aviation.primary;
@@ -454,8 +468,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
-                      minWidth: '60px',
-                      maxWidth: '70px'
+                      minWidth: '80px',
+                      maxWidth: '90px'
                     }}>
                       FL
                     </th>
@@ -480,8 +494,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
-                      minWidth: '50px',
-                      maxWidth: '60px'
+                      minWidth: '90px',
+                      maxWidth: '100px'
                     }}>
                       Mach
                     </th>
@@ -506,8 +520,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
-                      minWidth: '50px',
-                      maxWidth: '60px'
+                      minWidth: '80px',
+                      maxWidth: '90px'
                     }}>
                       TR
                     </th>

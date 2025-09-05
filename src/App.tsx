@@ -7,6 +7,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import NewDashboardPage from './pages/NewDashboardPage';
 import { useDesignSystem } from './design-system';
+import { Navigation } from 'lucide-react';
 import FlightPlanTable from './components/flight-plan/FlightPlanTable';
 
 import type { FlightPlanSegment, FlightPlanData } from './types';
@@ -290,8 +291,9 @@ const ExamPage = () => {
 };
 
 const FlightPlanPage = () => {
-  const { spacing } = useDesignSystem();
+  const { colors, spacing, styles } = useDesignSystem();
   const [flightPlanSegments, setFlightPlanSegments] = useState<FlightPlanSegment[]>([]);
+  const [showFlightPlan, setShowFlightPlan] = useState(true); // Always show as popup
 
   const handleFlightPlanUpdate = useCallback((segments: FlightPlanSegment[]) => {
     setFlightPlanSegments(segments);
@@ -300,11 +302,105 @@ const FlightPlanPage = () => {
   return (
     <div style={{ padding: spacing.scale[4] }}>
       <div style={{ maxWidth: '100%', margin: '0 auto' }}>
-        {/* Interactive Flight Plan Table - Now the primary focus */}
-        <FlightPlanTable 
-          onFlightPlanUpdate={handleFlightPlanUpdate}
-          initialSegments={flightPlanSegments}
-        />
+        {/* Button to open flight plan popup */}
+        <div style={{ textAlign: 'center', marginBottom: spacing.scale[6] }}>
+          <button
+            onClick={() => setShowFlightPlan(true)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: spacing.scale[2],
+              padding: `${spacing.scale[3]} ${spacing.scale[4]}`,
+              background: colors.aviation.primary,
+              color: colors.white,
+              border: 'none',
+              borderRadius: spacing.radius.md,
+              fontSize: '1rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              margin: '0 auto'
+            }}
+          >
+            <Navigation style={{ width: '1.25rem', height: '1.25rem' }} />
+            Open Flight Planning Sheet
+          </button>
+        </div>
+
+        {/* Flight Plan Popup */}
+        {showFlightPlan && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000
+          }}>
+            <div style={{
+              width: '95vw',
+              height: '95vh',
+              background: colors.white,
+              borderRadius: spacing.radius.lg,
+              overflow: 'hidden',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <div style={{
+                padding: spacing.scale[4],
+                borderBottom: `1px solid ${colors.gray[200]}`,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                background: colors.gray[50]
+              }}>
+                <div>
+                  <h2 style={{
+                    ...styles.heading,
+                    fontSize: '1.5rem',
+                    fontWeight: 600,
+                    color: colors.aviation.primary,
+                    margin: 0
+                  }}>
+                    Interactive Flight Planning Sheet
+                  </h2>
+                  <p style={{
+                    ...styles.caption,
+                    marginTop: spacing.scale[1],
+                    color: colors.aviation.muted,
+                    margin: 0
+                  }}>
+                    Full-screen flight planning interface
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowFlightPlan(false)}
+                  style={{
+                    padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
+                    background: colors.gray[200],
+                    color: colors.aviation.navy,
+                    border: 'none',
+                    borderRadius: spacing.radius.md,
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    cursor: 'pointer'
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+              <div style={{ flex: 1, overflow: 'auto' }}>
+                <FlightPlanTable 
+                  onFlightPlanUpdate={handleFlightPlanUpdate}
+                  initialSegments={flightPlanSegments}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
