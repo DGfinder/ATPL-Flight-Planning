@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -9,8 +9,9 @@ import NewDashboardPage from './pages/NewDashboardPage';
 import { useDesignSystem } from './design-system';
 import { Navigation } from 'lucide-react';
 import FlightPlanTable from './components/flight-plan/FlightPlanTable';
+import TrialExamGenerator from './components/exam/TrialExamGenerator';
 
-import type { FlightPlanSegment, FlightPlanData } from './types';
+import type { FlightPlanSegment, TrialExam } from './types';
 
 // Import actual page components
 import QuestionsPage from './pages/QuestionsPage';
@@ -19,270 +20,189 @@ import NotesPage from './pages/NotesPage';
 // Placeholder components using design system
 const ExamPage = () => {
   const { colors, spacing, styles } = useDesignSystem();
-  const [showFlightPlan, setShowFlightPlan] = useState(false);
-  const [showFuelPolicy, setShowFuelPolicy] = useState(false);
-  const [flightPlanData, setFlightPlanData] = useState<Record<string, FlightPlanData>>({});
-  const [currentFlightPlanData, setCurrentFlightPlanData] = useState<FlightPlanData | null>(null);
+  const [currentExam, setCurrentExam] = useState<TrialExam | null>(null);
+  const [examMode, setExamMode] = useState<'generator' | 'taking' | 'results'>('generator');
 
-  // Load saved flight plan data on component mount
-  useEffect(() => {
-    try {
-      const savedData = localStorage.getItem('examFlightPlanData');
-      if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        setFlightPlanData(parsedData);
-      }
-    } catch (error) {
-      console.warn('Failed to load exam flight plan data from localStorage:', error);
-    }
-  }, []);
-
-  const handleOpenFlightPlan = () => {
-    const questionId = `exam-question-1`;
-    const existingData = flightPlanData[questionId] || null;
-    setCurrentFlightPlanData(existingData);
-    setShowFlightPlan(true);
+  const handleExamGenerated = (exam: TrialExam) => {
+    setCurrentExam(exam);
   };
 
-  const handleFlightPlanDataChange = (newData: FlightPlanData) => {
-    const questionId = `exam-question-1`;
-    const updatedData = {
-      ...flightPlanData,
-      [questionId]: newData
-    };
-    setFlightPlanData(updatedData);
-    setCurrentFlightPlanData(newData);
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem('examFlightPlanData', JSON.stringify(updatedData));
-    } catch (error) {
-      console.warn('Failed to save exam flight plan data to localStorage:', error);
-    }
+  const handleStartExam = (exam: TrialExam) => {
+    setCurrentExam(exam);
+    setExamMode('taking');
   };
 
-  const handleOpenFuelPolicy = () => {
-    setShowFuelPolicy(true);
+  // const handleExamComplete = () => {
+  //   setExamMode('results');
+  // };
+
+  const handleBackToGenerator = () => {
+    setExamMode('generator');
+    setCurrentExam(null);
   };
 
   return (
-    <div style={{ padding: spacing.scale[4] }}>
-      <div style={{ maxWidth: '100%', margin: '0 auto' }}>
-        {/* Exam Header */}
-        <div style={{
-          padding: spacing.scale[4],
-          background: colors.withOpacity(colors.aviation.primary, 0.05),
-          borderRadius: spacing.radius.lg,
-          border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`,
-          marginBottom: spacing.scale[6]
-        }}>
-          <h1 style={{ 
-            ...styles.heading, 
-            fontSize: '1.5rem', 
-            color: colors.aviation.navy,
-            marginBottom: spacing.scale[2]
-          }}>
-            Trial Exam
-          </h1>
-          <p style={{ 
-            ...styles.body, 
-            color: colors.aviation.muted,
-            marginBottom: spacing.scale[4]
-          }}>
-            Practice exam mode with interactive tools
-          </p>
-          
-          {/* Interactive Tools */}
-          <div style={{ 
-            display: 'flex', 
-            gap: spacing.scale[2],
-            flexWrap: 'wrap'
-          }}>
-            <button
-              onClick={handleOpenFlightPlan}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: spacing.scale[2],
-                padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
-                background: colors.aviation.primary,
-                color: colors.white,
-                border: 'none',
-                borderRadius: spacing.radius.md,
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              ✈️ Flight Plan
-            </button>
-            <button
-              onClick={handleOpenFuelPolicy}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: spacing.scale[2],
-                padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
-                background: colors.aviation.secondary,
-                color: colors.white,
-                border: 'none',
-                borderRadius: spacing.radius.md,
-                fontSize: '0.875rem',
-                fontWeight: 500,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              ⛽ Fuel Policy
-            </button>
-          </div>
-        </div>
-
-        {/* Exam Content Placeholder */}
+    <div style={{ 
+      padding: spacing.scale[4],
+      minHeight: '100vh',
+      background: colors.gray[50]
+    }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        {/* Header */}
         <div style={{
           padding: spacing.scale[6],
           background: colors.white,
           borderRadius: spacing.radius.lg,
           border: `1px solid ${colors.gray[200]}`,
+          marginBottom: spacing.scale[6],
           textAlign: 'center'
         }}>
+          <h1 style={{ 
+            ...styles.heading, 
+            fontSize: '2rem', 
+            color: colors.aviation.navy,
+            marginBottom: spacing.scale[2]
+          }}>
+            CASA ATPL Flight Planning
+          </h1>
           <h2 style={{ 
             ...styles.heading, 
             fontSize: '1.25rem', 
-            color: colors.aviation.navy,
+            color: colors.aviation.primary,
             marginBottom: spacing.scale[3]
           }}>
-            Exam Questions Coming Soon
+            Trial Exam Generator
           </h2>
           <p style={{ 
             ...styles.body, 
             color: colors.aviation.muted,
-            marginBottom: spacing.scale[4]
+            maxWidth: '600px',
+            margin: '0 auto'
           }}>
-            The trial exam will include interactive flight planning and fuel policy tools.
+            Generate seeded trial exams following CASA's authentic 17-question matrix with 3×5 marks, 2-3×4 marks, and distributed 1-3 mark questions.
           </p>
         </div>
 
-        {/* Flight Plan Modal */}
-        {showFlightPlan && (
+        {/* Content based on mode */}
+        {examMode === 'generator' && (
+          <TrialExamGenerator
+            onExamGenerated={handleExamGenerated}
+            onStartExam={handleStartExam}
+          />
+        )}
+
+        {examMode === 'taking' && currentExam && (
           <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000
+            padding: spacing.scale[6],
+            background: colors.white,
+            borderRadius: spacing.radius.lg,
+            border: `1px solid ${colors.gray[200]}`,
+            textAlign: 'center'
           }}>
-            <div style={{
-              width: '95vw',
-              height: '95vh',
-              background: colors.white,
-              borderRadius: spacing.radius.lg,
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column'
+            <h2 style={{ 
+              ...styles.heading, 
+              fontSize: '1.5rem', 
+              color: colors.aviation.navy,
+              marginBottom: spacing.scale[4]
             }}>
-              <div style={{
-                padding: spacing.scale[4],
-                borderBottom: `1px solid ${colors.gray[200]}`,
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
+              Exam Interface Coming Soon
+            </h2>
+            <p style={{ 
+              ...styles.body, 
+              color: colors.aviation.muted,
+              marginBottom: spacing.scale[4]
+            }}>
+              The exam taking interface with timer, question navigation, and flight planning tools will be available soon.
+            </p>
+            <div style={{
+              padding: spacing.scale[4],
+              background: colors.withOpacity(colors.aviation.primary, 0.05),
+              borderRadius: spacing.radius.md,
+              border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`,
+              marginBottom: spacing.scale[4]
+            }}>
+              <h3 style={{ fontSize: '1rem', color: colors.aviation.navy, marginBottom: spacing.scale[2] }}>
+                Generated Exam Details
+              </h3>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
+                gap: spacing.scale[3],
+                fontSize: '0.875rem' 
               }}>
                 <div>
-                  <h2 style={{ ...styles.heading, margin: 0 }}>Interactive Flight Plan</h2>
-                  <p style={{ 
-                    ...styles.caption, 
-                    marginTop: spacing.scale[1],
-                    color: colors.aviation.muted 
-                  }}>
-                    Trial Exam - Question 1
-                  </p>
+                  <strong>Scenario:</strong> {currentExam.scenario}
                 </div>
-                <button
-                  onClick={() => setShowFlightPlan(false)}
-                  style={{
-                    padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
-                    background: colors.gray[200],
-                    color: colors.aviation.navy,
-                    border: 'none',
-                    borderRadius: spacing.radius.md,
-                    fontSize: '0.875rem',
-                    fontWeight: 500,
-                    cursor: 'pointer'
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-              <div style={{ flex: 1, overflow: 'auto' }}>
-                <FlightPlanTable 
-                  initialData={currentFlightPlanData ?? undefined}
-                  onDataChange={handleFlightPlanDataChange}
-                />
+                <div>
+                  <strong>Questions:</strong> {currentExam.totalQuestions}
+                </div>
+                <div>
+                  <strong>Total Marks:</strong> {currentExam.totalMarks}
+                </div>
+                <div>
+                  <strong>Time Limit:</strong> {currentExam.timeLimit}min
+                </div>
+                <div>
+                  <strong>Seed:</strong> {currentExam.seed}
+                </div>
               </div>
             </div>
+            <button
+              onClick={handleBackToGenerator}
+              style={{
+                padding: `${spacing.scale[3]} ${spacing.scale[4]}`,
+                background: colors.aviation.primary,
+                color: colors.white,
+                border: 'none',
+                borderRadius: spacing.radius.md,
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              Back to Generator
+            </button>
           </div>
         )}
 
-        {/* Fuel Policy Modal */}
-        {showFuelPolicy && (
+        {examMode === 'results' && currentExam && (
           <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000
+            padding: spacing.scale[6],
+            background: colors.white,
+            borderRadius: spacing.radius.lg,
+            border: `1px solid ${colors.gray[200]}`,
+            textAlign: 'center'
           }}>
-            <div style={{
-              width: '90vw',
-              maxWidth: '800px',
-              background: colors.white,
-              borderRadius: spacing.radius.lg,
-              padding: spacing.scale[4]
+            <h2 style={{ 
+              ...styles.heading, 
+              fontSize: '1.5rem', 
+              color: colors.aviation.navy,
+              marginBottom: spacing.scale[4]
             }}>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: spacing.scale[4]
-              }}>
-                <h2 style={{ ...styles.heading, margin: 0 }}>Fuel Policy Calculator</h2>
-                <button
-                  onClick={() => setShowFuelPolicy(false)}
-                  style={{
-                    padding: `${spacing.scale[2]} ${spacing.scale[3]}`,
-                    background: colors.gray[200],
-                    color: colors.aviation.navy,
-                    border: 'none',
-                    borderRadius: spacing.radius.md,
-                    fontSize: '0.875rem',
-                    fontWeight: 500,
-                    cursor: 'pointer'
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-              <p style={{ 
-                ...styles.body, 
-                color: colors.aviation.muted,
-                textAlign: 'center',
-                padding: spacing.scale[6]
-              }}>
-                Fuel Policy Calculator will be available when exam questions are implemented.
-              </p>
-            </div>
+              Exam Results
+            </h2>
+            <p style={{ 
+              ...styles.body, 
+              color: colors.aviation.muted,
+              marginBottom: spacing.scale[4]
+            }}>
+              Results display with detailed scoring and performance analytics will be available soon.
+            </p>
+            <button
+              onClick={handleBackToGenerator}
+              style={{
+                padding: `${spacing.scale[3]} ${spacing.scale[4]}`,
+                background: colors.aviation.primary,
+                color: colors.white,
+                border: 'none',
+                borderRadius: spacing.radius.md,
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              Generate New Exam
+            </button>
           </div>
         )}
       </div>

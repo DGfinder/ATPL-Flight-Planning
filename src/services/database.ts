@@ -1,5 +1,5 @@
 import { supabase, type DatabaseQuestion, type UserProgress, type StudySession } from '../lib/supabase';
-import type { Question, UserAnswer, PerformanceMetrics, QuestionType, QuestionCategory, AltitudeCapability } from '../types';
+import type { Question, UserAnswer, PerformanceMetrics, QuestionType, QuestionCategory, AltitudeCapability, MarkValue, ExamFilters } from '../types';
 
 class DatabaseService {
   // Auth methods
@@ -54,6 +54,99 @@ class DatabaseService {
     if (error) throw error;
     
     return (data as DatabaseQuestion[]).map(this.convertDatabaseQuestionToQuestion);
+  }
+
+  // Exam-specific methods
+  async getQuestionsByMarkValue(markValue: MarkValue): Promise<Question[]> {
+    const { data, error } = await supabase
+      .from('questions')
+      .select('*')
+      .eq('marks', markValue)
+      .order('created_at');
+
+    if (error) throw error;
+    
+    return (data as DatabaseQuestion[]).map(this.convertDatabaseQuestionToQuestion);
+  }
+
+  async getQuestionsForExam(filters?: ExamFilters): Promise<Question[]> {
+    let query = supabase
+      .from('questions')
+      .select('*');
+
+    // Apply topic inclusion filter
+    if (filters?.topicInclude?.length) {
+      query = query.in('category', filters.topicInclude);
+    }
+
+    // Apply topic exclusion filter
+    if (filters?.topicExclude?.length) {
+      query = query.not('category', 'in', `(${filters.topicExclude.map(cat => `"${cat}"`).join(',')})`);
+    }
+
+    // Apply difficulty filters
+    if (filters?.minDifficulty !== undefined) {
+      query = query.gte('difficulty', filters.minDifficulty);
+    }
+
+    if (filters?.maxDifficulty !== undefined) {
+      query = query.lte('difficulty', filters.maxDifficulty);
+    }
+
+    query = query.order('created_at');
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+    
+    return (data as DatabaseQuestion[]).map(this.convertDatabaseQuestionToQuestion);
+  }
+
+  async getQuestionsBucketedByMarks(filters?: ExamFilters): Promise<Record<MarkValue, Question[]>> {
+    const questions = await this.getQuestionsForExam(filters);
+    
+    const buckets: Record<MarkValue, Question[]> = {
+      1: [],
+      2: [],
+      3: [],
+      4: [],
+      5: []
+    };
+
+    questions.forEach(question => {
+      const marks = question.marks as MarkValue;
+      if (marks >= 1 && marks <= 5) {
+        buckets[marks].push(question);
+      }
+    });
+
+    return buckets;
+  }
+
+  async getQuestionStats(): Promise<{
+    totalQuestions: number;
+    markDistribution: Record<MarkValue, number>;
+    categoryDistribution: Record<QuestionCategory, number>;
+  }> {
+    const questions = await this.getAllQuestions();
+    
+    const markDistribution: Record<MarkValue, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    const categoryDistribution: Record<QuestionCategory, number> = {} as Record<QuestionCategory, number>;
+
+    questions.forEach(question => {
+      const marks = question.marks as MarkValue;
+      if (marks >= 1 && marks <= 5) {
+        markDistribution[marks]++;
+      }
+      
+      categoryDistribution[question.category] = (categoryDistribution[question.category] || 0) + 1;
+    });
+
+    return {
+      totalQuestions: questions.length,
+      markDistribution,
+      categoryDistribution
+    };
   }
 
   // User Progress methods

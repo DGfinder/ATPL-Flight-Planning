@@ -349,3 +349,66 @@ export interface AltitudeCapability {
   created_at: string;
   updated_at: string;
 }
+
+// CASA ATPL Flight Planning Trial Exam Types
+export type MarkValue = 1 | 2 | 3 | 4 | 5;
+export type ExamScenario = "A" | "B" | "C";
+
+export interface ExamQuestion extends Question {
+  marks: MarkValue;
+  shuffledOptions?: string[];
+}
+
+export interface ExamScenarioConfig {
+  id: ExamScenario;
+  label: string;
+  totalMarks: number;
+  distribution: Record<MarkValue, number>;
+  description: string;
+}
+
+export interface TrialExam {
+  id: string;
+  scenario: ExamScenario;
+  seed: number;
+  totalQuestions: 17;
+  totalMarks: number;
+  distribution: Record<MarkValue, number>;
+  questions: ExamQuestion[];
+  createdAt: Date;
+  timeLimit: number; // minutes
+}
+
+export interface ExamSession {
+  id: string;
+  examId: string;
+  userId?: string;
+  startTime: Date;
+  endTime?: Date;
+  currentQuestionIndex: number;
+  answers: Record<string, UserAnswer>;
+  timeSpent: number; // seconds
+  isCompleted: boolean;
+  score?: number;
+  maxScore: number;
+}
+
+export interface ExamResult {
+  examSession: ExamSession;
+  exam: TrialExam;
+  totalScore: number;
+  maxScore: number;
+  percentage: number;
+  markBreakdown: Record<MarkValue, { correct: number; total: number; marks: number }>;
+  categoryBreakdown: Record<QuestionCategory, { correct: number; total: number; percentage: number }>;
+  timeSpent: number;
+  questionsCorrect: number;
+  questionsTotal: number;
+}
+
+export interface ExamFilters {
+  topicInclude?: QuestionCategory[];
+  topicExclude?: QuestionCategory[];
+  minDifficulty?: number;
+  maxDifficulty?: number;
+}
