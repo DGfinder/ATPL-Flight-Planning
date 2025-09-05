@@ -246,23 +246,37 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
 
   // Convert segments to flight plan data format for visualization
   const visualizationData = useMemo(() => {
-    // Only create visualization data if there are segments with actual data
-    const hasValidSegments = segments.some(seg => 
-      seg.segment && seg.flightLevel > 0 && seg.distance > 0
-    );
+    // Always create visualization data, even with empty segments
+    // Extract route from question context if available
+    let departure = { code: 'YSSY', name: 'Sydney', lat: -33.9461, lon: 151.1772, elevation: 21 };
+    let arrival = { code: 'YPPH', name: 'Perth', lat: -31.9403, lon: 115.9672, elevation: 67 };
     
-    if (!hasValidSegments) return undefined;
+    if (questionContext) {
+      const title = questionContext.title;
+      const description = questionContext.description;
+      
+      // Look for "from X to Y" pattern in title or description
+      const fromToMatch = (title + ' ' + description).match(/from\s+([A-Z\s]+?)\s+to\s+([A-Z\s]+?)(?:\s+via|\s+in|\s+on|\s+at|$)/i);
+      if (fromToMatch) {
+        const from = fromToMatch[1].trim();
+        const to = fromToMatch[2].trim();
+        
+        // Use airport codes if we can determine them
+        departure = { code: from.substring(0, 4), name: from, lat: -33.9461, lon: 151.1772, elevation: 21 };
+        arrival = { code: to.substring(0, 4), name: to, lat: -31.9403, lon: 115.9672, elevation: 67 };
+      }
+    }
 
     return {
-      departure: { code: 'YSSY', name: 'Sydney', lat: -33.9461, lon: 151.1772, elevation: 21 },
-      arrival: { code: 'YPPH', name: 'Perth', lat: -31.9403, lon: 115.9672, elevation: 67 },
+      departure,
+      arrival,
       waypoints: segments
         .filter(segment => segment.segment && segment.flightLevel > 0) // Only include valid waypoints
         .map((segment, index) => ({
           id: index + 1,
           code: segment.segment,
-          lat: -33 + (index * 0.5),
-          lon: 151 - (index * 2),
+          lat: departure.lat + (index * 0.5),
+          lon: departure.lon + (index * 2),
           altitude: segment.flightLevel * 100,
           time: `${Math.floor(segment.estimatedTimeInterval / 60)}:${(segment.estimatedTimeInterval % 60).toString().padStart(2, '0')}`,
           fuel: segment.zoneFuel
@@ -274,7 +288,7 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
       fuelRequired: totals.fuel,
       winds: { direction: 270, speed: 45 }
     };
-  }, [segments, totals]);
+  }, [segments, totals, questionContext]);
 
   const { colors, spacing, styles } = useDesignSystem();
 
@@ -516,35 +530,47 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
 
           {/* Right Column - Flight Visualization */}
           <div>
-            {visualizationData && (
-              <Card variant="default" padding="lg">
-                <CardHeader title="Flight Profile Visualization" />
-                <CardContent>
+            <Card variant="default" padding="lg">
+              <CardHeader title="Flight Profile Visualization" />
+              <CardContent>
+                <div style={{
+                  height: '400px',
+                  background: colors.withOpacity(colors.aviation.primary, 0.02),
+                  borderRadius: spacing.radius.lg,
+                  border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`,
+                  padding: spacing.scale[4],
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}>
                   <div style={{
-                    height: '400px',
-                    background: colors.withOpacity(colors.aviation.primary, 0.02),
-                    borderRadius: spacing.radius.lg,
-                    border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`,
-                    padding: spacing.scale[4],
-                    position: 'relative',
-                    overflow: 'hidden'
+                    position: 'absolute',
+                    top: spacing.scale[3],
+                    left: spacing.scale[3],
+                    right: spacing.scale[3],
+                    bottom: spacing.scale[3]
                   }}>
+                    <FlightPlanVisualization 
+                      flightPlan={visualizationData}
+                      className="compact-visualization"
+                    />
+                    {/* Debug info */}
                     <div style={{
                       position: 'absolute',
-                      top: spacing.scale[3],
-                      left: spacing.scale[3],
-                      right: spacing.scale[3],
-                      bottom: spacing.scale[3]
+                      top: '10px',
+                      right: '10px',
+                      background: 'rgba(0,0,0,0.7)',
+                      color: 'white',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      fontSize: '10px',
+                      zIndex: 1000
                     }}>
-                      <FlightPlanVisualization 
-                        flightPlan={visualizationData}
-                        className="compact-visualization"
-                      />
+                      Segments: {segments.filter(s => s.segment).length}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
