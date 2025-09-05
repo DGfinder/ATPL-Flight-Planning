@@ -416,11 +416,11 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
           <CardHeader title="Flight Plan Segments" />
           <CardContent>
             <div style={{ 
-              overflowX: 'auto',
               border: `1px solid ${colors.gray[200]}`,
               borderRadius: spacing.radius.md,
               background: colors.white,
-              minWidth: '1400px'
+              minWidth: '100%',
+              width: '100%'
             }}>
               <table style={{ 
                 width: '100%', 
@@ -441,8 +441,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
-                      minWidth: '100px',
-                      maxWidth: '120px'
+                      minWidth: '120px',
+                      maxWidth: '140px'
                     }}>
                       Segment
                     </th>
@@ -454,8 +454,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
-                      minWidth: '40px',
-                      maxWidth: '50px'
+                      minWidth: '60px',
+                      maxWidth: '70px'
                     }}>
                       FL
                     </th>
@@ -493,8 +493,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
-                      minWidth: '50px',
-                      maxWidth: '60px'
+                      minWidth: '70px',
+                      maxWidth: '80px'
                     }}>
                       TAS
                     </th>
@@ -558,8 +558,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
-                      minWidth: '50px',
-                      maxWidth: '60px'
+                      minWidth: '80px',
+                      maxWidth: '90px'
                     }}>
                       Dist
                     </th>
@@ -571,8 +571,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
-                      minWidth: '60px',
-                      maxWidth: '70px'
+                      minWidth: '80px',
+                      maxWidth: '90px'
                     }}>
                       ETI
                     </th>
