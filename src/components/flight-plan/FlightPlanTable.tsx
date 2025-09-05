@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import type { FlightPlanSegment, Question, FlightPlanData } from '../../types';
-import { AviationCalculations } from '../../utils/aviationCalculations';
 import { databaseService } from '../../services/database';
 import { 
   Card, 
@@ -11,6 +10,7 @@ import {
 } from '../../design-system';
 import { MapPin, Clock, Navigation, Fuel } from 'lucide-react';
 import FuelPolicyModal from './FuelPolicyModal';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface FlightPlanTableProps {
   onFlightPlanUpdate?: (segments: FlightPlanSegment[]) => void;
@@ -120,69 +120,7 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
         
         const updatedSegment = { ...segment, [field]: value };
         
-        // E6B Flight Computer Logic with proper sin/cos calculations
-        // Wind component is now entered manually by the user. We no longer auto-calc from WIND string.
-        
-        // Auto-calculate TAS from Mach number and altitude conditions
-        if (field === 'machNo' || field === 'flightLevel' || field === 'tempDeviation') {
-          if (updatedSegment.machNo > 0 && updatedSegment.flightLevel > 0) {
-            updatedSegment.tas = Math.round(AviationCalculations.machToTAS(
-              updatedSegment.machNo, 
-              updatedSegment.flightLevel * 100, 
-              updatedSegment.tempDeviation
-            ));
-          }
-        }
-        
-        if (field === 'tas' || field === 'windComponent') {
-          updatedSegment.groundSpeed = updatedSegment.tas + updatedSegment.windComponent;
-        }
-        
-        if (field === 'groundSpeed' || field === 'distance') {
-          if (updatedSegment.groundSpeed > 0 && updatedSegment.distance > 0) {
-            updatedSegment.estimatedTimeInterval = (updatedSegment.distance / updatedSegment.groundSpeed) * 60;
-          }
-        }
-        
-        // Zone fuel calculations based on fuel flow and time
-        if (field === 'fuelFlow' || field === 'estimatedTimeInterval') {
-          if (updatedSegment.fuelFlow > 0 && updatedSegment.estimatedTimeInterval > 0) {
-            updatedSegment.zoneFuel = AviationCalculations.calculateZoneFuel(
-              updatedSegment.fuelFlow, 
-              updatedSegment.estimatedTimeInterval
-            );
-          }
-        }
-        
-        // Advanced EMZW validation with POH weight bracket checking
-        if (field === 'startZoneWeight' || field === 'distance' || field === 'machNo' || field === 'windComponent' || field === 'tempDeviation') {
-          if (updatedSegment.startZoneWeight > 0 && updatedSegment.distance > 0 && updatedSegment.machNo > 0 && updatedSegment.estimatedTimeInterval > 0) {
-            const emzwResult = AviationCalculations.validateEMZW(
-              updatedSegment.startZoneWeight,
-              updatedSegment.distance,
-              updatedSegment.machNo,
-              updatedSegment.windComponent,
-              updatedSegment.estimatedTimeInterval,
-              updatedSegment.tempDeviation
-            );
-            
-            updatedSegment.emzw = emzwResult.emzw;
-            updatedSegment.zoneFuel = emzwResult.zoneFuel;
-            updatedSegment.fuelFlow = emzwResult.fuelFlow;
-            updatedSegment.endZoneWeight = emzwResult.endZoneWeight;
-            updatedSegment.planFuelRemaining = AviationCalculations.calculateFuelRemaining(
-              updatedSegment.startZoneWeight, 
-              updatedSegment.zoneFuel
-            );
-          }
-        }
-        
-        // Validate altitude capability against weight and ISA conditions
-        if (field === 'flightLevel' || field === 'startZoneWeight' || field === 'tempDeviation') {
-          if (updatedSegment.flightLevel > 0 && updatedSegment.startZoneWeight > 0) {
-            validateAltitudeCapability(updatedSegment).catch(console.error);
-          }
-        }
+        // No automatic calculations - all values are entered manually
         
         return updatedSegment;
       });
@@ -567,8 +505,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
-                      minWidth: '40px',
-                      maxWidth: '50px'
+                      minWidth: '50px',
+                      maxWidth: '60px'
                     }}>
                       TR
                     </th>
@@ -580,8 +518,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
-                      minWidth: '60px',
-                      maxWidth: '70px'
+                      minWidth: '70px',
+                      maxWidth: '80px'
                     }}>
                       Wind
                     </th>
@@ -632,8 +570,8 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                       borderRight: `1px solid ${colors.gray[200]}`,
-                      minWidth: '50px',
-                      maxWidth: '60px'
+                      minWidth: '60px',
+                      maxWidth: '70px'
                     }}>
                       ETI
                     </th>
@@ -1046,125 +984,104 @@ const FlightPlanTable: React.FC<FlightPlanTableProps> = ({
           </CardContent>
         </Card>
 
-        {/* Simple Altitude Profile Graph */}
+        {/* Professional Altitude Profile Chart */}
         <Card variant="default" padding="lg" style={{ marginBottom: spacing.scale[4] }}>
           <CardHeader title="Flight Profile" />
           <CardContent>
             <div style={{
-              height: '200px',
+              height: '300px',
               background: colors.withOpacity(colors.aviation.primary, 0.02),
               borderRadius: spacing.radius.lg,
               border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`,
               padding: spacing.scale[4],
-              position: 'relative',
-              overflow: 'hidden'
+              position: 'relative'
             }}>
-              {/* Simple SVG Altitude Profile */}
-              <svg
-                width="100%"
-                height="100%"
-                style={{ position: 'absolute', top: 0, left: 0 }}
-                viewBox="0 0 800 200"
-                preserveAspectRatio="none"
-              >
-                {/* Grid lines */}
-                <defs>
-                  <pattern id="grid" width="40" height="20" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 20" fill="none" stroke={colors.withOpacity(colors.aviation.primary, 0.1)} strokeWidth="0.5"/>
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#grid)" />
-                
-                {/* Altitude profile line */}
-                <path
-                  d={(() => {
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={(() => {
                     const validSegments = segments.filter(s => s.segment && s.flightLevel > 0);
                     if (validSegments.length === 0) {
-                      // Show a simple horizontal line at FL370
-                      return "M 50 100 L 750 100";
+                      return [{ segment: 'Start', distance: 0, altitude: 370 }];
                     }
                     
-                    const points = validSegments.map((segment, index) => {
-                      const x = 50 + (index * (700 / Math.max(validSegments.length - 1, 1)));
-                      const y = 180 - ((segment.flightLevel / 500) * 160); // Scale FL to height
-                      return `${x},${y}`;
+                    let cumulativeDistance = 0;
+                    return validSegments.map((segment) => {
+                      cumulativeDistance += segment.distance || 0;
+                      return {
+                        segment: segment.segment,
+                        distance: cumulativeDistance,
+                        altitude: segment.flightLevel,
+                        fuel: segment.zoneFuel || 0,
+                        time: segment.estimatedTimeInterval || 0
+                      };
                     });
-                    
-                    return `M ${points.join(' L ')}`;
                   })()}
-                  fill="none"
-                  stroke={colors.aviation.primary}
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                
-                {/* Waypoint markers */}
-                {segments
-                  .filter(s => s.segment && s.flightLevel > 0)
-                  .map((segment, index) => {
-                    const x = 50 + (index * (700 / Math.max(segments.filter(s => s.segment && s.flightLevel > 0).length - 1, 1)));
-                    const y = 180 - ((segment.flightLevel / 500) * 160);
-                    return (
-                      <g key={segment.id}>
-                        <circle
-                          cx={x}
-                          cy={y}
-                          r="4"
-                          fill={colors.aviation.primary}
-                          stroke={colors.white}
-                          strokeWidth="2"
-                        />
-                        <text
-                          x={x}
-                          y={y - 10}
-                          textAnchor="middle"
-                          fontSize="10"
-                          fill={colors.aviation.navy}
-                          fontWeight="500"
-                        >
-                          {segment.segment}
-                        </text>
-                        <text
-                          x={x}
-                          y={y + 20}
-                          textAnchor="middle"
-                          fontSize="8"
-                          fill={colors.aviation.text}
-                        >
-                          FL{segment.flightLevel}
-                        </text>
-                      </g>
-                    );
-                  })}
-                
-                {/* Y-axis labels */}
-                <text x="10" y="30" fontSize="10" fill={colors.aviation.text} textAnchor="middle">FL500</text>
-                <text x="10" y="80" fontSize="10" fill={colors.aviation.text} textAnchor="middle">FL400</text>
-                <text x="10" y="130" fontSize="10" fill={colors.aviation.text} textAnchor="middle">FL300</text>
-                <text x="10" y="180" fontSize="10" fill={colors.aviation.text} textAnchor="middle">FL200</text>
-                
-                {/* X-axis label */}
-                <text x="400" y="195" fontSize="10" fill={colors.aviation.text} textAnchor="middle">Distance (nm)</text>
-              </svg>
+                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke={colors.withOpacity(colors.aviation.primary, 0.2)} />
+                  <XAxis 
+                    dataKey="distance" 
+                    type="number"
+                    scale="linear"
+                    domain={['dataMin', 'dataMax']}
+                    tickFormatter={(value) => `${value}nm`}
+                    stroke={colors.aviation.text}
+                    fontSize={12}
+                  />
+                  <YAxis 
+                    dataKey="altitude"
+                    domain={[200, 500]}
+                    tickFormatter={(value) => `FL${value}`}
+                    stroke={colors.aviation.text}
+                    fontSize={12}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: colors.white,
+                      border: `1px solid ${colors.aviation.primary}`,
+                      borderRadius: spacing.radius.md,
+                      fontSize: '0.75rem'
+                    }}
+                    formatter={(value: any, name: string) => {
+                      switch (name) {
+                        case 'altitude': return [`FL${value}`, 'Altitude'];
+                        case 'distance': return [`${value}nm`, 'Distance'];
+                        case 'fuel': return [`${value}kg`, 'Fuel'];
+                        case 'time': return [`${Math.floor(value / 60)}:${(value % 60).toString().padStart(2, '0')}`, 'Time'];
+                        default: return [value, name];
+                      }
+                    }}
+                    labelFormatter={(label) => `Distance: ${label}nm`}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="altitude"
+                    stroke={colors.aviation.primary}
+                    strokeWidth={3}
+                    dot={{ fill: colors.aviation.primary, strokeWidth: 2, r: 6 }}
+                    activeDot={{ r: 8, stroke: colors.aviation.primary, strokeWidth: 2 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
               
               {/* Summary stats */}
               <div style={{
                 position: 'absolute',
                 top: spacing.scale[2],
                 right: spacing.scale[2],
-                background: colors.withOpacity(colors.white, 0.9),
-                padding: spacing.scale[2],
-                borderRadius: spacing.radius.sm,
+                background: colors.withOpacity(colors.white, 0.95),
+                padding: spacing.scale[3],
+                borderRadius: spacing.radius.md,
                 fontSize: '0.75rem',
                 color: colors.aviation.navy,
-                border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.1)}`
+                border: `1px solid ${colors.withOpacity(colors.aviation.primary, 0.2)}`,
+                boxShadow: `0 2px 4px ${colors.withOpacity(colors.gray[900], 0.1)}`
               }}>
-                <div style={{ fontWeight: 500, marginBottom: spacing.scale[1] }}>Flight Summary</div>
-                <div>Total Distance: {totals.distance.toFixed(0)} nm</div>
-                <div>Total Time: {Math.floor(totals.time / 60)}:{(totals.time % 60).toString().padStart(2, '0')}</div>
-                <div>Total Fuel: {totals.fuel.toFixed(0)} kg</div>
-                <div>Segments: {segments.filter(s => s.segment).length}</div>
+                <div style={{ fontWeight: 600, marginBottom: spacing.scale[2], color: colors.aviation.primary }}>Flight Summary</div>
+                <div style={{ marginBottom: spacing.scale[1] }}>Total Distance: {totals.distance.toFixed(0)} nm</div>
+                <div style={{ marginBottom: spacing.scale[1] }}>Total Time: {Math.floor(totals.time / 60)}:{(totals.time % 60).toString().padStart(2, '0')}</div>
+                <div style={{ marginBottom: spacing.scale[1] }}>Total Fuel: {totals.fuel.toFixed(0)} kg</div>
+                <div>Active Segments: {segments.filter(s => s.segment).length}</div>
               </div>
             </div>
           </CardContent>
