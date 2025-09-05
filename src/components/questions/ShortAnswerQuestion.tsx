@@ -99,6 +99,7 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
   const handleInputChange = (field: string, value: string) => {
     if (isSubmitted) return;
     
+    // Allow numbers, decimal points, and negative signs
     const numericValue = value.replace(/[^\d.-]/g, '');
     setAnswers(prev => ({
       ...prev,
@@ -223,10 +224,19 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
           fontSize: '1rem', 
           fontWeight: 600, 
           color: colors.aviation.navy,
-          marginBottom: spacing.scale[3]
+          marginBottom: spacing.scale[2]
         }}>
           Your Answer:
         </h4>
+        <p style={{
+          fontSize: '0.75rem',
+          color: colors.aviation.text,
+          fontStyle: 'italic',
+          marginBottom: spacing.scale[3],
+          opacity: 0.8
+        }}>
+          Enter your answer here
+        </p>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.scale[3] }}>
           {question.expectedAnswers?.map((expected) => (
@@ -244,14 +254,22 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
                 onChange={(e) => handleInputChange(expected.field, e.target.value)}
                 disabled={isSubmitted}
                 style={{
-                  padding: spacing.scale[2],
+                  padding: spacing.scale[3],
                   border: `1px solid ${colors.gray[300]}`,
                   borderRadius: spacing.radius.md,
                   fontSize: '0.875rem',
                   outline: 'none',
-                  background: isSubmitted ? colors.gray[100] : colors.white
+                  background: isSubmitted ? colors.gray[100] : colors.white,
+                  width: '100%',
+                  transition: 'border-color 0.2s ease'
                 }}
-                placeholder={`Enter ${expected.unit}`}
+                placeholder={`Enter your answer here (${expected.unit})`}
+                onFocus={(e) => {
+                  e.target.style.borderColor = colors.aviation.primary;
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = colors.gray[300];
+                }}
               />
               
               {showFeedback && isSubmitted && validationResults[expected.field] && (
@@ -325,16 +343,20 @@ const ShortAnswerQuestion: React.FC<ShortAnswerQuestionProps> = ({
       </div>
       
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.scale[6] }}>
-        <div style={{ fontSize: '0.875rem', color: colors.gray[600] }}>
-          Enter your answers and click submit
+        <div style={{ fontSize: '0.875rem', color: colors.aviation.text, opacity: 0.8 }}>
+          Complete all fields above and click submit
         </div>
         
         <Button
           variant="primary"
           onClick={handleSubmit}
           disabled={isSubmitted}
+          style={{
+            minWidth: '120px',
+            fontWeight: 600
+          }}
         >
-          {isSubmitted ? 'Submitted' : 'Submit Answer'}
+          {isSubmitted ? 'Submitted ✓' : 'Submit Answer'}
         </Button>
       </div>
       
